@@ -9,16 +9,17 @@ IN: intel.hex
 
 CONSTANT: IHEX_MAX_DATA_LEN 512
 
-TUPLE: ihex offset extend data len type checksum ;
+TUPLE: ihex len offset type data extend checksum ;
 
 
 : <ihex> ( -- ihex )
     ihex new ;
 
-! # extract the length of the line
-: ihex-len ( str -- len )
-    2 cut drop hex>
+: ihex-data ( str -- array )
+    2 group
+    [ hex> ] B{ } map-as 
     ;
+
 
 : ihex-read ( path -- ? )
     utf8 file-lines
@@ -29,12 +30,12 @@ TUPLE: ihex offset extend data len type checksum ;
             dup length 0 >
             [
                 break
-                2 group
-                <ihex>   ! create one tuple
-                [ swap pop ]
-                swap 4 cut swap rot swap hex> >>offset
-                swap 2 cut swap rot swap hex> >>type
-                swap 2 group
+                <ihex> ! create one tuple
+                [ 2 cut swap hex> ] dip swap >>len
+                [ 4 cut swap hex> ] dip swap >>offset
+                [ 2 cut swap hex> ] dip swap >>type
+                [ len>> 2 * cut hex> ] keep swap >>checksum
+                [ ihex-data ] dip swap >>data
             ] when
         ] when
     ] each
