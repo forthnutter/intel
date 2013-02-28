@@ -21,7 +21,8 @@ TUPLE: ihex len offset type data extend checksum ;
     ;
 
 
-: ihex-read ( path -- ? )
+: ihex-read ( path -- vector )
+    V{ } clone swap
     utf8 file-lines
     [
         dup length 0 >
@@ -29,7 +30,6 @@ TUPLE: ihex len offset type data extend checksum ;
             [ CHAR: : = ] trim-head
             dup length 0 >
             [
-                break
                 <ihex> ! create one tuple
                 [ 2 cut swap hex> ] dip swap >>len
                 [ 4 cut swap hex> ] dip swap >>offset
@@ -38,6 +38,8 @@ TUPLE: ihex len offset type data extend checksum ;
                 [ ihex-data ] dip swap >>data
             ] when
         ] when
+        break
+        [ ihex? ] keep swap
+        [ suffix ] when
     ] each
-    
     ;
