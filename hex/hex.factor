@@ -9,7 +9,7 @@ IN: intel.hex
 
 CONSTANT: IHEX_MAX_DATA_LEN 512
 
-TUPLE: ihex len offset type data extend checksum ;
+TUPLE: ihex error len offset type data extend checksum ;
 
 
 : <ihex> ( -- ihex )
@@ -20,7 +20,23 @@ TUPLE: ihex len offset type data extend checksum ;
     [ hex> ] B{ } map-as 
     ;
 
+! Calculate the checksum in the ihex tuple
+: ihex-checksum ( ihex -- b )
+    [ len>> ] keep
+    [ type>> + ] keep
+    [ offset>> 255 bitand + ] keep
+    [ offset>> -8 shift 255 bitand + ] keep
+    [ data>> [ + ] each ] keep
+    drop
+    neg 255 bitand
+;
 
+! Get Checksum and see if it matches
+: ihex-checksum? ( ihex -- ? )
+    [ ihex-checksum ] keep
+    checksum>> = ;
+
+! read in the hex line make an array ihex tuples
 : ihex-read ( path -- vector )
     V{ } clone swap
     utf8 file-lines
@@ -38,8 +54,11 @@ TUPLE: ihex len offset type data extend checksum ;
                 [ ihex-data ] dip swap >>data
             ] when
         ] when
-        break
-        [ ihex? ] keep swap
-        [ suffix ] when
+        [ ihex? ] keep swap   ! make sure have the correct tupple
+        [
+            dup ihex-checksum? not >>error
+            suffix
+        ]
+        [ drop ] if
     ] each
     ;
