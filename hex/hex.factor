@@ -36,8 +36,24 @@ TUPLE: ihex error len offset type data extend checksum ;
     [ ihex-checksum ] keep
     checksum>> = ;
 
+! find the address max
+: ihex-max ( ihexv -- max )
+    0 swap
+    [
+        [ ihex? ] keep swap   ! make sure have the correct tupple
+        [
+            [ len>> ] keep [ offset>> + [ < ] keep ] keep rot
+            [ drop ] [ drop ] if
+        ] [ drop ] if
+    ] each
+    ;
+
+! Now turn the array ihex tuples into a binary array
+: ihex-binary ( ihexv -- barray )
+    ;
+
 ! read in the hex line make an array ihex tuples
-: ihex-read ( path -- vector )
+: ihex-read ( path -- ihexv )
     V{ } clone swap
     utf8 file-lines
     [
