@@ -2,8 +2,9 @@
 ! See http://factorcode.org/license.txt for BSD license.
 !
 
-USING: accessors grouping io.encodings.utf8 io.files kernel math math.parser
-       sequences tools.continuations ;
+USING: accessors combinators grouping io.encodings.utf8
+       io.files kernel math math.order math.parser sequences
+       tools.continuations ;
 
 IN: intel.hex
 
@@ -36,14 +37,24 @@ TUPLE: ihex error len offset type data extend checksum ;
     [ ihex-checksum ] keep
     checksum>> = ;
 
+! get end address
+: ihex-endaddress ( ihex -- address )
+    [ len>> ] keep [ offset>> + ] keep drop
+    ;
+
 ! find the address max
 : ihex-max ( ihexv -- max )
     0 swap
     [
         [ ihex? ] keep swap   ! make sure have the correct tupple
         [
-            [ len>> ] keep [ offset>> + [ < ] keep ] keep rot
-            [ drop ] [ drop ] if
+            [ type>> ] keep swap
+            {
+                { 0 [ ihex-endaddress max ] }
+                { 1 [ break drop ] }
+                { 2 [ drop ] }
+                { 3 [ drop ] }
+            } case
         ] [ drop ] if
     ] each
     ;
