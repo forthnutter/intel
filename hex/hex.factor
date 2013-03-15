@@ -61,6 +61,8 @@ TUPLE: ihex error len offset type data extend checksum ;
 
 ! Now turn the array ihex tuples into a binary array
 : ihex-binary ( ihexv -- barray )
+    dup ihex-max ! find max memory
+    <byte-array>
     ;
 
 ! read in the hex line make an array ihex tuples
@@ -88,4 +90,10 @@ TUPLE: ihex error len offset type data extend checksum ;
         ]
         [ drop ] if
     ] each
+    ;
+
+! Read hex file and return byte array
+: ihex-read-array ( path -- array )
+    ihex-read  ! build structures
+    ihex-binary ! map byte array
     ;
