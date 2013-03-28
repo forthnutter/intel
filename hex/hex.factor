@@ -2,7 +2,7 @@
 ! See http://factorcode.org/license.txt for BSD license.
 !
 
-USING: accessors combinators grouping io.encodings.utf8
+USING: accessors byte-arrays combinators grouping io.encodings.utf8
        io.files kernel math math.order math.parser sequences
        tools.continuations ;
 
@@ -63,6 +63,11 @@ TUPLE: ihex error len offset type data extend checksum ;
 : ihex-binary ( ihexv -- barray )
     dup ihex-max ! find max memory
     <byte-array>
+    swap
+    [
+        dup ihex?
+        [ break drop ]when
+    ] each
     ;
 
 ! read in the hex line make an array ihex tuples
