@@ -66,7 +66,7 @@ TUPLE: ihex error len offset type data extend checksum ;
     swap
     [
         dup ihex?
-        [ break drop ]when
+        [ break drop ] when
     ] each
     ;
 
