@@ -11,7 +11,7 @@ IN: intel.hex
 CONSTANT: IHEX_MAX_DATA_LEN 512
 
 TUPLE: ihex error len offset type data extend checksum ;
-
+TUPLE: hex start vector array ;
 
 : <ihex> ( -- ihex )
     ihex new ;
@@ -50,14 +50,19 @@ TUPLE: ihex error len offset type data extend checksum ;
         [
             [ type>> ] keep swap
             {
-                { 0 [ ihex-endaddress max ] }
-                { 1 [ break drop ] }
+                { 0 [ ihex-endaddress max ] } ! cal end address
                 { 2 [ drop ] }
                 { 3 [ drop ] }
+                { 4 [ drop ] }
+                { 5 [ drop ] }
+                [ drop ]
             } case
         ] [ drop ] if
     ] each
     ;
+
+! copy array to array
+
 
 ! Now turn the array ihex tuples into a binary array
 : ihex-binary ( ihexv -- barray )
@@ -65,8 +70,18 @@ TUPLE: ihex error len offset type data extend checksum ;
     <byte-array>
     swap
     [
-        dup ihex?
-        [ break drop ] when
+        [ ihex? ] keep swap
+        [
+            [ type>> ] keep swap
+            {
+                { 0 [ [ data>> ] keep offset>> rot [ copy ] keep ] }
+                { 1 [ break drop ] }
+                { 2 [ break drop ] }
+                { 3 [ break drop ] }
+                { 4 [ break drop ] }
+                { 5 [ break drop ] }
+            } case
+        ] [ drop ] if
     ] each
     ;
 
