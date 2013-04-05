@@ -10,11 +10,11 @@ IN: intel.hex
 
 CONSTANT: IHEX_MAX_DATA_LEN 512
 
-TUPLE: ihex error len offset type data extend checksum ;
-TUPLE: hex start vector array ;
+TUPLE: ihex-line error len offset type data extend checksum ;
 
-: <ihex> ( -- ihex )
-    ihex new ;
+! make a place to store data
+: <ihex-line> ( -- ihex-line )
+    ihex-line new ;
 
 : ihex-data ( str -- array )
     2 group
@@ -22,7 +22,7 @@ TUPLE: hex start vector array ;
     ;
 
 ! Calculate the checksum in the ihex tuple
-: ihex-checksum ( ihex -- b )
+: ihex-line-checksum ( ihex -- b )
     [ len>> ] keep
     [ type>> + ] keep
     [ offset>> 255 bitand + ] keep
@@ -32,70 +32,84 @@ TUPLE: hex start vector array ;
     neg 255 bitand
 ;
 
+
+
 ! Get Checksum and see if it matches
-: ihex-checksum? ( ihex -- ? )
-    [ ihex-checksum ] keep
+: ihex-line-checksum? ( ihex -- ? )
+    [ ihex-line-checksum ] keep
     checksum>> = ;
 
+
 ! get end address
-: ihex-endaddress ( ihex -- address )
+: ihex-line-endaddress ( ihex -- address )
     [ len>> ] keep [ offset>> + ] keep drop
     ;
 
+
 ! find the address max
-: ihex-max ( ihexv -- max )
+: ihex-line-max ( vector -- max )
     0 swap
     [
-        [ ihex? ] keep swap   ! make sure have the correct tupple
+        [ ihex-line? ] keep swap   ! make sure have the correct tupple
         [
             [ type>> ] keep swap
             {
-                { 0 [ ihex-endaddress max ] } ! cal end address
+                { 0 [ ihex-line-endaddress max ] } ! cal end address
                 { 2 [ drop ] }
                 { 3 [ drop ] }
                 { 4 [ drop ] }
                 { 5 [ drop ] }
-                [ drop ]
+                [ drop drop ]
             } case
         ] [ drop ] if
     ] each
     ;
 
-! copy array to array
 
+
+
+
+
+
+
+TUPLE: ihex start path vector array ;
 
 ! Now turn the array ihex tuples into a binary array
-: ihex-binary ( ihexv -- barray )
-    dup ihex-max ! find max memory
-    <byte-array>
-    swap
-    [
-        [ ihex? ] keep swap
-        [
-            [ type>> ] keep swap
-            {
-                { 0 [ [ data>> ] keep offset>> rot [ copy ] keep ] }
-                { 1 [ break drop ] }
-                { 2 [ break drop ] }
-                { 3 [ break drop ] }
-                { 4 [ break drop ] }
-                { 5 [ break drop ] }
-            } case
-        ] [ drop ] if
-    ] each
+: ihex-array ( ihex -- ihex )
+    [ vector>> ihex-line-max ] keep swap ! find max memory
+    <byte-array> >>array [ array>> ] keep
+    [ vector>>
+      [
+          [ ihex-line? ] keep swap
+          [
+              [ type>> ] keep swap
+              {
+                  { 0 [ [ data>> ] keep offset>> rot [ copy ] keep ] }
+                  { 1 [ break drop ] }
+                  { 2 [ break drop ] }
+                  { 3 [ break drop ] }
+                  { 4 [ break drop ] }
+                  { 5 [ break drop ] }
+              } case
+          ] [ drop ] if
+      ] each
+      drop
+    ] keep
     ;
 
-! read in the hex line make an array ihex tuples
-: ihex-read ( path -- ihexv )
-    V{ } clone swap
-    utf8 file-lines
+
+
+! hex line make an array ihex tuples
+: ihex-read ( ihex -- ihex )
+    V{ } clone >>vector
+    [ path>> utf8 file-lines ] keep swap
     [
         dup length 0 >
         [
             [ CHAR: : = ] trim-head
             dup length 0 >
             [
-                <ihex> ! create one tuple
+                <ihex-line> ! create one tuple
                 [ 2 cut swap hex> ] dip swap >>len
                 [ 4 cut swap hex> ] dip swap >>offset
                 [ 2 cut swap hex> ] dip swap >>type
@@ -103,17 +117,21 @@ TUPLE: hex start vector array ;
                 [ ihex-data ] dip swap >>data
             ] when
         ] when
-        [ ihex? ] keep swap   ! make sure have the correct tupple
+        [ ihex-line? ] keep swap   ! make sure have the correct tupple
         [
-            dup ihex-checksum? not >>error
-            suffix
+            dup ihex-line-checksum? not >>error swap
+            [ vector>> ] keep swap rot suffix >>vector
         ]
         [ drop ] if
     ] each
     ;
 
-! Read hex file and return byte array
-: ihex-read-array ( path -- array )
-    ihex-read  ! build structures
-    ihex-binary ! map byte array
+
+! make structure to store the lines of data
+: <ihex> ( path -- ihex )
+    ihex new swap >>path 0 >>start
+    ihex-read ihex-array
     ;
+
+
+
