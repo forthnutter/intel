@@ -22,6 +22,15 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   0 >>sp
 ;
 
+
+! increment the pc of cpu
+: inc-pc ( cpu -- )
+  dup pc>> 1 + swap pc<< ;
+
+! read the rom addressed by pc
+: read-pc ( cpu -- dd )
+  dup pc>> swap rom>> ?nth ;
+
 : (load-rom) ( n ram -- )
   read1
   [ ! n ram ch
@@ -54,9 +63,12 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   instructions set-nth ;
 
 
-
+! NOP Instruction
 : (opcode_00) ( cpu -- )
-  drop ;
+  inc-pc ;
 
+! AJMP
+! Absolute Jump
 : (opcode_01) ( cpu -- )
-  drop ;
+  [ read-pc 0xe0 bitand 3 shift ] keep ! the instruction has part of address
+  [ inc-pc ] keep [ read-pc ] keep rot bitor swap pc<< ;
