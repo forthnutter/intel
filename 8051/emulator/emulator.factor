@@ -3,7 +3,9 @@
 !
 
 USING: accessors arrays io io.encodings.binary io.files
-       kernel lexer math namespaces sequences tools.continuations ;
+       intel.hex
+       kernel lexer math math.bitwise namespaces sequences
+       tools.continuations ;
 
 
 IN: intel.8051.emulator
@@ -30,6 +32,10 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 ! read the rom addressed by pc
 : read-pc ( cpu -- dd )
   dup pc>> swap rom>> ?nth ;
+
+! read 16 bit data from ROM
+: read-16 ( address cpu -- dddd )
+  [ rom>> ?nth 8 shift ] 2keep swap 1 + swap rom>> ?nth bitor 16 bits ;
 
 : (load-rom) ( n ram -- )
   read1
@@ -64,11 +70,28 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 
 
 ! NOP Instruction
-: (opcode_00) ( cpu -- )
+: (opcode-00) ( cpu -- )
   inc-pc ;
 
 ! AJMP
 ! Absolute Jump
-: (opcode_01) ( cpu -- )
+: (opcode-01) ( cpu -- )
   [ read-pc 0xe0 bitand 3 shift ] keep ! the instruction has part of address
-  [ inc-pc ] keep [ read-pc ] keep rot bitor swap pc<< ;
+  [ inc-pc ] keep [ read-pc ] keep -rot bitor swap pc<< ;
+
+! LJMP
+! Long Jump
+: (opcode-02) ( cpu -- )
+  [ inc-pc ] keep
+  [ pc>> ] keep
+  [ read-16 ] keep pc<< ;
+
+! RR A
+! Rotate Accumulator Right
+: (opcode-03) ( cpu -- )
+  [ a>> -1 8 bitroll ] keep swap >>a inc-pc ;
+  
+! INC A
+! Increment Accumulator
+: (opcode-04) ( cpu -- )
+  [ a>> 1 + 8 bits ] keep swap >>a inc-pc ;
