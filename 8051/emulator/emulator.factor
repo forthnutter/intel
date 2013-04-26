@@ -30,12 +30,20 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   dup pc>> 1 + swap pc<< ;
 
 ! read the rom addressed by pc
-: read-pc ( cpu -- dd )
+: readrom-pc ( cpu -- dd )
   dup pc>> swap rom>> ?nth ;
 
 ! read 16 bit data from ROM
-: read-16 ( address cpu -- dddd )
+: readrom-16 ( address cpu -- dddd )
   [ rom>> ?nth 8 shift ] 2keep swap 1 + swap rom>> ?nth bitor 16 bits ;
+
+! read 8 bit from RAM
+: readram-8 ( address cpu -- dd )
+  ram>> ?nth 8 bits ;
+
+: writeram-8 ( dd address cpu -- )
+  ram>> ?set-nth ;
+
 
 : (load-rom) ( n ram -- )
   read1
@@ -76,15 +84,15 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 ! AJMP
 ! Absolute Jump
 : (opcode-01) ( cpu -- )
-  [ read-pc 0xe0 bitand 3 shift ] keep ! the instruction has part of address
-  [ inc-pc ] keep [ read-pc ] keep -rot bitor swap pc<< ;
+  [ readrom-pc 0xe0 bitand 3 shift ] keep ! the instruction has part of address
+  [ inc-pc ] keep [ readrom-pc ] keep -rot bitor swap pc<< ;
 
 ! LJMP
 ! Long Jump
 : (opcode-02) ( cpu -- )
   [ inc-pc ] keep
   [ pc>> ] keep
-  [ read-16 ] keep pc<< ;
+  [ readrom-16 ] keep pc<< ;
 
 ! RR A
 ! Rotate Accumulator Right
@@ -95,3 +103,14 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 ! Increment Accumulator
 : (opcode-04) ( cpu -- )
   [ a>> 1 + 8 bits ] keep swap >>a inc-pc ;
+
+! INC (DIR)
+! Increment Data RAM or SFR
+: (opcode-05) ( cpu -- )
+  [ dup inc-pc readrom-pc ] keep
+  [ readram-8 ] keep
+  swap 1 + swap [ readrom-pc ] keep 
+  [ writeram-8 ] keep inc-pc ;
+
+
+  
