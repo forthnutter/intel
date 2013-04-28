@@ -12,7 +12,7 @@ IN: intel.8051.emulator
 
 
 
-TUPLE: cpu a b psw dptr sp pc rom ram ;
+TUPLE: cpu a b r0 psw dptr sp pc rom ram ;
 
 : <cpu> ( -- cpu )
   cpu new
@@ -112,5 +112,9 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   swap 1 + swap [ readrom-pc ] keep 
   [ writeram-8 ] keep inc-pc ;
 
-
-  
+! INC @R0
+! Increment 8-bit internal data RAM location (0-255) addressed
+! indirectly through register R0.
+: (opcode-06) ( cpu -- )
+  [ r0-get ] keep swap 1 + swap [ r0-set ] keep 
+  ;
