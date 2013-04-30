@@ -4,7 +4,8 @@
 
 USING: accessors arrays io io.encodings.binary io.files
        intel.hex
-       kernel lexer math math.bitwise namespaces sequences
+       kernel lexer intel.8051.emulator.psw intel.8051.emulator.registers
+       math math.bitwise namespaces sequences
        tools.continuations ;
 
 
@@ -19,7 +20,7 @@ TUPLE: cpu a b r0 psw dptr sp pc rom ram ;
   0 >>pc
   0 >>a
   0 >>b
-  0 >>psw
+  0 <psw> >>psw
   0 >>dptr
   0 >>sp
 ;
@@ -116,5 +117,6 @@ TUPLE: cpu a b r0 psw dptr sp pc rom ram ;
 ! Increment 8-bit internal data RAM location (0-255) addressed
 ! indirectly through register R0.
 : (opcode-06) ( cpu -- )
-  [ r0-get ] keep swap 1 + swap [ r0-set ] keep 
+  drop
+  !  [ r0-get ] keep swap 1 + swap [ r0-set ] keep 
   ;
