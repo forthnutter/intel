@@ -19,5 +19,6 @@ IN: intel.8051.emulator.registers
     [
         break
         <register>
+        swap drop
     ] with map
     ;
