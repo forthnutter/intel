@@ -15,3 +15,15 @@ TUPLE: psw < model ;
 ! Create a PSW
 : <psw> ( value -- psw )
     psw new-model ;
+
+
+: psw-cy-set ( psw -- )
+    dup psw?
+    [
+       [ value>> 0b10000000 bitor ] keep set-model
+    ]
+    [ drop ] if ;
+
+
+: psw-cy-clr ( psw -- )
+    d
