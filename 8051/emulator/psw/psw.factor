@@ -8,6 +8,8 @@ USING: accessors arrays io io.encodings.binary io.files
    
 IN: intel.8051.emulator.psw
 
+! 7   6   5   4   3   2   1   0
+! CY  AC  F0 RS1 RS0  OV  F1  P
 
 TUPLE: psw < model ;
 
@@ -20,7 +22,7 @@ TUPLE: psw < model ;
 : psw-cy-set ( psw -- )
     dup psw?
     [
-       [ value>> 0b10000000 bitor ] keep set-model
+       [ value>> 7 set-bit ] keep set-model
     ]
     [ drop ] if ;
 
@@ -28,21 +30,21 @@ TUPLE: psw < model ;
 : psw-cy-clr ( psw -- )
     dup psw?
     [
-        [ value>> 0b10000000 bitnot bitand ] keep set-model
+        [ value>> 7 clear-bit ] keep set-model
     ]
     [ drop ] if ;
 
 : psw-ac-set ( psw -- )
     dup psw?
     [
-        [ value>> 0b01000000 bitor ] keep set-model
+        [ value>> 6 set-bit ] keep set-model
     ]
     [ drop ] if ;
 
 : psw-ac-clr ( psw -- )
     dup psw?
     [
-        [ value>> 0b01000000 bitnot bitand ] keep set-model
+        [ value>> 6 clear-bit ] keep set-model
     ]
     [ drop ] if ;
 
@@ -50,71 +52,73 @@ TUPLE: psw < model ;
 : psw-f0-set ( psw -- )
     dup psw?
     [
-        [ value>> 0b00100000 bitor ] keep set-model
+        [ value>> 5 set-bit ] keep set-model
     ]
     [ drop ] if ;
 
 : psw-f0-clr ( psw -- )
     dup psw?
     [
-        [ value>> 0b00100000 bitnot bitand ] keep set-model
+        [ value>> 5 clear-bit ] keep set-model
     ]
     [ drop ] if ;
 
-: psw-r1-set ( psw -- )
+: psw-br0-set ( psw -- )
     dup psw?
     [
-        [ value>> 0b00100000 bitor ] keep set-model
+        [ value>> 3 set-bit ] keep set-model
     ]
     [ drop ] if ;
 
-: psw-r1-clr ( psw -- )
+: psw-br0-clr ( psw -- )
     dup psw?
     [
-        [ value>> 0b00100000 bitnot bitand ] keep set-model
+        [ value>> 3 clear-bit ] keep set-model
     ]
     [ drop ] if ;
 
-: psw-r0-set ( psw -- )
+: psw-br1-set ( psw -- )
     dup psw?
     [
-        [ value>> 0b00010000 bitor ] keep set-model
+        [ value>> 4 set-bit ] keep set-model
     ]
     [ drop ] if ;
 
-: psw-r0-clr ( psw -- )
+: psw-br1-clr ( psw -- )
     dup psw?
     [
-        [ value>> 0b00010000 bitnot bitand ] keep set-model
+        [ value>> 4 clear-bit ] keep set-model
     ]
     [ drop ] if ;
 
-: psw-bank0 ( psw -- )
+: psw-bank0-set ( psw -- )
     dup psw?
     [
-        [ value>> 0b00110000 bitnot bitand ] keep set-model
+        [ value>> 4 clear-bit 3 clear-bit ] keep set-model
     ]
     [ drop ] if ;
 
-: psw-bank1 ( psw -- )
+: psw-bank1-set ( psw -- )
     dup psw?
     [
-        [ value>> 0b00010000 bitor 0b00100000 bitnot bitand ] keep set-model
+        [ value>> 4 clear-bit 3 set-bit ] keep set-model
     ]
     [ drop ] if ;
 
-: psw-bank2 ( psw -- )
+: psw-bank2-set ( psw -- )
     dup psw?
     [
-        [ value>> 0b00100000 bitor 0b00010000 bitnot bitand ] keep set-model
+        [ value>> 4 set-bit 3 clear-bit ] keep set-model
     ]
     [ drop ] if ;
 
-: psw-bank3 ( psw -- )
+: psw-bank3-set ( psw -- )
     dup psw?
     [
-        [ vale>> 0b00110000 bitor ] keep set-model
+        [ value>> 4 set-bit 3 set-bit ] keep set-model
     ]
     [ drop ] if ;
+
+
 
 
