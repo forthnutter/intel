@@ -120,3 +120,11 @@ TUPLE: cpu a b r0 psw dptr sp pc rom ram ;
   drop
   !  [ r0-get ] keep swap 1 + swap [ r0-set ] keep 
   ;
+
+
+
+
+break
+! test routine
+"work/intel/hex/ezshot.hex"
+<ihex> array>> <cpu> swap >>rom
