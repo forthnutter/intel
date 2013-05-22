@@ -123,8 +123,7 @@ TUPLE: cpu a b r0 psw dptr sp pc rom ram ;
 
 
 
-
-break
-! test routine
-"work/intel/hex/ezshot.hex"
-<ihex> array>> <cpu> swap >>rom
+: emu-test ( -- c )
+  break
+  "work/intel/hex/ezshot.hex"
+<ihex> array>> <cpu> swap >>rom ;
