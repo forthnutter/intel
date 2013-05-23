@@ -5,6 +5,7 @@
 USING: accessors arrays io io.encodings.binary io.files
        intel.hex
        kernel lexer intel.8051.emulator.psw intel.8051.emulator.registers
+       intel.8051.emulator.memory
        math math.bitwise namespaces sequences
        tools.continuations ;
 
@@ -23,6 +24,7 @@ TUPLE: cpu a b r0 psw dptr sp pc rom ram ;
   0 <psw> >>psw
   0 >>dptr
   0 >>sp
+  <ram> >>ram
 ;
 
 
