@@ -14,7 +14,7 @@ IN: intel.8051.emulator
 
 
 
-TUPLE: cpu a b r0 psw dptr sp pc rom ram ;
+TUPLE: cpu a b reg psw dptr sp pc rom ram ;
 
 : <cpu> ( -- cpu )
   cpu new
@@ -25,7 +25,16 @@ TUPLE: cpu a b r0 psw dptr sp pc rom ram ;
   0 >>dptr
   0 >>sp
   <ram> >>ram
+  <reg> >>reg
 ;
+
+: RO> ( cpu -- n )
+  dup cpu?
+  [
+    
+
+  ]
+  [ ] if ;
 
 
 ! increment the pc of cpu
@@ -127,5 +136,5 @@ TUPLE: cpu a b r0 psw dptr sp pc rom ram ;
 
 : emu-test ( -- c )
   break
-  "work/intel/hex/ezshot.hex"
+  "work/intel/hex/EZSHOT.HEX"
 <ihex> array>> <cpu> swap >>rom ;
