@@ -14,6 +14,8 @@ IN: intel.8051.emulator.registers
 
 
 
+
+
 : registers-init ( -- )
     0 8 0 <array>
     [
