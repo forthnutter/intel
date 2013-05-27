@@ -2,7 +2,7 @@
 ! See http://factorcode.org/license.txt for BSD license.
 !
 
-USING: accessors arrays kernel models sequences tools.continuations ;
+USING: accessors arrays kernel math models sequences tools.continuations ;
 
 IN: intel.8051.emulator.memory
 
@@ -17,13 +17,21 @@ TUPLE: ram array ;
 
 : <ram> ( -- ram )
     ram new
-    128 0 <array> >>array
-    dup array>>
+    128 0 <array> [ <cell> ] map
+    >>array ;
+
+
+: ram-read ( address ram -- n )
+    array>> ?nth
     [
-        break
-        swap [ array>> ] keep
-        0 <cell> 
-    ] each
-        
+        dup cell?
+        [
+            value>>
+        ]
+        [ drop ] if
+    ] when ;
+
+: ram-write ( n address ram -- )
     ;
 
+        
