@@ -25,13 +25,13 @@ TUPLE: cpu a b reg psw dptr sp pc rom ram ;
   0 >>dptr
   0 >>sp
   <ram> >>ram
-  <reg> >>reg
+!  <reg> >>reg
 ;
 
-: RO> ( cpu -- n )
+: R0> ( cpu -- n )
   dup cpu?
   [
-    
+    dup psw>> psw-bank-read 8 * swap
 
   ]
   [ ] if ;
