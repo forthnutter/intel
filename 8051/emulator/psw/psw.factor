@@ -120,5 +120,12 @@ TUPLE: psw < model ;
     [ drop ] if ;
 
 
+: psw-bank-read ( psw -- n )
+    dup psw?
+    [
+        value>> 4 2 bit-range
+    ]
+    [ drop 0 ] if ;
+
 
 
