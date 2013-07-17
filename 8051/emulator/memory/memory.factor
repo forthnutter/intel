@@ -22,7 +22,7 @@ TUPLE: ram array ;
 
 
 : ram-read ( address ram -- n )
-    array>> ?nth
+    array>> ?nth dup
     [
         dup cell?
         [
