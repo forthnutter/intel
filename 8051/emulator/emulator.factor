@@ -4,7 +4,7 @@
 
 USING: accessors arrays io io.encodings.binary io.files
        intel.hex
-       kernel lexer intel.8051.emulator.psw intel.8051.emulator.registers
+       kernel lexer intel.8051.emulator.psw intel.8051.emulator.register
        intel.8051.emulator.memory
        math math.bitwise namespaces sequences
        tools.continuations ;
@@ -14,13 +14,21 @@ IN: intel.8051.emulator
 
 
 
-TUPLE: cpu a b reg psw dptr sp pc rom ram ;
+TUPLE: cpu a b r0 r1 r2 r3 r4 r5 r6 r7 psw dptr sp pc rom ram ;
 
 : <cpu> ( -- cpu )
   cpu new
   0 >>pc
   0 >>a
   0 >>b
+  0 <register> >>r0
+  0 <register> >>r1
+  0 <register> >>r2
+  0 <register> >>r3
+  0 <register> >>r4
+  0 <register> >>r5
+  0 <register> >>r6
+  0 <register> >>r7
   0 <psw> >>psw
   0 >>dptr
   0 >>sp
@@ -46,14 +54,14 @@ TUPLE: cpu a b reg psw dptr sp pc rom ram ;
   dup pc>> swap rom>> ?nth ;
 
 ! read 16 bit data from ROM
-: readrom-16 ( address cpu -- dddd )
+: readromword ( address cpu -- dddd )
   [ rom>> ?nth 8 shift ] 2keep swap 1 + swap rom>> ?nth bitor 16 bits ;
 
 ! read 8 bit from RAM
-: readram-8 ( address cpu -- dd )
-  ram>> ?nth 8 bits ;
+: readrambyte ( address cpu -- dd )
+  ram>> ram-read ;
 
-: writeram-8 ( dd address cpu -- )
+: writerambyte ( dd address cpu -- )
   ram>> ?set-nth ;
 
 
@@ -104,7 +112,7 @@ TUPLE: cpu a b reg psw dptr sp pc rom ram ;
 : (opcode-02) ( cpu -- )
   [ inc-pc ] keep
   [ pc>> ] keep
-  [ readrom-16 ] keep pc<< ;
+  [ readromword ] keep pc<< ;
 
 ! RR A
 ! Rotate Accumulator Right
@@ -120,16 +128,16 @@ TUPLE: cpu a b reg psw dptr sp pc rom ram ;
 ! Increment Data RAM or SFR
 : (opcode-05) ( cpu -- )
   [ dup inc-pc readrom-pc ] keep
-  [ readram-8 ] keep
+  [ readrambyte ] keep
   swap 1 + swap [ readrom-pc ] keep 
-  [ writeram-8 ] keep inc-pc ;
+  [ writerambyte ] keep inc-pc ;
 
 ! INC @R0
 ! Increment 8-bit internal data RAM location (0-255) addressed
 ! indirectly through register R0.
 : (opcode-06) ( cpu -- )
-  drop
-  !  [ r0-get ] keep swap 1 + swap [ r0-set ] keep 
+  break
+  [ r0>> ] keep swap value>> swap [ readrambyte 1 + ] keep 
   ;
 
 
