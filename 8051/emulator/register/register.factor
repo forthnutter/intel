@@ -22,3 +22,6 @@ TUPLE: register < model ;
     ;
 
 
+! register write
+: reg-write ( value register -- )
+    set-model ;
