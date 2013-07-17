@@ -137,7 +137,7 @@ TUPLE: cpu a b r0 r1 r2 r3 r4 r5 r6 r7 psw dptr sp pc rom ram ;
 ! indirectly through register R0.
 : (opcode-06) ( cpu -- )
   break
-  [ r0>> ] keep swap value>> swap [ readrambyte 1 + ] keep 
+  [ r0>> value>> ] keep [ readrambyte 1 + ] keep [ r0>> reg-write ] dip
   ;
 
 
