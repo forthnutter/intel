@@ -36,14 +36,6 @@ TUPLE: cpu a b r0 r1 r2 r3 r4 r5 r6 r7 psw dptr sp pc rom ram ;
 !  <reg> >>reg
 ;
 
-: R0> ( cpu -- n )
-  dup cpu?
-  [
-    dup psw>> psw-bank-read 8 * swap
-
-  ]
-  [ ] if ;
-
 
 ! increment the pc of cpu
 : inc-pc ( cpu -- )
@@ -58,10 +50,10 @@ TUPLE: cpu a b r0 r1 r2 r3 r4 r5 r6 r7 psw dptr sp pc rom ram ;
   [ rom>> ?nth 8 shift ] 2keep swap 1 + swap rom>> ?nth bitor 16 bits ;
 
 ! read 8 bit from RAM
-: readrambyte ( address cpu -- dd )
+: ram-readbyte ( address cpu -- dd )
   ram>> ram-read ;
 
-: writerambyte ( dd address cpu -- )
+: ram-writebyte ( dd address cpu -- )
   ram>> ?set-nth ;
 
 
@@ -128,19 +120,26 @@ TUPLE: cpu a b r0 r1 r2 r3 r4 r5 r6 r7 psw dptr sp pc rom ram ;
 ! Increment Data RAM or SFR
 : (opcode-05) ( cpu -- )
   [ dup inc-pc readrom-pc ] keep
-  [ readrambyte ] keep
+  [ ram-readbyte ] keep
   swap 1 + swap [ readrom-pc ] keep 
-  [ writerambyte ] keep inc-pc ;
+  [ ram-writebyte ] keep inc-pc ;
 
 ! INC @R0
 ! Increment 8-bit internal data RAM location (0-255) addressed
 ! indirectly through register R0.
 : (opcode-06) ( cpu -- )
-  break
-  [ r0>> value>> ] keep [ readrambyte 1 + ] keep [ r0>> reg-write ] 
+  [ r0>> value>> ] keep
+  [ ram-readbyte 1 + ] keep
+  [ r0>> value>> ] keep
+  ram-writebyte
   ;
 
-
+! INC @R1
+! Increment 8-bit internal RAM location (0 - 255) addressed
+! indirectly through Register R1
+: (opcode-07) ( cpu -- )
+  [ r1>> value>> ] keep [ ram-readbyte 1 + ] keep [ r1>> reg-write ] call
+  ;
 
 : emu-test ( -- c )
   break
