@@ -22,14 +22,10 @@ TUPLE: ram array ;
 
 
 : ram-read ( address ram -- n )
-    array>> ?nth dup
-    [
-        dup cell?
-        [
-            value>>
-        ]
-        [ drop ] if
-    ] when ;
+    array>> ?nth dup not
+    [ dup cell? [ value>> ] [ drop ] if ]
+    [ drop ]
+    if ;
 
 : ram-write ( n address ram -- )
     ;
