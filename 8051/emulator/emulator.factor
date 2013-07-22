@@ -54,7 +54,7 @@ TUPLE: cpu a b r0 r1 r2 r3 r4 r5 r6 r7 psw dptr sp pc rom ram ;
   ram>> ram-read ;
 
 : ram-writebyte ( dd address cpu -- )
-  ram>> ?set-nth ;
+  ram>> ram-write ;
 
 
 : (load-rom) ( n ram -- )
@@ -128,10 +128,10 @@ TUPLE: cpu a b r0 r1 r2 r3 r4 r5 r6 r7 psw dptr sp pc rom ram ;
 ! Increment 8-bit internal data RAM location (0-255) addressed
 ! indirectly through register R0.
 : (opcode-06) ( cpu -- )
-  [ r0>> value>> ] keep
-  [ ram-readbyte 1 + ] keep
-  [ r0>> value>> ] keep
-  ram-writebyte
+  [ r0>> value>> ] keep ! get r0 value this is the adderss
+  [ ram-readbyte 1 + ] keep  ! get data from ram add 1 to data
+  [ r0>> value>> ] keep      ! get the r0 address value
+  ram-writebyte              ! data is now save back into ram
   ;
 
 ! INC @R1
