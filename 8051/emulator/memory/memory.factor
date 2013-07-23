@@ -29,8 +29,8 @@ TUPLE: ram array ;
 
 : ram-write ( n address ram -- )
     array>> ?nth dup
-    [ dup cell? [ set-model ] [ drop ] if ]
-    [ drop ] if
+    [ dup cell? [ set-model ] [ drop drop ] if ]
+    [ drop drop ] if
     ;
 
         
