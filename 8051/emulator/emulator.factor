@@ -36,6 +36,10 @@ TUPLE: cpu a b r0 r1 r2 r3 r4 r5 r6 r7 psw dptr sp pc rom ram ;
 !  <reg> >>reg
 ;
 
+: >R0 ( b cpu -- )
+  [ psw>> psw-bank-read ] keep ! get the bank value
+  8 *                          ! 8 registers by bank number
+  ;
 
 ! increment the pc of cpu
 : inc-pc ( cpu -- )
@@ -138,7 +142,8 @@ TUPLE: cpu a b r0 r1 r2 r3 r4 r5 r6 r7 psw dptr sp pc rom ram ;
 ! Increment 8-bit internal RAM location (0 - 255) addressed
 ! indirectly through Register R1
 : (opcode-07) ( cpu -- )
-  [ r1>> value>> ] keep [ ram-readbyte 1 + ] keep [ r1>> reg-write ] call
+  [ r1>> value>> ] keep [ ram-readbyte 1 + ] keep [ r1>> value>> ] keep
+  ram-writebyte
   ;
 
 : emu-test ( -- c )
