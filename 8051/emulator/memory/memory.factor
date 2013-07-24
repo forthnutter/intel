@@ -13,12 +13,15 @@ TUPLE: cell < model ;
     ;
 
 
-TUPLE: ram array ;
+TUPLE: ram array sfr ;
 
 : <ram> ( -- ram )
     ram new
+    256 0 <array> [ <cell> ] map
+    >>array
     128 0 <array> [ <cell> ] map
-    >>array ;
+    >>sfr ;
+
 
 
 : ram-read ( address ram -- n )
@@ -33,4 +36,7 @@ TUPLE: ram array ;
     [ drop drop ] if
     ;
 
-        
+
+: ram-bitstatus ( ba ram -- ? )
+    swap dup 0x7f >
+    [ 7 3 bit-range ] [ ] if ;
