@@ -146,7 +146,7 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   dup pc>> 1 + swap pc<< ;
 
 ! read the rom addressed by pc
-: readrom-pc ( cpu -- dd )
+: rom-pcread ( cpu -- dd )
   dup pc>> swap rom>> ?nth ;
 
 ! read 16 bit data from ROM
@@ -194,8 +194,8 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 ! AJMP
 ! Absolute Jump
 : (opcode-01) ( cpu -- )
-  [ readrom-pc 0xe0 bitand 3 shift ] keep ! the instruction has part of address
-  [ inc-pc ] keep [ readrom-pc ] keep -rot bitor swap pc<< ;
+  [ rom-pcread 0xe0 bitand 3 shift ] keep ! the instruction has part of address
+  [ inc-pc ] keep [ rom-pcread ] keep -rot bitor swap pc<< ;
 
 ! LJMP
 ! Long Jump
@@ -217,9 +217,9 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 ! INC (DIR)
 ! Increment Data RAM or SFR
 : (opcode-05) ( cpu -- )
-  [ dup inc-pc readrom-pc ] keep
+  [ dup inc-pc rom-pcread ] keep
   [ ram-readbyte ] keep
-  swap 1 + swap [ readrom-pc ] keep 
+  swap 1 + swap [ rom-pcread ] keep 
   [ ram-writebyte ] keep inc-pc ;
 
 ! INC @R0
@@ -243,6 +243,51 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 : (opcode-08) ( cpu -- )
   [ R0> 1 + ] keep [ >R0 ] keep inc-pc ;
 
+! INC R1
+! Increment R1
+: (opcode-09) ( cpu -- )
+  [ R1> 1 + ] keep [ >R1 ] keep inc-pc ;
+
+! INC R2
+! Increment R2
+: (opcode-0A) ( cpu -- )
+  [ R2> 1 + ] keep [ >R2 ] keep inc-pc ;
+
+
+! INC R3
+! Increment R3
+: (opcode-0B) ( cpu -- )
+  [ R3> 1 + ] keep [ >R3 ] keep inc-pc ;
+
+
+! INC R4
+! Increment R4
+: (opcode-0C) ( cpu -- )
+  [ R4> 1 + ] keep [ >R4 ] keep inc-pc ;
+
+! INC R5
+! Increment R5
+: (opcode-0D) ( cpu -- )
+  [ R5> 1 + ] keep [ >R5 ] keep inc-pc ;
+
+
+! INC R6
+! Increment R6
+: (opcode-0E) ( cpu -- )
+  [ R6> 1 + ] keep [ >R6 ] keep inc-pc ;
+
+! INC R7
+! Increment R7
+: (opcode-0F) ( cpu -- )
+  [ R7> 1 + ] keep [ >R7 ] keep inc-pc ;
+
+! JBC bit,rel
+! clear bit and Jump relative if bit is set
+: (opcode-10) ( cpu -- )
+  [ inc-pc ] keep ! pc now point to bit address
+  [ rom-pcread ] keep ! read value
+  [ ram>> ram-bitstatus ] keep  ! bit status should be on stack
+  ;
 
 : emu-test ( -- c )
   break
