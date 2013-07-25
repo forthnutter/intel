@@ -2,7 +2,7 @@
 ! See http://factorcode.org/license.txt for BSD license.
 !
 
-USING: accessors arrays kernel math models sequences tools.continuations ;
+USING: accessors arrays kernel math math.bitwise models sequences tools.continuations ;
 
 IN: intel.8051.emulator.memory
 
@@ -38,5 +38,7 @@ TUPLE: ram array sfr ;
 
 
 : ram-bitstatus ( ba ram -- ? )
-    swap dup 0x7f >
-    [ 7 3 bit-range ] [ ] if ;
+    [ swap dup 0x7f >
+    [ 7 3 bit-range swap ram-read ] [ 7 3 bit-range 0x20 + swap ram-read ] if
+    ] 2keep
+    drop 2 0 bit-range bit? ;
