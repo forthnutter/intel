@@ -154,7 +154,13 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [ rom>> ?nth 8 shift ] 2keep swap 1 + swap rom>> ?nth bitor 16 bits ;
 
 
-
+: relative ( n -- s )
+  dup 0x7f >
+  [
+    
+  ]
+  [ ] if
+  ;
 : (load-rom) ( n ram -- )
   read1
   [ ! n ram ch
@@ -287,6 +293,19 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [ inc-pc ] keep ! pc now point to bit address
   [ rom-pcread ] keep ! read value
   [ ram>> ram-bitstatus ] keep  ! bit status should be on stack
+  swap
+  [
+    break
+    [ rom-pcread ] keep
+    [ ram>> ram-bitclear ] keep
+    [ inc-pc ] keep
+    [ rom-pcread ] keep
+    [ inc-pc ] keep
+    [ pc>> relative ] keep >>pc
+  ]
+  [
+    [ inc-pc ] keep inc-pc
+  ] if
   ;
 
 : emu-test ( -- c )
