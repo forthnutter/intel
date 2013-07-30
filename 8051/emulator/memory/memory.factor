@@ -39,6 +39,12 @@ TUPLE: ram array sfr ;
 
 : ram-bitstatus ( ba ram -- ? )
     [ swap dup 0x7f >
-    [ 7 3 bit-range swap ram-read ] [ 7 3 bit-range 0x20 + swap ram-read ] if
+     [ 7 3 bit-range swap ram-read ] [ 7 3 bit-range 0x20 + swap ram-read ] if
     ] 2keep
     drop 2 0 bit-range bit? ;
+
+: ram-bitclear ( ba ram -- )
+    [ swap dup 0x7f >
+      [ 7 3 bit-range swap ram-read ] [ 7 3 bit-range 0x20 + swap ram-read ] if
+    ] 2keep
+    ;
