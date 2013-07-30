@@ -294,6 +294,10 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [ rom-pcread ] keep ! read value
   [ ram>> ram-bitstatus ] keep  ! bit status should be on stack
   swap
+
+  [
+    [ inc-pc ] keep inc-pc
+  ]
   [
     break
     [ rom-pcread ] keep
@@ -303,9 +307,7 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
     [ inc-pc ] keep
     [ pc>> relative ] keep >>pc
   ]
-  [
-    [ inc-pc ] keep inc-pc
-  ] if
+  if
   ;
 
 : emu-test ( -- c )
