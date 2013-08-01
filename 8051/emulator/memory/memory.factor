@@ -23,7 +23,7 @@ TUPLE: ram array sfr ;
     >>sfr ;
 
 ! return ram cell
-: ram-cell ( ram -- cell/? )
+: ram-cell ( a ram -- cell/? )
     array>> ?nth ;
 
 : ram-read ( address ram -- n )
@@ -54,5 +54,6 @@ TUPLE: ram array sfr ;
     drop 2 0 bit-range bit? ;
 
 : ram-bitclear ( ba ram -- )
-    [ ram-bitcell ] keep
+    [ ram-bitcell ram-cellvalue ] 2keep
+    rot 2 0 bit-range bit-clear
     ;
