@@ -54,6 +54,6 @@ TUPLE: ram array sfr ;
     drop 2 0 bit-range bit? ;
 
 : ram-bitclear ( ba ram -- )
-    [ ram-bitcell ram-cellvalue ] 2keep
-    rot 2 0 bit-range bit-clear
+    2dup ram-bitcell swap drop [ ram-cellvalue ] keep
+    [ swap 2 0 bit-range clear-bit ] dip set-model
     ;
