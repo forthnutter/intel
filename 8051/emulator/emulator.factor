@@ -154,10 +154,10 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [ rom>> ?nth 8 shift ] 2keep swap 1 + swap rom>> ?nth bitor 16 bits ;
 
 
-: relative ( n -- s )
+: relative ( a n -- s )
   dup 0x7f >
   [
-    
+    7 0 bit-range
   ]
   [ ] if
   ;
@@ -294,10 +294,6 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [ rom-pcread ] keep ! read value
   [ ram>> ram-bitstatus ] keep  ! bit status should be on stack
   swap
-
-  [
-    [ inc-pc ] keep inc-pc
-  ]
   [
     break
     [ rom-pcread ] keep
@@ -307,6 +303,10 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
     [ inc-pc ] keep
     [ pc>> relative ] keep >>pc
   ]
+  [
+    [ inc-pc ] keep inc-pc
+  ]
+
   if
   ;
 
