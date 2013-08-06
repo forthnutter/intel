@@ -154,8 +154,8 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [ rom>> ?nth 8 shift ] 2keep swap 1 + swap rom>> ?nth bitor 16 bits ;
 
 
-: relative ( a n -- s )
-  dup 0x7f >
+: relative ( n a -- na )
+  swap dup 0x7f >
   [
     7 0 bit-range
   ]
