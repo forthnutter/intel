@@ -59,5 +59,8 @@ TUPLE: ram array sfr ;
     ;
 
 ! for general testing ram fill
-: ramm-fill ( b ram -- )
+: ram-fill ( b ram -- )
+    array>>
+    swap [ swap set-model ] curry each
+   
     ;
