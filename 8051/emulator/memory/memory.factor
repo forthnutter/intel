@@ -57,3 +57,7 @@ TUPLE: ram array sfr ;
     2dup ram-bitcell swap drop [ ram-cellvalue ] keep
     [ swap 2 0 bit-range clear-bit ] dip set-model
     ;
+
+! for general testing ram fill
+: ramm-fill ( b ram -- )
+    ;
