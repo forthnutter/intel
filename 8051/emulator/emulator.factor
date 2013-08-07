@@ -155,11 +155,8 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 
 
 : relative ( n a -- na )
-  swap dup 0x7f >
-  [
-    7 0 bit-range
-  ]
-  [ ] if
+  swap 8 >signed +
+  15 0 bit-range
   ;
 : (load-rom) ( n ram -- )
   read1
