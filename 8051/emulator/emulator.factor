@@ -142,7 +142,7 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   swap ram-readbyte ;
 
 ! increment the pc of cpu
-: inc-pc ( cpu -- )
+: pc+ ( cpu -- )
   dup pc>> 1 + 16 0 bit-range swap pc<< ;
 
 ! read the rom addressed by pc
@@ -153,10 +153,30 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [ drop 0 ] if
   ;
 
+: sp+ ( cpu -- )
+  [ sp>> 1 + 7 0 bit-range ] keep sp<< ;
+
+! write to ram sp has address
+: sp-write ( n cpu -- )
+  [ sp>> ] keep
+  ram-writebyte
+  ;
+! push a byte onto the stack pointer
+: sp-push ( b cpu -- )
+  [ 7 0 bit-range ] dip ! make sure its a byte
+  [ sp+ ] keep
+  sp-write
+  ;
+
+: sp-pop ( cpu -- b )
+  [ sp>> ] keep
+  ram-readbyte
+  ;
+
 ! save the contents of pc to sp
 : pc->sp ( cpu -- )
-  drop
-  ;
+  [ pc>> 15 8 bit-range ] keep [ pc>> 7 0 bit-range ] keep
+  [ sp-push ] keep sp-push ;
 
 
 ! read 16 bit data from ROM
@@ -204,38 +224,38 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 
 ! NOP Instruction
 : (opcode-00) ( cpu -- )
-  inc-pc ;
+  pc+ ;
 
 ! AJMP
 ! Absolute Jump
 : (opcode-01) ( cpu -- )
   [ rom-pcread 0xe0 bitand 3 shift ] keep ! the instruction has part of address
-  [ inc-pc ] keep [ rom-pcread ] keep -rot bitor swap pc<< ;
+  [ pc+ ] keep [ rom-pcread ] keep -rot bitor swap pc<< ;
 
 ! LJMP
 ! Long Jump
 : (opcode-02) ( cpu -- )
-  [ inc-pc ] keep
+  [ pc+ ] keep
   [ pc>> ] keep
   [ readromword ] keep pc<< ;
 
 ! RR A
 ! Rotate Accumulator Right
 : (opcode-03) ( cpu -- )
-  [ a>> -1 8 bitroll ] keep swap >>a inc-pc ;
+  [ a>> -1 8 bitroll ] keep swap >>a pc+ ;
   
 ! INC A
 ! Increment Accumulator
 : (opcode-04) ( cpu -- )
-  [ a>> 1 + 8 bits ] keep swap >>a inc-pc ;
+  [ a>> 1 + 8 bits ] keep swap >>a pc+ ;
 
 ! INC (DIR)
 ! Increment Data RAM or SFR
 : (opcode-05) ( cpu -- )
-  [ dup inc-pc rom-pcread ] keep
+  [ dup pc+ rom-pcread ] keep
   [ ram-readbyte ] keep
   swap 1 + swap [ rom-pcread ] keep 
-  [ ram-writebyte ] keep inc-pc ;
+  [ ram-writebyte ] keep pc+ ;
 
 ! INC @R0
 ! Increment 8-bit internal data RAM location (0-255) addressed
@@ -244,62 +264,62 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [ R0> ] keep ! get r0 value this is the adderss
   [ ram-readbyte 1 + ] keep  ! get data from ram add 1 to data
   [ R0> ] keep      ! get the r0 address value
-  [ ram-writebyte ] keep inc-pc ;   ! data is now save back into ram
+  [ ram-writebyte ] keep pc+ ;   ! data is now save back into ram
 
 ! INC @R1
 ! Increment 8-bit internal RAM location (0 - 255) addressed
 ! indirectly through Register R1
 : (opcode-07) ( cpu -- )
   [ R1> ] keep [ ram-readbyte 1 + ] keep [ R1> ] keep
-  [ ram-writebyte ] keep inc-pc ;
+  [ ram-writebyte ] keep pc+ ;
 
 ! INC R0
 ! Increment R0
 : (opcode-08) ( cpu -- )
-  [ R0> 1 + ] keep [ >R0 ] keep inc-pc ;
+  [ R0> 1 + ] keep [ >R0 ] keep pc+ ;
 
 ! INC R1
 ! Increment R1
 : (opcode-09) ( cpu -- )
-  [ R1> 1 + ] keep [ >R1 ] keep inc-pc ;
+  [ R1> 1 + ] keep [ >R1 ] keep pc+ ;
 
 ! INC R2
 ! Increment R2
 : (opcode-0A) ( cpu -- )
-  [ R2> 1 + ] keep [ >R2 ] keep inc-pc ;
+  [ R2> 1 + ] keep [ >R2 ] keep pc+ ;
 
 
 ! INC R3
 ! Increment R3
 : (opcode-0B) ( cpu -- )
-  [ R3> 1 + ] keep [ >R3 ] keep inc-pc ;
+  [ R3> 1 + ] keep [ >R3 ] keep pc+ ;
 
 
 ! INC R4
 ! Increment R4
 : (opcode-0C) ( cpu -- )
-  [ R4> 1 + ] keep [ >R4 ] keep inc-pc ;
+  [ R4> 1 + ] keep [ >R4 ] keep pc+ ;
 
 ! INC R5
 ! Increment R5
 : (opcode-0D) ( cpu -- )
-  [ R5> 1 + ] keep [ >R5 ] keep inc-pc ;
+  [ R5> 1 + ] keep [ >R5 ] keep pc+ ;
 
 
 ! INC R6
 ! Increment R6
 : (opcode-0E) ( cpu -- )
-  [ R6> 1 + ] keep [ >R6 ] keep inc-pc ;
+  [ R6> 1 + ] keep [ >R6 ] keep pc+ ;
 
 ! INC R7
 ! Increment R7
 : (opcode-0F) ( cpu -- )
-  [ R7> 1 + ] keep [ >R7 ] keep inc-pc ;
+  [ R7> 1 + ] keep [ >R7 ] keep pc+ ;
 
 ! JBC bit,rel
 ! clear bit and Jump relative if bit is set
 : (opcode-10) ( cpu -- )
-  [ inc-pc ] keep ! pc now point to bit address
+  [ pc+ ] keep ! pc now point to bit address
   [ rom-pcread ] keep ! read value
   [ ram>> ram-bitstatus ] keep  ! bit status should be on stack
   swap
@@ -307,13 +327,13 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
     break
     [ rom-pcread ] keep
     [ ram>> ram-bitclear ] keep
-    [ inc-pc ] keep
+    [ pc+ ] keep
     [ rom-pcread ] keep
-    [ inc-pc ] keep
+    [ pc+ ] keep
     [ pc>> relative ] keep pc<<
   ]
   [
-    [ inc-pc ] keep inc-pc
+    [ pc+ ] keep pc+
   ]
   if
   ;
@@ -325,9 +345,9 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [
     rom-pcread 15 13 bit-range 8 shift
   ] keep ! the instruction part of address
-  [ inc-pc ] keep
+  [ pc+ ] keep
   [ rom-pcread ] keep
-  [ inc-pc ] keep
+  [ pc+ ] keep
   [ pc->sp ] keep
   -rot bitor swap pc<< ;
 
