@@ -143,11 +143,21 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 
 ! increment the pc of cpu
 : inc-pc ( cpu -- )
-  dup pc>> 1 + swap pc<< ;
+  dup pc>> 1 + 16 0 bit-range swap pc<< ;
 
 ! read the rom addressed by pc
 : rom-pcread ( cpu -- dd )
-  dup pc>> swap rom>> ?nth ;
+  dup pc>> swap rom>> ?nth
+  dup
+  [ ]
+  [ drop 0 ] if
+  ;
+
+! save the contents of pc to sp
+: pc->sp ( cpu -- )
+  drop
+  ;
+
 
 ! read 16 bit data from ROM
 : readromword ( address cpu -- dddd )
@@ -158,6 +168,8 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   swap 8 >signed +
   15 0 bit-range
   ;
+
+
 : (load-rom) ( n ram -- )
   read1
   [ ! n ram ch
@@ -298,14 +310,28 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
     [ inc-pc ] keep
     [ rom-pcread ] keep
     [ inc-pc ] keep
-    [ pc>> relative ] keep >>pc
+    [ pc>> relative ] keep pc<<
   ]
   [
     [ inc-pc ] keep inc-pc
   ]
-
   if
   ;
+
+
+! ACALL
+! Absolute Call
+: (opcode-11) ( cpu -- )
+  [
+    rom-pcread 15 13 bit-range 8 shift
+  ] keep ! the instruction part of address
+  [ inc-pc ] keep
+  [ rom-pcread ] keep
+  [ inc-pc ] keep
+  [ pc->sp ] keep
+  -rot bitor swap pc<< ;
+
+
 
 : emu-test ( -- c )
   break
