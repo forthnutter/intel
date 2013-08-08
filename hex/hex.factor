@@ -85,11 +85,11 @@ TUPLE: ihex start path vector array ;
               [ type>> ] keep swap
               {
                   { 0 [ [ data>> ] keep offset>> rot [ copy ] keep ] }
-                  { 1 [ break drop ] }
-                  { 2 [ break drop ] }
-                  { 3 [ break drop ] }
-                  { 4 [ break drop ] }
-                  { 5 [ break drop ] }
+                  { 1 [ drop ] }
+                  { 2 [ drop ] }
+                  { 3 [ drop ] }
+                  { 4 [ drop ] }
+                  { 5 [ drop ] }
               } case
           ] [ drop ] if
       ] each
