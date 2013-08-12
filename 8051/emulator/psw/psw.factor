@@ -34,6 +34,12 @@ TUPLE: psw < model ;
     ]
     [ drop ] if ;
 
+: psw-cy? ( psw -- ? )
+    dup psw?
+    [ value>> 1 bit? ]
+    [ drop f ] if ;
+
+
 : psw-ac-set ( psw -- )
     dup psw?
     [
@@ -128,4 +134,11 @@ TUPLE: psw < model ;
     [ drop 0 ] if ;
 
 
-
+! RRC instruction affects the  flags so we do it here
+! Rotate Right thrugh carry
+! ------------------
+! |                |
+! v                ^
+! 7 6 5 4 3 2 1 0->C
+: psw-rrc ( b psw -- b' )
+    ;
