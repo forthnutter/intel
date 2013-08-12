@@ -351,6 +351,18 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   [ pc->sp ] keep
   -rot bitor swap pc<< ;
 
+! LCALL
+! Long Call
+: (opcode-12) ( cpu -- )
+  [ pc+ ] keep
+  [ rom-pcread ] keep
+  [ pc+ ] keep
+  [ rom-pcread ] keep
+  [ pc+ ] keep
+  [ pc->sp ] keep
+  -rot [ 8 shift ] dip bitor swap pc<< ;
+
+
 
 
 : emu-test ( -- c )
