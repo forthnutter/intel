@@ -141,4 +141,7 @@ TUPLE: psw < model ;
 ! v                ^
 ! 7 6 5 4 3 2 1 0->C
 : psw-rrc ( b psw -- b' )
+    [ value>> 0x80 bitand ] keep
+    -rot swap rot [ swap 0 bit? [ psw-cy-set ] [ psw-cy-clr ] if ] 2keep
+    drop -1 shift bitor 7 0 bit-range
     ;
