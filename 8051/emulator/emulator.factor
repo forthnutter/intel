@@ -363,6 +363,8 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
   -rot [ 8 shift ] dip bitor swap pc<< ;
 
 
+! RRC A
+! Rotate Right A through Carry
 
 
 : emu-test ( -- c )
