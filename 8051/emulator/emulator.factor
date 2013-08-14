@@ -35,7 +35,11 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 : ram-writebyte ( dd address cpu -- )
   ram>> ram-write ;
 
-
+! write to ACC
+: >A ( b cpu -- )
+  
+  ;
+! write to R0
 : >R0 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
   -rot
@@ -365,7 +369,8 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 
 ! RRC A
 ! Rotate Right A through Carry
-
+: (opcode-13) ( cpu -- )
+  ;
 
 : emu-test ( -- c )
   break
