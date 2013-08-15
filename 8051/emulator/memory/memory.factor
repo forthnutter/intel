@@ -64,3 +64,19 @@ TUPLE: ram array sfr ;
     swap [ swap set-model ] curry each
    
     ;
+
+: sfr-cell ( a ram -- cell/? )
+   sfr>> ?nth ;
+
+: sfr-write ( b a ram -- )
+    sfr-cell dup
+    [ dup cell? [ set-model ] [ drop drop ] if ]
+    [ drop drop ] if
+    ;
+
+: sfr-read ( address ram -- n )
+    sfr-cell dup
+    [ dup cell? [ value>> ] [ ] if ]
+    [ drop 0 ]
+    if ;
+
