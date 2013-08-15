@@ -14,12 +14,11 @@ IN: intel.8051.emulator
 
 
 
-TUPLE: cpu a b psw dptr sp pc rom ram ;
+TUPLE: cpu b psw dptr sp pc rom ram ;
 
 : <cpu> ( -- cpu )
   cpu new
   0 >>pc
-  0 >>a
   0 >>b
   0 <psw> >>psw
   0 >>dptr
@@ -37,8 +36,18 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 
 ! write to ACC
 : >A ( b cpu -- )
-  
+  ram>>
+  SFR_A swap
+  sfr-write
   ;
+
+! read ACC
+: A> ( cpu -- b )
+  ram>>
+  SFR_A swap
+  sfr-read
+  ;
+
 ! write to R0
 : >R0 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
@@ -246,12 +255,12 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 ! RR A
 ! Rotate Accumulator Right
 : (opcode-03) ( cpu -- )
-  [ a>> -1 8 bitroll ] keep swap >>a pc+ ;
+  [ A> -1 8 bitroll ] keep [ >A ] keep pc+ ;
   
 ! INC A
 ! Increment Accumulator
 : (opcode-04) ( cpu -- )
-  [ a>> 1 + 8 bits ] keep swap >>a pc+ ;
+  [ A> 1 + 8 bits ] keep [ >A ] keep pc+ ;
 
 ! INC (DIR)
 ! Increment Data RAM or SFR
@@ -370,7 +379,13 @@ TUPLE: cpu a b psw dptr sp pc rom ram ;
 ! RRC A
 ! Rotate Right A through Carry
 : (opcode-13) ( cpu -- )
-  ;
+  [ A> ] keep [ psw>> psw-rrc ] keep [ >A ] keep pc+ ;
+
+
+! DEC A
+: (opcode-14) ( cpu -- )
+  [ A> 1 - 8 bits ] keep [ >A ] keep pc+ ;  
+
 
 : emu-test ( -- c )
   break
