@@ -28,11 +28,11 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 ;
 
 ! read 8 bit from RAM
-: ram-readbyte ( address cpu -- dd )
-  ram>> ram-read ;
+! : ram-readbyte ( address cpu -- dd )
+!  ram>> ram-read ;
 
-: ram-writebyte ( dd address cpu -- )
-  ram>> ram-write ;
+! : ram-writebyte ( dd address cpu -- )
+!  ram>> ram-write ;
 
 ! write to ACC
 : >A ( b cpu -- )
@@ -54,39 +54,37 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   -rot
   8 *                          ! 8 registers by bank number
   rot
-  ram-writebyte
+  ram>> ram-direct-write
   ;
 
 : R0> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 *  ! get the address
-  swap ram-readbyte ;
+  swap ram>> ram-direct-read ;
 
 : >R1 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
   -rot
   8 * 1 +                      ! 8 registers by bank number
   rot
-  ram-writebyte
-  ;
+  ram>> ram-direct-write ;
 
 : R1> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 * 1 +  ! get the address
-  swap ram-readbyte ;
+  swap ram>> ram-direct-read ;
 
 : >R2 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
   -rot
   8 * 2 +                      ! 8 registers by bank number
   rot
-  ram-writebyte
-  ;
+  ram>> ram-direct-write ;
 
 : R2> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 * 2 + ! get the address
-  swap ram-readbyte ;
+  swap ram>> ram-direct-read ;
 
 
 : >R3 ( b cpu -- )
@@ -94,65 +92,61 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   -rot
   8 * 3 +                      ! 8 registers by bank number
   rot
-  ram-writebyte
-  ;
+  ram>> ram-direct-write ;
 
 : R3> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 * 3 +  ! get the address
-  swap ram-readbyte ;
+  swap ram>> ram-direct-read ;
 
 : >R4 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
   -rot
   8 * 4 +                          ! 8 registers by bank number
   rot
-  ram-writebyte
-  ;
+  ram>> ram-direct-write ;
 
 : R4> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 * 4 +  ! get the address
-  swap ram-readbyte ;
+  swap ram>> ram-direct-read ;
 
 : >R5 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
   -rot
   8 * 5 +                          ! 8 registers by bank number
   rot
-  ram-writebyte
-  ;
+  ram>> ram-direct-write ;
 
 : R5> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 * 5 +  ! get the address
-  swap ram-readbyte ;
+  swap ram>> ram-direct-read ;
 
 : >R6 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
   -rot
   8 * 6 +                      ! 8 registers by bank number
   rot
-  ram-writebyte
+  ram>> ram-direct-write
   ;
 
 : R6> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 * 6 +  ! get the address
-  swap ram-readbyte ;
+  swap ram>> ram-direct-read ;
 
 : >R7 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
   -rot
   8 * 7 +                      ! 8 registers by bank number
   rot
-  ram-writebyte
-  ;
+  ram>> ram-direct-write ;
 
 : R7> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 * 7 +  ! get the address
-  swap ram-readbyte ;
+  swap ram>> ram-direct-read ;
 
 ! increment the pc of cpu
 : pc+ ( cpu -- )
@@ -172,8 +166,8 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 ! write to ram sp has address
 : sp-write ( n cpu -- )
   [ sp>> ] keep
-  ram-writebyte
-  ;
+  ram>> ram-indirect-write ;
+
 ! push a byte onto the stack pointer
 : sp-push ( b cpu -- )
   [ 7 0 bit-range ] dip ! make sure its a byte
@@ -183,8 +177,7 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 
 : sp-pop ( cpu -- b )
   [ sp>> ] keep
-  ram-readbyte
-  ;
+  ram>> ram-indirect-read ;
 
 ! save the contents of pc to sp
 : pc->sp ( cpu -- )
@@ -266,25 +259,25 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 ! Increment Data RAM or SFR
 : (opcode-05) ( cpu -- )
   [ dup pc+ rom-pcread ] keep
-  [ ram-readbyte ] keep
+  [ ram>> ram-indirect-read ] keep
   swap 1 + swap [ rom-pcread ] keep 
-  [ ram-writebyte ] keep pc+ ;
+  [ ram>> ram-indirect-write ] keep pc+ ;
 
 ! INC @R0
 ! Increment 8-bit internal data RAM location (0-255) addressed
 ! indirectly through register R0.
 : (opcode-06) ( cpu -- )
   [ R0> ] keep ! get r0 value this is the adderss
-  [ ram-readbyte 1 + ] keep  ! get data from ram add 1 to data
+  [ ram>> ram-indirect-read 1 + ] keep  ! get data from ram add 1 to data
   [ R0> ] keep      ! get the r0 address value
-  [ ram-writebyte ] keep pc+ ;   ! data is now save back into ram
+  [ ram>> ram-indirect-write ] keep pc+ ;   ! data is now save back into ram
 
 ! INC @R1
 ! Increment 8-bit internal RAM location (0 - 255) addressed
 ! indirectly through Register R1
 : (opcode-07) ( cpu -- )
-  [ R1> ] keep [ ram-readbyte 1 + ] keep [ R1> ] keep
-  [ ram-writebyte ] keep pc+ ;
+  [ R1> ] keep [ ram>> ram-indirect-read 1 + ] keep [ R1> ] keep
+  [ ram>> ram-indirect-write ] keep pc+ ;
 
 ! INC R0
 ! Increment R0
@@ -385,6 +378,7 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 ! DEC A
 : (opcode-14) ( cpu -- )
   [ A> 1 - 8 bits ] keep [ >A ] keep pc+ ;  
+
 
 
 : emu-test ( -- c )
