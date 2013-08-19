@@ -26,17 +26,7 @@ TUPLE: ram array sfr ;
 : ram-cell ( a ram -- cell/? )
     array>> ?nth ;
 
-: ram-read ( address ram -- n )
-    ram-cell dup
-    [ dup cell? [ value>> ] [ ] if ]
-    [ drop 0 ]
-    if ;
 
-: ram-write ( n address ram -- )
-    ram-cell dup
-    [ dup cell? [ set-model ] [ drop drop ] if ]
-    [ drop drop ] if
-    ;
 
 ! read value from cell
 : ram-cellvalue ( cell -- value/? )
@@ -80,3 +70,30 @@ TUPLE: ram array sfr ;
     [ drop 0 ]
     if ;
 
+
+
+: ram-indirect-read ( address ram -- n )
+    ram-cell dup
+    [ dup cell? [ value>> ] [ ] if ]
+    [ drop 0 ]
+    if ;
+
+: ram-direct-read ( address ram -- n )
+    ram-cell dup
+    [ dup cell? [ value>> ] [ ] if ]
+    [ drop 0 ]
+    if ;
+
+
+: ram-indirect-write ( n address ram -- )
+    ram-cell dup
+    [ dup cell? [ set-model ] [ drop drop ] if ]
+    [ drop drop ] if
+    ;
+
+
+: ram-direct-write ( n address ram -- )
+    ram-cell dup
+    [ dup cell? [ set-model ] [ drop drop ] if ]
+    [ drop drop ] if
+    ;
