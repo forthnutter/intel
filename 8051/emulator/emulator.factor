@@ -37,16 +37,14 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 ! write to ACC
 : >A ( b cpu -- )
   ram>>
-  SFR_A swap
-  sfr-write
-  ;
+  RAM_A swap
+  ram-direct-write ;
 
 ! read ACC
 : A> ( cpu -- b )
   ram>>
-  SFR_A swap
-  sfr-read
-  ;
+  RAM_A swap
+  ram-direct-read  ;
 
 ! write to R0
 : >R0 ( b cpu -- )
