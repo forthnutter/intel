@@ -11,8 +11,7 @@ IN: intel.8051.emulator.psw
 ! 7   6   5   4   3   2   1   0
 ! CY  AC  F0 RS1 RS0  OV  F1  P
 
-CONSTANT: SFR_A 0x60 
-CONSTANT: RAM_A 0xE0
+
 
 
 TUPLE: psw < model ;
