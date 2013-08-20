@@ -257,9 +257,9 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 ! Increment Data RAM or SFR
 : (opcode-05) ( cpu -- )
   [ dup pc+ rom-pcread ] keep
-  [ ram>> ram-indirect-read ] keep
-  swap 1 + swap [ rom-pcread ] keep 
-  [ ram>> ram-indirect-write ] keep pc+ ;
+  [ ram>> ram-direct-read ] keep
+  swap 1 + 8 bits swap [ rom-pcread ] keep 
+  [ ram>> ram-direct-write ] keep pc+ ;
 
 ! INC @R0
 ! Increment 8-bit internal data RAM location (0-255) addressed
@@ -328,7 +328,6 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   [ ram>> ram-bitstatus ] keep  ! bit status should be on stack
   swap
   [
-    break
     [ rom-pcread ] keep
     [ ram>> ram-bitclear ] keep
     [ pc+ ] keep
@@ -377,6 +376,103 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 : (opcode-14) ( cpu -- )
   [ A> 1 - 8 bits ] keep [ >A ] keep pc+ ;  
 
+! DEC (DIR)
+! Decrement Data RAM or SFR
+: (opcode-15) ( cpu -- )
+  [ dup pc+ rom-pcread ] keep
+  [ ram>> ram-direct-read ] keep
+  swap 1 - 8 bits swap [ rom-pcread ] keep 
+  [ ram>> ram-direct-write ] keep pc+ ;
+
+! DEC @R0
+! Decrement 8-bit internal data RAM location (0-255) addressed
+! indirectly through register R0.
+: (opcode-16) ( cpu -- )
+  [ R0> ] keep ! get r0 value this is the adderss
+  [ ram>> ram-indirect-read 1 - 8 bits ] keep  ! get data from ram add 1 to data
+  [ R0> ] keep      ! get the r0 address value
+  [ ram>> ram-indirect-write ] keep pc+ ;   ! data is now save back into ram
+
+! DEC @R1
+! Decrement 8-bit internal data RAM location (0-255) addressed
+! indirectly through register R1.
+: (opcode-17) ( cpu -- )
+  [ R1> ] keep ! get r0 value this is the adderss
+  [ ram>> ram-indirect-read 1 - 8 bits ] keep  ! get data from ram add 1 to data
+  [ R1> ] keep      ! get the r0 address value
+  [ ram>> ram-indirect-write ] keep pc+ ;   ! data is now save back into ram
+
+
+! DEC R0
+! Decrement R0
+: (opcode-18) ( cpu -- )
+  [ R0> 1 - ] keep [ >R0 ] keep pc+ ;
+
+! DEC R1
+! Decrement R1
+: (opcode-19) ( cpu -- )
+  [ R1> 1 - ] keep [ >R1 ] keep pc+ ;
+
+! DEC R2
+! Decrement R2
+: (opcode-1A) ( cpu -- )
+  [ R2> 1 - ] keep [ >R2 ] keep pc+ ;
+
+! DEC R3
+! Decrement R3
+: (opcode-1B) ( cpu -- )
+  [ R3> 1 - ] keep [ >R3 ] keep pc+ ;
+
+
+! DEC R4
+! Decrement R4
+: (opcode-1C) ( cpu -- )
+  [ R4> 1 - ] keep [ >R4 ] keep pc+ ;
+
+! DEC R5
+! Decrement R5
+: (opcode-1D) ( cpu -- )
+  [ R5> 1 - ] keep [ >R5 ] keep pc+ ;
+
+! DEC R6
+! Decrement R6
+: (opcode-1E) ( cpu -- )
+  [ R6> 1 - ] keep [ >R6 ] keep pc+ ;
+
+! DEC R7
+! Decrement R7
+: (opcode-1F) ( cpu -- )
+  [ R7> 1 - ] keep [ >R7 ] keep pc+ ;
+
+
+! JB bit,rel
+! Jump relative if bit is set
+: (opcode-20) ( cpu -- )
+  [ pc+ ] keep ! pc now point to bit address
+  [ rom-pcread ] keep ! read value
+  [ ram>> ram-bitstatus ] keep  ! bit status should be on stack
+  swap
+  [
+    [ pc+ ] keep
+    [ rom-pcread ] keep
+    [ pc+ ] keep
+    [ pc>> relative ] keep pc<<
+  ]
+  [
+    [ pc+ ] keep pc+
+  ]
+  if
+  ;
+
+! AJMP
+! Absolute Jump
+: (opcode-21) ( cpu -- )
+  (opcode-01) ;
+
+! RET
+! Return from subroutine pop PC off the stack
+: (opcode-22) ( cpu -- )
+  
 
 
 : emu-test ( -- c )
