@@ -6,6 +6,9 @@ USING: accessors arrays kernel math math.bitwise models sequences tools.continua
 
 IN: intel.8051.emulator.memory
 
+
+CONSTANT: RAM_A 0xE0
+
 TUPLE: cell < model ;
 
 : <cell> ( n -- cell )
@@ -78,11 +81,15 @@ TUPLE: ram array sfr ;
     [ drop 0 ]
     if ;
 
+: ram-direct-cell ( address ram -- cell/? )
+    [ dup 0x80 < ] dip swap
+    [ ram-cell ] [ [ 0x80 - ] dip sfr-cell ] if ; 
+    
+    
 : ram-direct-read ( address ram -- n )
-    ram-cell dup
-    [ dup cell? [ value>> ] [ ] if ]
-    [ drop 0 ]
-    if ;
+    ram-direct-cell
+    dup cell?
+    [ value>> ] [ drop 0 ] if ;
 
 
 : ram-indirect-write ( n address ram -- )
@@ -93,7 +100,6 @@ TUPLE: ram array sfr ;
 
 
 : ram-direct-write ( n address ram -- )
-    ram-cell dup
-    [ dup cell? [ set-model ] [ drop drop ] if ]
-    [ drop drop ] if
-    ;
+    ram-direct-cell
+    dup cell?
+    [ set-model ] [ drop drop ] if ;
