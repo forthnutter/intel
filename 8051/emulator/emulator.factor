@@ -159,7 +159,10 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   ;
 
 : sp+ ( cpu -- )
-  [ sp>> 1 + 7 0 bit-range ] keep sp<< ;
+  [ sp>> 1 + 8 bits ] keep sp<< ;
+
+: sp- ( cpu -- )
+  [ sp>> 1 - 8 bits ] keep sp<< ;
 
 ! write to ram sp has address
 : sp-write ( n cpu -- )
@@ -174,13 +177,19 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   ;
 
 : sp-pop ( cpu -- b )
-  [ sp>> ] keep
+  [ sp>> ] keep [ sp- ] keep
   ram>> ram-indirect-read ;
 
 ! save the contents of pc to sp
-: pc->sp ( cpu -- )
+: pc->(sp) ( cpu -- )
   [ pc>> 15 8 bit-range ] keep [ pc>> 7 0 bit-range ] keep
   [ sp-push ] keep sp-push ;
+
+! get the data from stack pointer into PC
+: (sp)->pc ( cpu -- )
+  [ sp-pop 8 shift ] keep [ sp-pop 8 bits ] keep
+  [ bitor 16 bits ] dip
+  pc<< ;
 
 
 ! read 16 bit data from ROM
@@ -351,7 +360,7 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   [ pc+ ] keep
   [ rom-pcread ] keep
   [ pc+ ] keep
-  [ pc->sp ] keep
+  [ pc->(sp) ] keep
   -rot bitor swap pc<< ;
 
 ! LCALL
@@ -362,7 +371,7 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   [ pc+ ] keep
   [ rom-pcread ] keep
   [ pc+ ] keep
-  [ pc->sp ] keep
+  [ pc->(sp) ] keep
   -rot [ 8 shift ] dip bitor swap pc<< ;
 
 
@@ -472,8 +481,12 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 ! RET
 ! Return from subroutine pop PC off the stack
 : (opcode-22) ( cpu -- )
+  (sp)->pc ;
   
-
+! RL A
+! Rotate Accumulator Left
+: (opcode-23) ( cpu -- )
+  [ A> 1 8 bitroll ] keep [ >A ] keep pc+ ;
 
 : emu-test ( -- c )
   break
