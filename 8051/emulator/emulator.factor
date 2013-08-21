@@ -488,6 +488,8 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 : (opcode-23) ( cpu -- )
   [ A> 1 8 bitroll ] keep [ >A ] keep pc+ ;
 
+
+
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"

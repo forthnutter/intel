@@ -42,6 +42,10 @@ TUPLE: psw < model ;
     [ value>> 1 bit? ]
     [ drop f ] if ;
 
+! push b into cy
+: >psw-cy ( ? psw -- )
+    [ psw-cy-set ] [ psw-cy-clr ] if ;
+
 
 : psw-ac-set ( psw -- )
     dup psw?
@@ -148,3 +152,15 @@ TUPLE: psw < model ;
     -rot swap rot [ swap 0 bit? [ psw-cy-set ] [ psw-cy-clr ] if ] 2keep
     drop -1 shift bitor 7 0 bit-range
     ;
+
+
+! ADD Affects the flags so we have two values that
+! are added and returns result
+! CF set by bit 7
+! AC set by bit 3
+! OV set by 6 not 7 or 7 not 6
+: psw-add ( a b c psw -- r )
+    [ 3dup + + 8 8 bit-range 1 = ] dip [ >psw-cy ] keep ! carry
+    [ 3dup [ 3 bits ] dip [ swap 3 bits swap ] dip + + 4 4 bit-range 1 = ] dip
+    [ >psw-ac ] keep ;
+    
