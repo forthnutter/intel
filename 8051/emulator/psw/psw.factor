@@ -61,6 +61,10 @@ TUPLE: psw < model ;
     ]
     [ drop ] if ;
 
+! push b into cy
+: >psw-ac ( ? psw -- )
+    [ psw-ac-set ] [ psw-ac-clr ] if ;
+
 
 : psw-f0-set ( psw -- )
     dup psw?
