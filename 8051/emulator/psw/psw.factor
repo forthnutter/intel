@@ -44,7 +44,7 @@ TUPLE: psw < model ;
 
 ! push b into cy
 : >psw-cy ( ? psw -- )
-    [ psw-cy-set ] [ psw-cy-clr ] if ;
+    swap [ psw-cy-set ] [ psw-cy-clr ] if ;
 
 
 : psw-ac-set ( psw -- )
@@ -63,7 +63,7 @@ TUPLE: psw < model ;
 
 ! push b into cy
 : >psw-ac ( ? psw -- )
-    [ psw-ac-set ] [ psw-ac-clr ] if ;
+    swap [ psw-ac-set ] [ psw-ac-clr ] if ;
 
 
 : psw-f0-set ( psw -- )
@@ -166,5 +166,6 @@ TUPLE: psw < model ;
 : psw-add ( a b c psw -- r )
     [ 3dup + + 8 8 bit-range 1 = ] dip [ >psw-cy ] keep ! carry
     [ 3dup [ 3 bits ] dip [ swap 3 bits swap ] dip + + 4 4 bit-range 1 = ] dip
-    [ >psw-ac ] keep ;
+    [ >psw-ac ] keep 
+     drop + + 8 bits ;
     
