@@ -60,6 +60,12 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   swap 8 *  ! get the address
   swap ram>> ram-direct-read ;
 
+: @R0> ( cpu -- b )
+   [ R0> ] keep ram>> ram-indirect-read ;  
+
+: >@R0 ( b cpu -- )
+   [ R0> ] keep ram>> ram-indirect-write ;
+   
 : >R1 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
   -rot
@@ -67,13 +73,17 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   rot
   ram>> ram-direct-write ;
 
-: @R0> ( cpu -- b )
-   [ R0> ] keep ram>> ram-indirect-read ;
-
 : R1> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 * 1 +  ! get the address
   swap ram>> ram-direct-read ;
+
+: @R1> ( cpu -- b )
+   [ R1> ] keep ram>> ram-indirect-read ;  
+
+: >@R1 ( b cpu -- )
+   [ R1> ] keep ram>> ram-indirect-write ;  
+  
 
 : >R2 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
@@ -507,7 +517,23 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
     [ >A ] keep pc+ ;
 
 ! ADD A,@R0
+: (opcode-26) ( cpu -- )
+  [ A> ] keep
+  [ @R0> ] keep
+  0 swap
+  [ psw>> psw-add ] keep
+  [ >A ] keep pc+ ;
+  
+! ADD A,@R1
+: (opcode-27) ( cpu -- )
+  [ A> ] keep
+  [ @R1> ] keep
+  0 swap
+  [ psw>> psw-add ] keep
+  [ >A ] keep pc+ ;
+  
+
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
-<ihex> array>> <cpu> swap >>rom ;
+   <ihex> array>> <cpu> swap >>rom ;
