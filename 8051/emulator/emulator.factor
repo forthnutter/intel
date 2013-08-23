@@ -67,6 +67,9 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   rot
   ram>> ram-direct-write ;
 
+: @R0> ( cpu -- b )
+   [ R0> ] keep ram>> ram-indirect-read ;
+
 : R1> ( cpu -- b )
   [ psw>> psw-bank-read ] keep ! get the reg bank value
   swap 8 * 1 +  ! get the address
@@ -488,8 +491,22 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
 : (opcode-23) ( cpu -- )
   [ A> 1 8 bitroll ] keep [ >A ] keep pc+ ;
 
+! ADD A,#data
+: (opcode-24) ( cpu -- )
+    [ A> ] keep [ pc+ ] keep [ rom-pcread ] keep
+    0 swap ! carry bit
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
 
+! ADD A,dir
+: (opcode-25) ( cpu -- )
+    [ A> ] keep
+    [ dup pc+ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    0 swap
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
 
+! ADD A,@R0
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
