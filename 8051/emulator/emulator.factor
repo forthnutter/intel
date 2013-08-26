@@ -531,8 +531,95 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
   0 swap
   [ psw>> psw-add ] keep
   [ >A ] keep pc+ ;
-  
 
+! ADD A,R0
+: (opcode-28) ( cpu -- )
+    [ A> ] keep
+    [ R0> ] keep
+    0 swap
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADD A,R1
+: (opcode-29) ( cpu -- )
+    [ A> ] keep
+    [ R1> ] keep
+    0 swap
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;    
+
+! ADD A,R2
+: (opcode-2A) ( cpu -- )
+    [ A> ] keep
+    [ R2> ] keep
+    0 swap
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADD A,R3
+: (opcode-2B) ( cpu -- )
+    [ A> ] keep
+    [ R3> ] keep
+    0 swap
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADD A,R4
+: (opcode-2C) ( cpu -- )
+    [ A> ] keep
+    [ R4> ] keep
+    0 swap
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADD A,R5
+: (opcode-2D) ( cpu -- )
+    [ A> ] keep
+    [ R5> ] keep
+    0 swap
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADD A,R6
+: (opcode-2E) ( cpu -- )
+    [ A> ] keep
+    [ R6> ] keep
+    0 swap
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADD A,R7
+: (opcode-2F) ( cpu -- )
+    [ A> ] keep
+    [ R7> ] keep
+    0 swap
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! JNB bit,rel
+! Jump relative if bit is clear
+: (opcode-30) ( cpu -- )
+  [ pc+ ] keep ! pc now point to bit address
+  [ rom-pcread ] keep ! read value
+  [ ram>> ram-bitstatus ] keep  ! bit status should be on stack
+  swap
+  [ [ pc+ ] keep pc+ ]
+  [
+    [ pc+ ] keep
+    [ rom-pcread ] keep
+    [ pc+ ] keep
+    [ pc>> relative ] keep pc<<
+  ]
+  if ;    
+
+! ACALL
+: (opcode-31) ( cpu -- )
+    opcode-11 ;
+    
+! RETI
+: (opcode-32) ( cpu -- )
+    ;
+  
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
