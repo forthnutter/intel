@@ -14,10 +14,11 @@ IN: intel.8051.emulator
 
 
 
-TUPLE: cpu b psw dptr sp pc rom ram ;
+TUPLE: cpu istate b psw dptr sp pc rom ram ;
 
 : <cpu> ( -- cpu )
   cpu new
+  0 >>istate
   0 >>pc
   0 >>b
   0 <psw> >>psw
@@ -618,7 +619,10 @@ TUPLE: cpu b psw dptr sp pc rom ram ;
     
 ! RETI
 : (opcode-32) ( cpu -- )
-    ;
+    [ istate>> ] keep swap
+    [ pc+ ]
+    [ ]
+    if ;
   
 : emu-test ( -- c )
   break
