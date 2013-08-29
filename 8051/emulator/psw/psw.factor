@@ -157,7 +157,18 @@ TUPLE: psw < model ;
     drop -1 shift bitor 7 0 bit-range
     ;
 
-
+! RRC instruction affects the  flags so we do it here
+! Rotate Right thrugh carry
+! ------------------
+! |                |
+! ^                v
+! 7 6 5 4 3 2 1 0<-C
+: psw-rlc ( b psw -- b' )
+    [ psw-cy? ] keep    ! get carry bit
+    -rot swap rot [ swap 7 bit? [ psw-cy-set ] [ psw-cy-clr ] if ] 2keep
+    drop 1 shift [ swap [ 0 set-bit ] [ 0 clear-bit ] if ] 7 0 bit-range
+    ;
+ 
 ! ADD Affects the flags so we have two values that
 ! are added and returns result
 ! CF set by bit 7
