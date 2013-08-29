@@ -14,11 +14,12 @@ IN: intel.8051.emulator
 
 
 
-TUPLE: cpu istate b psw dptr sp pc rom ram ;
+TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 
 : <cpu> ( -- cpu )
   cpu new
-  0 >>istate
+  f >>hp    ! High Priority Interrupt
+  f >>lp    ! Low Priority Interrupt
   0 >>pc
   0 >>b
   0 <psw> >>psw
@@ -615,14 +616,25 @@ TUPLE: cpu istate b psw dptr sp pc rom ram ;
 
 ! ACALL
 : (opcode-31) ( cpu -- )
-    opcode-11 ;
+    (opcode-11) ;
     
 ! RETI
 : (opcode-32) ( cpu -- )
-    [ istate>> ] keep swap
-    [ pc+ ]
-    [ ]
-    if ;
+    [ hp>> ] keep [ lp>> ] keep [ or ] dip swap
+    [
+        ! may need to implement some exception here
+        [ hp>> ] keep swap
+        [ f >>hp ]
+        [ f >>lp ] if
+    ]
+    when 
+    (opcode-22) ! to make things simple just call the ret
+    ;
+    
+! RLC A
+: (opcode-33) ( cpu -- )
+  [ A> ] keep [ psw>> psw-rlc ] keep [ >A ] keep pc+ ;
+
   
 : emu-test ( -- c )
   break
