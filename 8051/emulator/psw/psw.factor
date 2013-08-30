@@ -46,6 +46,11 @@ TUPLE: psw < model ;
 : >psw-cy ( ? psw -- )
     swap [ psw-cy-set ] [ psw-cy-clr ] if ;
 
+! return the carry flag status
+: psw-cy ( psw -- b )
+    dup psw?
+    [ value>> 7 7 bit-range ]
+    [ drop 0 ] if ;
 
 : psw-ac-set ( psw -- )
     dup psw?
@@ -166,7 +171,7 @@ TUPLE: psw < model ;
 : psw-rlc ( b psw -- b' )
     [ psw-cy? ] keep    ! get carry bit
     -rot swap rot [ swap 7 bit? [ psw-cy-set ] [ psw-cy-clr ] if ] 2keep
-    drop 1 shift [ swap [ 0 set-bit ] [ 0 clear-bit ] if ] 7 0 bit-range
+    drop 1 shift swap [ 0 set-bit ] [ 0 clear-bit ] if 7 0 bit-range
     ;
  
 ! ADD Affects the flags so we have two values that
