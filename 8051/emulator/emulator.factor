@@ -225,10 +225,10 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
   ]
   [ 2drop ] if* ;
 
-#! Reads the ROM from stdin and stores it in ROM from
-#! offset n.
-#! Load the contents of the file into ROM.
-#! (address 0x0000-0x1FFF).
+! Reads the ROM from stdin and stores it in ROM from
+! offset n.
+! Load the contents of the file into ROM.
+! (address 0x0000-0x1FFF).
 : load-rom ( filename cpu -- )
   ram>> swap binary
   [ 
@@ -241,7 +241,7 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 : instructions ( -- vector )
   \ instructions get-global
   [
-    #! make sure we always return with array
+    ! make sure we always return with array
     256 [ not-implemented ] <array> \ instructions set-global
   ] unless
   \ instructions get-global ;
@@ -635,7 +635,114 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 : (opcode-33) ( cpu -- )
   [ A> ] keep [ psw>> psw-rlc ] keep [ >A ] keep pc+ ;
 
+! ADDC A,#data  
+: (opcode-34) ( cpu -- )
+    [ A> ] keep [ pc+ ] keep [ rom-pcread ] keep
+    [ psw>> psw-cy ] keep ! carry bit
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADDC A,dir
+: (opcode-35) ( cpu -- )
+    [ A> ] keep
+    [ dup pc+ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADDC A,@R0
+: (opcode-36) ( cpu -- )
+  [ A> ] keep
+  [ @R0> ] keep
+  [ psw>> psw-cy ] keep
+  [ psw>> psw-add ] keep
+  [ >A ] keep pc+ ;
   
+! ADDC A,@R1
+: (opcode-37) ( cpu -- )
+  [ A> ] keep
+  [ @R1> ] keep
+  [ psw>> psw-cy ] keep
+  [ psw>> psw-add ] keep
+  [ >A ] keep pc+ ;
+
+! ADDC A,R0
+: (opcode-38) ( cpu -- )
+    [ A> ] keep
+    [ R0> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADDC A,R1
+: (opcode-39) ( cpu -- )
+    [ A> ] keep
+    [ R1> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;    
+
+! ADDC A,R2
+: (opcode-3A) ( cpu -- )
+    [ A> ] keep
+    [ R2> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADDC A,R3
+: (opcode-3B) ( cpu -- )
+    [ A> ] keep
+    [ R3> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADDC A,R4
+: (opcode-3C) ( cpu -- )
+    [ A> ] keep
+    [ R4> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADDC A,R5
+: (opcode-3D) ( cpu -- )
+    [ A> ] keep
+    [ R5> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADDC A,R6
+: (opcode-3E) ( cpu -- )
+    [ A> ] keep
+    [ R6> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;
+
+! ADDC A,R7
+: (opcode-3F) ( cpu -- )
+    [ A> ] keep
+    [ R7> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-add ] keep
+    [ >A ] keep pc+ ;    
+
+! JC rel
+! Jump relative if carry is set
+: (opcode-40) ( cpu -- )
+  [ psw>> psw-cy? ] keep  ! carry bit
+  swap
+  [
+    [ pc+ ] keep
+    [ rom-pcread ] keep
+    [ pc+ ] keep
+    [ pc>> relative ] keep pc<<
+  ]
+  [ [ pc+ ] keep pc+ ] if ;    
+    
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
