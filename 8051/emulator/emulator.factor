@@ -763,8 +763,15 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ pc+ ] keep [ rom-pcread ] keep
     [ bitor 8 bits swap ] dip
     [ ram>> ram-direct-write ] keep
-    pc++ ;
+    pc+ ;
 
+! ORL A,#data
+: (opcode-44) ( cpu -- )
+    [ A> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
     
   
 : emu-test ( -- c )
