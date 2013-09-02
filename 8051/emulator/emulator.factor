@@ -742,7 +742,31 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ pc>> relative ] keep pc<<
   ]
   [ [ pc+ ] keep pc+ ] if ;    
+
+! AJUMP
+! Absolute Jump
+: (opcode-41) ( cpu -- )
+    (opcode-21) ;
     
+! ORL dir,A
+! Logical-OR for byte variables
+: (opcode-42) ( cpu -- )
+  [ pc+ ] keep [ rom-pcread dup ] keep [ ram>> ram-direct-read ] keep
+  [ A> ] keep
+  [ bitor 8 bits swap ] dip
+  [ ram>> ram-direct-write ] keep
+  pc+ ;
+  
+! ORL direct,#data
+: (opcode-43) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread dup ] keep [ ram>> ram-direct-read ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ bitor 8 bits swap ] dip
+    [ ram>> ram-direct-write ] keep
+    pc++ ;
+
+    
+  
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
