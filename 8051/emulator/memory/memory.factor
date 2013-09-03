@@ -8,6 +8,8 @@ IN: intel.8051.emulator.memory
 
 
 CONSTANT: RAM_A 0xE0
+CONSTANT: RAM_DPH 0x83
+CONSTANT: RAM_DPL 0x82
 
 TUPLE: cell < model ;
 
@@ -103,3 +105,5 @@ TUPLE: ram array sfr ;
     ram-direct-cell
     dup cell?
     [ set-model ] [ drop drop ] if ;
+    
+ 
