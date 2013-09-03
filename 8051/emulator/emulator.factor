@@ -165,6 +165,15 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 : pc+ ( cpu -- )
   dup pc>> 1 + 16 0 bit-range swap pc<< ;
 
+! get DPTR 16 bit number
+: DPTR> ( cpu -- n )
+    [ RAM_DPH ] dip [ ram>> ram-direct-read 8 shift ] keep
+    [ RAM_DPL ] dip ram>> ram-direct-read bitor 16 bits ;
+    
+! read the data from rom
+: rom-read ( a cpu -- d )
+    rom>> ?nth 8 bits ;
+    
 ! read the rom addressed by pc
 : rom-pcread ( cpu -- dd )
   dup pc>> swap rom>> ?nth
@@ -772,8 +781,465 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ bitor 8 bits ] dip
     [ >A ] keep
     pc+ ;
+
+! ORL A,direct
+: (opcode-45) ( cpu -- )
+    [ A> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+! ORL A,@R0
+: (opcode-46) ( cpu -- )
+    [ A> ] keep
+    [ @R0> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
     
-  
+! ORL A,@R1
+: (opcode-47) ( cpu -- )
+    [ A> ] keep
+    [ @R1> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+    
+    
+! ORL A,R0
+: (opcode-48) ( cpu -- )
+    [ A> ] keep
+    [ R0> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;       
+
+! ORL A,R1
+: (opcode-49) ( cpu -- )
+    [ A> ] keep
+    [ R1> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;           
+
+! ORL A,R2
+: (opcode-4A) ( cpu -- )
+    [ A> ] keep
+    [ R2> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+! ORL A,R3
+: (opcode-4B) ( cpu -- )
+    [ A> ] keep
+    [ R3> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;           
+
+! ORL A,R4
+: (opcode-4C) ( cpu -- )
+    [ A> ] keep
+    [ R4> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;       
+
+! ORL A,R5
+: (opcode-4D) ( cpu -- )
+    [ A> ] keep
+    [ R5> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;    
+    
+! ORL A,R6
+: (opcode-4E) ( cpu -- )
+    [ A> ] keep
+    [ R6> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;           
+
+! ORL A,R7
+: (opcode-4F) ( cpu -- )
+    [ A> ] keep
+    [ R7> ] keep
+    [ bitor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+! JNC Rel
+! Jump relative if carry is clear
+: (opcode-50) ( cpu -- )
+  [ psw>> psw-cy? ] keep  ! carry bit
+  swap
+  [ [ pc+ ] keep pc+ ]
+  [
+    [ pc+ ] keep
+    [ rom-pcread ] keep
+    [ pc+ ] keep
+    [ pc>> relative ] keep pc<<
+  ] if ;    
+
+: (opcode-51) ( cpu -- )
+    (opcode-31) ;
+    
+! ANL direct,A
+: (opcode-52) ( cpu -- )
+  [ pc+ ] keep [ rom-pcread dup ] keep [ ram>> ram-direct-read ] keep
+  [ A> ] keep
+  [ bitand 8 bits swap ] dip
+  [ ram>> ram-direct-write ] keep
+  pc+ ;
+
+! ANL direct,#data
+: (opcode-53) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread dup ] keep [ ram>> ram-direct-read ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ bitand 8 bits swap ] dip
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! ANL A,#data
+: (opcode-54) ( cpu -- )
+    [ A> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+! ANL A,direct
+: (opcode-55) ( cpu -- )
+    [ A> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+! ANL A,@R0
+: (opcode-56) ( cpu -- )
+    [ A> ] keep
+    [ @R0> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+    
+! ANL A,@R1
+: (opcode-57) ( cpu -- )
+    [ A> ] keep
+    [ @R1> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+    
+    
+! ANL A,R0
+: (opcode-58) ( cpu -- )
+    [ A> ] keep
+    [ R0> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;       
+
+! ANL A,R1
+: (opcode-59) ( cpu -- )
+    [ A> ] keep
+    [ R1> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;           
+
+! ANL A,R2
+: (opcode-5A) ( cpu -- )
+    [ A> ] keep
+    [ R2> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+! ANL A,R3
+: (opcode-5B) ( cpu -- )
+    [ A> ] keep
+    [ R3> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;           
+
+! ANL A,R4
+: (opcode-5C) ( cpu -- )
+    [ A> ] keep
+    [ R4> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;       
+
+! ANL A,R5
+: (opcode-5D) ( cpu -- )
+    [ A> ] keep
+    [ R5> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;    
+    
+! ANL A,R6
+: (opcode-5E) ( cpu -- )
+    [ A> ] keep
+    [ R6> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;           
+
+! ANL A,R7
+: (opcode-5F) ( cpu -- )
+    [ A> ] keep
+    [ R7> ] keep
+    [ bitand 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+
+! JZ
+! if A = 0 jump rel
+: (opcode-60) ( cpu -- )
+  [ A> 0 = ] keep  ! carry bit
+  swap
+  [
+    [ pc+ ] keep
+    [ rom-pcread ] keep
+    [ pc+ ] keep
+    [ pc>> relative ] keep pc<<
+  ]
+  [ [ pc+ ] keep pc+ ] if ;    
+
+!
+: (opcode-61) ( cpu -- )
+    (opcode-41) ;
+
+
+! XRL direct,A
+: (opcode-62) ( cpu -- )
+  [ pc+ ] keep [ rom-pcread dup ] keep [ ram>> ram-direct-read ] keep
+  [ A> ] keep
+  [ bitxor 8 bits swap ] dip
+  [ ram>> ram-direct-write ] keep
+  pc+ ;
+
+! XRL direct,#data
+: (opcode-63) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread dup ] keep [ ram>> ram-direct-read ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ bitxor 8 bits swap ] dip
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! XRL A,#data
+: (opcode-64) ( cpu -- )
+    [ A> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+! XRL A,direct
+: (opcode-65) ( cpu -- )
+    [ A> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+! XRL A,@R0
+: (opcode-66) ( cpu -- )
+    [ A> ] keep
+    [ @R0> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+    
+! XRL A,@R1
+: (opcode-67) ( cpu -- )
+    [ A> ] keep
+    [ @R1> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+    
+    
+! XRL A,R0
+: (opcode-68) ( cpu -- )
+    [ A> ] keep
+    [ R0> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;       
+
+! XRL A,R1
+: (opcode-69) ( cpu -- )
+    [ A> ] keep
+    [ R1> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;           
+
+! XRL A,R2
+: (opcode-6A) ( cpu -- )
+    [ A> ] keep
+    [ R2> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+
+! XRL A,R3
+: (opcode-6B) ( cpu -- )
+    [ A> ] keep
+    [ R3> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;           
+
+! XRL A,R4
+: (opcode-6C) ( cpu -- )
+    [ A> ] keep
+    [ R4> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;       
+
+! XRL A,R5
+: (opcode-6D) ( cpu -- )
+    [ A> ] keep
+    [ R5> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;    
+    
+! XRL A,R6
+: (opcode-6E) ( cpu -- )
+    [ A> ] keep
+    [ R6> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;           
+
+! XRL A,R7
+: (opcode-6F) ( cpu -- )
+    [ A> ] keep
+    [ R7> ] keep
+    [ bitxor 8 bits ] dip
+    [ >A ] keep
+    pc+ ;    
+
+! JNZ
+! if A != 0 jump rel
+: (opcode-70) ( cpu -- )
+  [ A> 0 = ] keep  ! carry bit
+  swap
+  [ [ pc+ ] keep pc+ ]
+  [
+    [ pc+ ] keep
+    [ rom-pcread ] keep
+    [ pc+ ] keep
+    [ pc>> relative ] keep pc<<
+  ] if ;  
+
+: (opcode-71) ( cpu -- )
+    (opcode-51) ;
+
+! ORL C,bit
+: (opcode-72) ( cpu -- )
+    [ psw>> psw-cy? ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-bitstatus ] keep
+    [ or ] dip
+    [ psw>> >psw-cy ] keep
+    pc+ ;
+
+! JMP @A+DPTR    
+: (opcode-73) ( cpu -- )
+    [ A> ] keep
+    [ DPTR> ] keep
+    [ + 16 bits ] dip pc<< ;
+
+! MOV A,#data
+: (opcode-74) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep [ >A ] keep pc+ ;
+    
+! MOV A,direct
+: (opcode-75) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-read ] keep
+    [ >A ] keep pc+ ;
+    
+ 
+! MOV A,@R0
+: (opcode-76) ( cpu -- )
+    [ @R0> ] keep [ >A ] keep pc+ ;
+    
+ 
+! MOV A,@R1
+: (opcode-77) ( cpu -- )
+    [ @R1> ] keep [ >A ] keep pc+ ; 
+ 
+! MOV A,R0
+: (opcode-78) ( cpu -- )
+    [ R0> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R1
+: (opcode-79) ( cpu -- )
+    [ R1> ] keep [ >A ] keep pc+ ;   
+
+! MOV A,R2
+: (opcode-7A) ( cpu -- )
+    [ R2> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R3
+: (opcode-7B) ( cpu -- )
+    [ R3> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R4
+: (opcode-7C) ( cpu -- )
+    [ R4> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R5
+: (opcode-7D) ( cpu -- )
+    [ R5> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R6
+: (opcode-7E) ( cpu -- )
+    [ R6> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R7
+: (opcode-7F) ( cpu -- )
+    [ R7> ] keep [ >A ] keep pc+ ;
+
+! SJMP rel
+: (opcode-80) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+    [ pc>> relative ] keep pc<< ;
+
+: (opcode-81) ( cpu -- )
+    (opcode-61) ;
+    
+! ANL C,bit
+: (opcode-82) ( cpu -- )
+    [ psw>> psw-cy? ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-bitstatus ] keep
+    [ and ] dip
+    [ psw>> >psw-cy ] keep
+    pc+ ;
+
+! MOVC A,@A+PC
+: (opcode-83) ( cpu -- )
+    [ pc+ ] keep
+    [ A> ] keep
+    [ pc>> ] keep
+    [ + 16 bits ] dip [ rom-read ] keep >A ;
+    
+
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
