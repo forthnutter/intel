@@ -39,7 +39,7 @@ TUPLE: psw < model ;
 
 : psw-cy? ( psw -- ? )
     dup psw?
-    [ value>> 1 bit? ]
+    [ value>> 7 bit? ]
     [ drop f ] if ;
 
 ! push b into cy
@@ -149,6 +149,39 @@ TUPLE: psw < model ;
     ]
     [ drop 0 ] if ;
 
+! OV Flag set
+: psw-ov-set ( psw -- )
+    dup psw?
+    [
+       [ value>> 7 set-bit ] keep set-model
+    ]
+    [ drop ] if ;
+
+! OV flag cleared
+: psw-ov-clr ( psw -- )
+    dup psw?
+    [
+        [ value>> 2 clear-bit ] keep set-model
+    ]
+    [ drop ] if ;
+
+! OV Flage test
+: psw-ov? ( psw -- ? )
+    dup psw?
+    [ value>> 2 bit? ]
+    [ drop f ] if ;
+
+! push b into OV
+: >psw-ov ( ? psw -- )
+    swap [ psw-ov-set ] [ psw-ov-clr ] if ;
+
+! return the OV flag status
+: psw-ov ( psw -- b )
+    dup psw?
+    [ value>> 7 7 bit-range ]
+    [ drop 0 ] if ;
+    
+    
 
 ! RRC instruction affects the  flags so we do it here
 ! Rotate Right thrugh carry
@@ -184,4 +217,23 @@ TUPLE: psw < model ;
     [ 3dup [ 3 bits ] dip [ swap 3 bits swap ] dip + + 4 4 bit-range 1 = ] dip
     [ >psw-ac ] keep 
      drop + + 8 bits ;
+     
+! DIV AB divides the unsigned eight-bit integer in the Accumulator by the
+! unsigned eight-bit integer in register B. The Accumulator receives the
+! integer part of the quotient; register B receives the integer remainder.
+! The carry and OV flags are cleared.
+: psw-div ( a b psw -- q r )
+    [ psw-cy-clr ] keep
+    [ psw-ov-clr ] keep
+    -rot [ 0 = ] keep swap
+    [
+        drop drop
+        psw-ov-set
+        0 0
+    ]
+    [
+        rot drop
+        /mod
+    ] if ;
+    
     
