@@ -6,7 +6,7 @@ USING: accessors arrays kernel math math.bitwise models sequences tools.continua
 
 IN: intel.8051.emulator.memory
 
-
+CONSTANT: RAM_B 0xF0
 CONSTANT: RAM_A 0xE0
 CONSTANT: RAM_DPH 0x83
 CONSTANT: RAM_DPL 0x82
@@ -50,8 +50,14 @@ TUPLE: ram array sfr ;
 
 : ram-bitclear ( ba ram -- )
     2dup ram-bitcell swap drop [ ram-cellvalue ] keep
-    [ swap 2 0 bit-range clear-bit ] dip set-model
-    ;
+    [ swap 2 0 bit-range clear-bit ] dip set-model ;
+    
+: ram-bitset ( ba ram -- )
+    2dup ram-bitcell swap drop [ ram-cellvalue ] keep
+    [ swap 2 0 bit-range set-bit ] dip set-model ;
+    
+: >ram-bit ( ? ba ram -- )
+    rot [ ram-bitset ] [ ram-bitclear ] if ;
 
 ! for general testing ram fill
 : ram-fill ( b ram -- )
