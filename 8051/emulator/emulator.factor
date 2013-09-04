@@ -48,6 +48,18 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
   RAM_A swap
   ram-direct-read  ;
 
+! write to B
+: >B ( b cpu -- )
+  ram>>
+  RAM_B swap
+  ram-direct-write ;
+
+! read B
+: B> ( cpu -- b )
+  ram>>
+  RAM_B swap
+  ram-direct-read  ;
+  
 ! write to R0
 : >R0 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
@@ -1238,8 +1250,129 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ A> ] keep
     [ pc>> ] keep
     [ + 16 bits ] dip [ rom-read ] keep >A ;
-    
+ 
+! DIV AB 
+: (opcode-84) ( cpu -- )
+    [ A> ] keep
+    [ B> ] keep
+    [ psw>> psw-div ] keep
+    [ >B ] keep
+    [ >A ] keep
+    pc+ ;
 
+! MOV direct,direct
+: (opcode-85) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ swap ] dip
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! MOV direct,@R0
+: (opcode-86) ( cpu -- )
+    [ @R0> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+    
+! MOV direct,@R1
+: (opcode-87) ( cpu -- )
+    [ @R1> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+    
+! MOV direct,R0
+: (opcode-88) ( cpu -- )
+    [ R0> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! MOV direct,R1
+: (opcode-89) ( cpu -- )
+    [ R1> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;    
+
+! MOV direct,R2
+: (opcode-8A) ( cpu -- )
+    [ R2> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;    
+
+! MOV direct,R3
+: (opcode-8B) ( cpu -- )
+    [ R3> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! MOV direct,R4
+: (opcode-8C) ( cpu -- )
+    [ R4> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! MOV direct,R5
+: (opcode-8D) ( cpu -- )
+    [ R5> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! MOV direct,R6
+: (opcode-8E) ( cpu -- )
+    [ R6> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! MOV direct,R7
+: (opcode-8F) ( cpu -- )
+    [ R7> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! MOV DPTR,#data16
+: (opcode-90) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ RAM_DPH ] dip [ ram>> ram-direct-write ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ RAM_DPL ] dip [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+: (opcode-91) ( cpu -- )
+    (opcode-71) ;
+
+! MOV bit,C
+: (opcode-92) ( cpu -- )
+    [ psw>> psw-cy? ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> >ram-bit ] keep
+    pc+ ;
+
+! MOVC A,@A+DPTR    
+: (opcode-93) ( cpu -- )
+    [ A> ] keep
+    [ DPTR> ] keep
+    [ + 16 bits ] dip [ rom-read ] keep [ >A ] keep
+    pc+ ;
+
+! SUBB A,#data
+: (opcode-94) ( cpu -- )
+    [ A> ] keep
+    [ psw>> psw-cy ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ - - 8 bits ] dip
+    [ >A ] keep
+    pc+ ;
+    
+    
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
