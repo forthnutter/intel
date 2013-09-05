@@ -1366,11 +1366,120 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 ! SUBB A,#data
 : (opcode-94) ( cpu -- )
     [ A> ] keep
-    [ psw>> psw-cy ] keep
     [ pc+ ] keep [ rom-pcread ] keep
-    [ - - 8 bits ] dip
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
     [ >A ] keep
     pc+ ;
+ 
+! SUBB A,direct 
+: (opcode-95) ( cpu -- )
+    [ A> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
+    [ >A ] keep
+    pc+ ;
+    
+! SUBB A,@R0
+: (opcode-96) ( cpu -- )
+  [ A> ] keep
+  [ @R0> ] keep
+  [ psw>> psw-cy ] keep
+  [ psw>> psw-sub ] keep
+  [ >A ] keep pc+ ;
+
+! SUBB A,@R1
+: (opcode-97) ( cpu -- )
+  [ A> ] keep
+  [ @R1> ] keep
+  [ psw>> psw-cy ] keep
+  [ psw>> psw-sub ] keep
+  [ >A ] keep pc+ ;
+
+! SUBB A,R0
+: (opcode-98) ( cpu -- )
+    [ A> ] keep
+    [ R0> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
+    [ >A ] keep pc+ ;
+
+! SUBB A,R1
+: (opcode-99) ( cpu -- )
+    [ A> ] keep
+    [ R1> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
+    [ >A ] keep pc+ ;    
+
+! SUBB A,R2
+: (opcode-9A) ( cpu -- )
+    [ A> ] keep
+    [ R2> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
+    [ >A ] keep pc+ ;
+
+! SUBB A,R3
+: (opcode-9B) ( cpu -- )
+    [ A> ] keep
+    [ R3> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
+    [ >A ] keep pc+ ;
+
+! SUBB A,R4
+: (opcode-9C) ( cpu -- )
+    [ A> ] keep
+    [ R4> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
+    [ >A ] keep pc+ ;
+
+! SUBB A,R5
+: (opcode-9D) ( cpu -- )
+    [ A> ] keep
+    [ R5> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
+    [ >A ] keep pc+ ;
+
+! SUBB A,R6
+: (opcode-9E) ( cpu -- )
+    [ A> ] keep
+    [ R6> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
+    [ >A ] keep pc+ ;
+
+! SUBB A,R7
+: (opcode-9F) ( cpu -- )
+    [ A> ] keep
+    [ R7> ] keep
+    [ psw>> psw-cy ] keep
+    [ psw>> psw-sub ] keep
+    [ >A ] keep pc+ ;    
+
+! ORL C,/bit
+: (opcode-A0) ( cpu -- )
+    [ psw>> psw-cy? ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-bitstatus not ] keep
+    [ or ] dip
+    [ psw>> >psw-cy ] keep
+    pc+ ;
+
+: (opcode-A1) ( cpu -- )
+    (opcode-81) ;
+    
+    
+! MOV C,bit
+: (opcode-A2) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-bitstatus ] keep
+    [ psw>> >psw-cy ] keep
+    pc+ ;    
     
     
 : emu-test ( -- c )
