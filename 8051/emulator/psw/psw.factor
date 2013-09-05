@@ -215,7 +215,9 @@ TUPLE: psw < model ;
 : psw-add ( a b c psw -- r )
     [ 3dup + + 8 8 bit-range 1 = ] dip [ >psw-cy ] keep ! carry
     [ 3dup [ 3 bits ] dip [ swap 3 bits swap ] dip + + 4 4 bit-range 1 = ] dip
-    [ >psw-ac ] keep 
+    [ >psw-ac ] keep
+    [ 3dup [ 7 bits ] dip [ swap 7 bits swap ] dip + + 7 7 bit-range ] dip
+    [ psw-cy ] keep [ bitxor 1 = ] dip [ >psw-ov ] keep
      drop + + 8 bits ;
      
 ! DIV AB divides the unsigned eight-bit integer in the Accumulator by the
@@ -237,3 +239,19 @@ TUPLE: psw < model ;
     ] if ;
     
     
+! SUBB subtracts the indicated variable and the carry flag together from the Accumulator,
+! leaving the result in the Accumulator. SUBB sets the carry (borrow) flag if a borrow is
+! needed for bit 7 and clears C otherwise. (If C was set before executing a SUBB instruction, this indicates that a borrow was needed for the previous step in a
+! multiple-precision subtraction, so the carry is subtracted from the Accumulator along
+! with the source operand.) AC is set if a borrow is needed for bit 3 and cleared otherwise.
+! OV is set if a borrow is needed into bit 6, but not into bit 7, or into bit 7,
+! but not bit 6. When subtracting signed integers, OV indicates a negative number
+! produced when a negative value is subtracted from a positive value, or a positive
+! result when a positive number is subtracted from a negative number.
+: psw-sub ( a b c psw -- r )
+    [ 3dup - - 8 8 bit-range 1 = ] dip [ >psw-cy ] keep ! carry
+    [ 3dup [ 3 bits ] dip [ swap 3 bits swap ] dip - - 4 4 bit-range 1 = ] dip
+    [ >psw-ac ] keep    
+    [ 3dup [ 7 bits ] dip [ swap 7 bits swap ] dip - - 7 7 bit-range ] dip
+    [ psw-cy ] keep [ bitxor 1 = ] dip [ >psw-ov ] keep
+    drop - - 8 bits ;
