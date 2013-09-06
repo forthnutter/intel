@@ -255,3 +255,19 @@ TUPLE: psw < model ;
     [ 3dup [ 7 bits ] dip [ swap 7 bits swap ] dip - - 7 7 bit-range ] dip
     [ psw-cy ] keep [ bitxor 1 = ] dip [ >psw-ov ] keep
     drop - - 8 bits ;
+    
+    
+! MUL multiplies the unsigned 8-bit integers in the Accumulator and register B.
+! The low-order byte of the 16-bit product is left in the Accumulator,
+! and the high-order byte in B. If the product is greater than 255 (0FFH),
+! the overflow flag is set; otherwise it is cleared. The carry flag is always cleared.
+: psw-mul ( a b psw -- x y )
+    [ * ] dip
+    [ dup 15 8 bit-range swap 7 0 bit-range swap ] dip
+    [ dup 0 = not ] dip swap
+    [
+        dup psw-ov-set psw-cy-clr
+    ]
+    [
+        dup psw-ov-clr psw-cy-clr
+    ] if ;
