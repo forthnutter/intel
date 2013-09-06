@@ -181,6 +181,11 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 : DPTR> ( cpu -- n )
     [ RAM_DPH ] dip [ ram>> ram-direct-read 8 shift ] keep
     [ RAM_DPL ] dip ram>> ram-direct-read bitor 16 bits ;
+
+! write 16 bit value into DPTR
+: >DPTR ( w cpu -- )
+    [ dup 15 8 bit-range ] dip [ RAM_DPH ] dip [ ram>> ram-direct-write ] keep
+    [ 7 0 bit-range ] dip [ RAM_DPL ] dip ram>> ram-direct-write ;
     
 ! read the data from rom
 : rom-read ( a cpu -- d )
@@ -1186,14 +1191,15 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ >A ] keep pc+ ;
     
  
-! MOV A,@R0
+! MOV @R0,#data
 : (opcode-76) ( cpu -- )
-    [ @R0> ] keep [ >A ] keep pc+ ;
-    
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >@R0 ] keep pc+ ;
  
-! MOV A,@R1
+! MOV @R1,#data
 : (opcode-77) ( cpu -- )
-    [ @R1> ] keep [ >A ] keep pc+ ; 
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >@R1 ] keep pc+ ;
  
 ! MOV A,R0
 : (opcode-78) ( cpu -- )
@@ -1481,7 +1487,43 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ psw>> >psw-cy ] keep
     pc+ ;    
     
+! INC DPTR
+: (opcode-A3) ( cpu -- )
+    [ DPTR> ] keep
+    [ 1 + ] dip
+    [ >DPTR ] keep
+    pc+ ;
     
+
+! MUL AB
+: (opcode-A4) ( cpu -- )
+    [ A> ] keep [ B> ] keep [ psw>> psw-mul ] keep
+    [ >B ] keep [ >A ] keep pc+ ;
+    
+: (opcode-A5) ( cpu -- )
+    (opcode-00) ;
+
+
+! MOV @R0,direct
+: (opcode-A6) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ >@R0 ] keep pc+ ;
+
+! MOV @R0,direct
+: (opcode-A7) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ >@R1 ] keep pc+ ;   
+
+    
+! MOV A,@R0
+: (opcode-E6) ( cpu -- )
+    [ @R0> ] keep [ >A ] keep pc+ ;
+    
+ 
+! MOV A,@R1
+: (opcode-E7) ( cpu -- )
+    [ @R1> ] keep [ >A ] keep pc+ ; 
+ 
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
