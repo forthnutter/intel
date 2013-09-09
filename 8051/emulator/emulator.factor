@@ -1514,15 +1514,84 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
     [ >@R1 ] keep pc+ ;   
 
-    
+! MOV A,R0
+: (opcode-A8) ( cpu -- )
+    [ R0> ] keep
+    [ >A ] keep pc+ ;
+
+! MOV A,R1
+: (opcode-A9) ( cpu -- )
+    [ R1> ] keep
+    [ >A ] keep pc+ ;
+
+! MOV A,R2
+: (opcode-AA) ( cpu -- )
+    [ R2> ] keep
+    [ >A ] keep pc+ ;
+
+! MOV A,R3
+: (opcode-AB) ( cpu -- )
+    [ R3> ] keep
+    [ >A ] keep pc+ ;
+
+! MOV A,R4
+: (opcode-AC) ( cpu -- )
+    [ R4> ] keep
+    [ >A ] keep pc+ ;
+
+! MOV A,R5
+: (opcode-AD) ( cpu -- )
+    [ R5> ] keep
+    [ >A ] keep pc+ ;
+
+! MOV A,R6
+: (opcode-AE) ( cpu -- )
+    [ R6> ] keep
+    [ >A ] keep pc+ ;
+
+! MOV A,R7
+: (opcode-AF) ( cpu -- )
+    [ R7> ] keep
+    [ >A ] keep pc+ ;
+
+! ANL C,/bit
+: (opcode-B0) ( cpu -- )
+    [ psw>> psw-cy? not ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-bitstatus ] keep
+    [ and ] dip
+    [ psw>> >psw-cy ] keep
+    pc+ ;
+
+: (opcode-B1) ( cpu -- )
+    (opcode-91) ;
+
+! CPL bit
+: (opcode-B2) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-bitstatus ] keep swap
+    [
+        [ rom-pcread ] keep
+        [ ram>> ram-bitclr ] keep
+    ]
+    [
+        [ rom-pcread ] keep
+        [ ram>> ram-bitset ] keep
+    ] if
+    pc+ ;
+
+
 ! MOV A,@R0
 : (opcode-E6) ( cpu -- )
     [ @R0> ] keep [ >A ] keep pc+ ;
-    
- 
+
+
 ! MOV A,@R1
 : (opcode-E7) ( cpu -- )
-    [ @R1> ] keep [ >A ] keep pc+ ; 
+    [ @R1> ] keep [ >A ] keep pc+ ;
+
+
+
  
 : emu-test ( -- c )
   break
