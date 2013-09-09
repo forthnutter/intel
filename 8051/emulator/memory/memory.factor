@@ -57,7 +57,7 @@ TUPLE: ram array sfr ;
     [ swap 2 0 bit-range set-bit ] dip set-model ;
     
 : >ram-bit ( ? ba ram -- )
-    rot [ ram-bitset ] [ ram-bitclear ] if ;
+    rot [ ram-bitset ] [ ram-bitclr ] if ;
 
 ! for general testing ram fill
 : ram-fill ( b ram -- )
