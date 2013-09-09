@@ -379,7 +379,7 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
   swap
   [
     [ rom-pcread ] keep
-    [ ram>> ram-bitclear ] keep
+    [ ram>> ram-bitclr ] keep
     [ pc+ ] keep
     [ rom-pcread ] keep
     [ pc+ ] keep
@@ -1579,6 +1579,35 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
         [ ram>> ram-bitset ] keep
     ] if
     pc+ ;
+
+! CPL C
+: (opcode-B3) ( cpu -- )
+    [ psw>> psw-cy? not ] keep
+    [ psw>> >psw-cy ] keep
+    pc+ ;
+
+! CJNE A,#data,rel
+! (PC) ← (PC) + 3
+! IF (A) < > data THEN (PC) ← (PC) + relative offset
+! IF (A) < data THEN (C) ← 1 ELSE(C) ← 0
+: (opcode-B4) ( cpu -- )
+    [ A> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ A> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
 
 
 ! MOV A,@R0
