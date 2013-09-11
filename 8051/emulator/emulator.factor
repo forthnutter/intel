@@ -237,7 +237,7 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 : readromword ( address cpu -- dddd )
   [ rom>> ?nth 8 shift ] 2keep swap 1 + swap rom>> ?nth bitor 16 bits ;
 
-
+! calculate the relative address
 : relative ( n a -- na )
   swap 8 >signed +
   15 0 bit-range
@@ -1596,6 +1596,215 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ = ] dip swap
     [
         [ A> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE A,direct,rel
+: (opcode-B5) ( cpu -- )
+    [ A> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ = ] dip swap
+    [
+        [ A> ] keep
+        [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;    
+
+! CJNE @R0,data,rel
+: (opcode-B6) ( cpu -- )
+    [ @R0> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ @R0> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE @R1,data,rel
+: (opcode-B7) ( cpu -- )
+    [ @R1> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ @R1> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE R0,#data,rel
+: (opcode-B8) ( cpu -- )
+    [ R0> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ R0> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE R1,#data,rel
+: (opcode-B9) ( cpu -- )
+    [ R1> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ R1> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE R2,#data,rel
+: (opcode-BA) ( cpu -- )
+    [ R2> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ R2> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE R3,#data,rel
+: (opcode-BB) ( cpu -- )
+    [ R3> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ R3> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE R4,#data,rel
+: (opcode-BC) ( cpu -- )
+    [ R4> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ R4> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE R5,#data,rel
+: (opcode-BD) ( cpu -- )
+    [ R5> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ R5> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE R6,#data,rel
+: (opcode-BE) ( cpu -- )
+    [ R6> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ R6> ] keep
+        [ rom-pcread ] keep
+        [ < ] dip swap
+        [ [ psw>> psw-cy-set ] keep ]
+        [ [ psw>> psw-cy-clr ] keep ] if
+        [ pc+ ] keep pc+
+    ]
+    [
+        [ pc+ ] keep [ rom-pcread ] keep
+        [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! CJNE R7,#data,rel
+: (opcode-BF) ( cpu -- )
+    [ R7> ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ = ] dip swap
+    [
+        [ R7> ] keep
         [ rom-pcread ] keep
         [ < ] dip swap
         [ [ psw>> psw-cy-set ] keep ]
