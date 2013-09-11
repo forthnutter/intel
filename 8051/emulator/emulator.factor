@@ -1818,6 +1818,30 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     ] if ;
 
 
+! PUSH direct
+: (opcode-C0) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ sp-push ] keep
+    pc+ ;
+
+: (opcode-C1) ( cpu -- )
+    (opcode-A1) ;
+
+! CLR bit
+: (opcode-C2) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-bitclr ] keep
+    pc+ ;
+
+! CLR C
+: (opcode-C3) ( cpu -- )
+    [ psw>> psw-cy-clr ] keep pc+ ;
+
+! SWAP A
+: (opcode-C4) ( cpu -- )
+    [ A> ] keep [ [ 7 4 bit-range ] keep 3 0 bit-range 4 shift bitor 8 bits ] dip
+    [ >A ] keep pc+ ;
+
 
 ! MOV A,@R0
 : (opcode-E6) ( cpu -- )
