@@ -70,6 +70,10 @@ TUPLE: psw < model ;
 : >psw-ac ( ? psw -- )
     swap [ psw-ac-set ] [ psw-ac-clr ] if ;
 
+: psw-ac? ( psw -- ? )
+    dup psw?
+    [ value>> 6 bit? ]
+    [ drop f ] if ;
 
 : psw-f0-set ( psw -- )
     dup psw?
@@ -278,14 +282,13 @@ TUPLE: psw < model ;
 : psw-decimaladjust ( a psw -- b )
     [ dup ] dip
     [ 3 0 bit-range ] dip
-    [ > 9 ] dip [ psw-cy? ] keep
+    [ 9 > ] dip [ psw-ac? ] keep
     [ or ] dip
-    [
-        6 +
-    ] when
+    [ [ 6 + ] when ] dip
+    [ dup ] dip
+    [ 11 4 bit-range ] dip
+    [ 9 > ] dip [ psw-cy? ] keep [ or ] dip
+    [ [ 0x60 + ] when ] dip
+    [ dup 0x99 > ] dip swap
+    [ psw-cy-set 8 bits ] [ drop 8 bits ] if ;
 
-    if ((result & 0xff0) > 0x90 || (PSW & PSWMASK_C))
-        result += 0x60;
-    if (result > 0x99)
-        PSW |= PSWMASK_C;
-    ACC = result;   
