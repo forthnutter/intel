@@ -1958,6 +1958,12 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ >A ] keep
     pc+ ;
 
+! DJNZ direct,rel
+: (opcode-D5) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ 1 - 8 bits dup ] dip [ rom-pcread ] keep [ ram>> ram-direct-write ] keep
+    [ 0 = ] dip ;
+
 
 ! MOV A,@R0
 : (opcode-E6) ( cpu -- )
