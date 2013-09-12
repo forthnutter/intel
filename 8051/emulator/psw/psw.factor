@@ -271,3 +271,21 @@ TUPLE: psw < model ;
     [
         dup psw-ov-clr psw-cy-clr
     ] if ;
+
+! data sheets for this operation are a bit unclear..
+! - should AC (or C) ever be cleared?
+! - should this be done in two steps?
+: psw-decimaladjust ( a psw -- b )
+    [ dup ] dip
+    [ 3 0 bit-range ] dip
+    [ > 9 ] dip [ psw-cy? ] keep
+    [ or ] dip
+    [
+        6 +
+    ] when
+
+    if ((result & 0xff0) > 0x90 || (PSW & PSWMASK_C))
+        result += 0x60;
+    if (result > 0x99)
+        PSW |= PSWMASK_C;
+    ACC = result;   
