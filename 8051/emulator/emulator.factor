@@ -1842,6 +1842,122 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
     [ A> ] keep [ [ 7 4 bit-range ] keep 3 0 bit-range 4 shift bitor 8 bits ] dip
     [ >A ] keep pc+ ;
 
+! XCH A,direct
+: (opcode-C5) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ rom-pcread ] keep [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+! XCH A,@R0
+: (opcode-C6) ( cpu -- )
+    [ @R0> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >@R0 ] keep
+    pc+ ;
+
+! XCH A,@R1
+: (opcode-C7) ( cpu -- )
+    [ @R1> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >@R1 ] keep
+    pc+ ;
+
+! XCH A,R0
+: (opcode-C8) ( cpu -- )
+    [ R0> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >R0 ] keep
+    pc+ ;
+
+! XCH A,R1
+: (opcode-C9) ( cpu -- )
+    [ R1> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >R1 ] keep
+    pc+ ;
+
+! XCH A,R2
+: (opcode-CA) ( cpu -- )
+    [ R2> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >R2 ] keep
+    pc+ ;
+
+! XCH A,R3
+: (opcode-CB) ( cpu -- )
+    [ R3> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >R3 ] keep
+    pc+ ;
+
+! XCH A,R4
+: (opcode-CC) ( cpu -- )
+    [ R4> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >R4 ] keep
+    pc+ ;
+
+! XCH A,R5
+: (opcode-CD) ( cpu -- )
+    [ R5> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >R5 ] keep
+    pc+ ;
+
+! XCH A,R6
+: (opcode-CE) ( cpu -- )
+    [ R6> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >R6 ] keep
+    pc+ ;
+
+! XCH A,R7
+: (opcode-CF) ( cpu -- )
+    [ R7> ] keep
+    [ A> ] keep [ swap ] dip
+    [ >A ] keep
+    [ >R7 ] keep
+    pc+ ;
+
+! POP direct
+: (opcode-D0) ( cpu -- )
+    [ sp-pop ] keep
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-write ] keep
+    pc+ ;
+
+: (opcode-D1) ( cpu -- )
+    (opcode-B1) ;
+
+
+! SETB bit
+: (opcode-D2) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-bitset ] keep
+    pc+ ;
+
+! SETB C
+: (opcode-D3) ( cpu -- )
+    [ psw>> psw-cy-set ] keep
+    pc+ ;
+
+! DA A
+: (opcode-D4) ( cpu -- )
+    [ A> ] keep
+    [ psw>> psw-decimaladjust ] keep
+    [ >A ] keep
+    pc+ ;
+
 
 ! MOV A,@R0
 : (opcode-E6) ( cpu -- )
