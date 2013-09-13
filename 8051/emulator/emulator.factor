@@ -1962,7 +1962,146 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 : (opcode-D5) ( cpu -- )
     [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
     [ 1 - 8 bits dup ] dip [ rom-pcread ] keep [ ram>> ram-direct-write ] keep
-    [ 0 = ] dip ;
+    [ 0 = ] dip swap
+    [
+        [ pc+ ] keep pc+
+    ]
+    [ 
+        [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! split 8 bits into 2 4 bits
+: nibble ( n -- hn ln )
+    8 bits [ 7 4 bit-range ] keep 3 0 bit-range ;
+
+! return the two 4 bit nibble back into on 8 bit
+: denibble ( hn ln -- n )
+    [ -4 shift ] dip bitor 8 bits ;
+
+
+! XCHD A,@R0
+: (opcode-D6) ( cpu -- )
+    [ @R0> nibble ] keep
+    [ A> nibble ] keep
+    [ swap [ swap ] dip swap ] dip
+    [ denibble ] dip [ >A ] keep
+    [ denibble ] dip [ >@R0 ] keep
+    pc+ ;
+
+! XCHD A,@R1
+: (opcode-D7) ( cpu -- )
+    [ @R1> nibble ] keep
+    [ A> nibble ] keep
+    [ swap [ swap ] dip swap ] dip
+    [ denibble ] dip [ >A ] keep
+    [ denibble ] dip [ >@R1 ] keep
+    pc+ ;
+
+! DJNZ R0,rel
+: (opcode-D8) ( cpu -- )
+    [ R0> ] keep
+    [ 1 - 8 bits dup ] dip [ >R0 ] keep
+    [ 0 = ] dip swap
+    [
+        [ pc+ ] keep pc+
+    ]
+    [ 
+        [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! DJNZ R1,rel
+: (opcode-D9) ( cpu -- )
+    [ R1> ] keep
+    [ 1 - 8 bits dup ] dip [ >R1 ] keep
+    [ 0 = ] dip swap
+    [
+        [ pc+ ] keep pc+
+    ]
+    [ 
+        [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! DJNZ R2,rel
+: (opcode-DA) ( cpu -- )
+    [ R2> ] keep
+    [ 1 - 8 bits dup ] dip [ >R2 ] keep
+    [ 0 = ] dip swap
+    [
+        [ pc+ ] keep pc+
+    ]
+    [ 
+        [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! DJNZ R3,rel
+: (opcode-DB) ( cpu -- )
+    [ R3> ] keep
+    [ 1 - 8 bits dup ] dip [ >R3 ] keep
+    [ 0 = ] dip swap
+    [
+        [ pc+ ] keep pc+
+    ]
+    [ 
+        [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! DJNZ R4,rel
+: (opcode-DC) ( cpu -- )
+    [ R4> ] keep
+    [ 1 - 8 bits dup ] dip [ >R4 ] keep
+    [ 0 = ] dip swap
+    [
+        [ pc+ ] keep pc+
+    ]
+    [ 
+        [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! DJNZ R5,rel
+: (opcode-DD) ( cpu -- )
+    [ R5> ] keep
+    [ 1 - 8 bits dup ] dip [ >R5 ] keep
+    [ 0 = ] dip swap
+    [
+        [ pc+ ] keep pc+
+    ]
+    [ 
+        [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! DJNZ R6,rel
+: (opcode-DE) ( cpu -- )
+    [ R6> ] keep
+    [ 1 - 8 bits dup ] dip [ >R6 ] keep
+    [ 0 = ] dip swap
+    [
+        [ pc+ ] keep pc+
+    ]
+    [ 
+        [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
+! DJNZ R7,rel
+: (opcode-DF) ( cpu -- )
+    [ R7> ] keep
+    [ 1 - 8 bits dup ] dip [ >R7 ] keep
+    [ 0 = ] dip swap
+    [
+        [ pc+ ] keep pc+
+    ]
+    [ 
+        [ pc+ ] keep [ rom-pcread ] keep [ pc+ ] keep
+        [ pc>> relative ] keep pc<<
+    ] if ;
+
 
 
 ! MOV A,@R0
