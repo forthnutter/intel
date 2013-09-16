@@ -17,6 +17,12 @@ TUPLE: cell < model ;
     cell new-model
     ;
 
+GENERIC: read ( object -- n )
+GENERIC: write ( n object -- )
+
+M: cell read value>> ;
+
+M: cell write set-model ;
 
 TUPLE: ram array sfr ext ;
 
@@ -26,8 +32,8 @@ TUPLE: ram array sfr ext ;
     >>array
     128 0 <array> [ <cell> ] map
     >>sfr
-    0x10000 0 array [ <cell> ] map
-    >> ext ;
+    0x10000 0 <array> [ <cell> ] map
+    >>ext ;
 
 
 ! return ram cell
@@ -48,7 +54,7 @@ TUPLE: ram array sfr ext ;
 
     
 : ram-bitstatus ( ba ram -- ? )
-    [ ram-bitcell ram-cellvalue ] 2keep
+    [ ram-bitcell read ] 2keep  ! ram-cellvalue ] 2keep
     drop 2 0 bit-range bit? ;
 
 : ram-bitclr ( ba ram -- )
@@ -123,7 +129,7 @@ TUPLE: ram array sfr ext ;
     
  ! External memory
 : ext-read ( address ram -- n )
-    ext-cell ext-cell-read ;
+    ext-cell read ;  ! ext-cell-read ;
 
 
     
