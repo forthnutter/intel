@@ -2102,7 +2102,9 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
         [ pc>> relative ] keep pc<<
     ] if ;
 
-
+! MOVX A,@DPTR
+: (opcode-E0) ( cpu -- )
+    
 
 ! MOV A,@R0
 : (opcode-E6) ( cpu -- )
