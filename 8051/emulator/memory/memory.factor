@@ -18,14 +18,17 @@ TUPLE: cell < model ;
     ;
 
 
-TUPLE: ram array sfr ;
+TUPLE: ram array sfr ext ;
 
 : <ram> ( -- ram )
     ram new
     256 0 <array> [ <cell> ] map
     >>array
     128 0 <array> [ <cell> ] map
-    >>sfr ;
+    >>sfr
+    0x10000 0 array [ <cell> ] map
+    >> ext ;
+
 
 ! return ram cell
 : ram-cell ( a ram -- cell/? )
@@ -111,5 +114,16 @@ TUPLE: ram array sfr ;
     ram-direct-cell
     dup cell?
     [ set-model ] [ drop drop ] if ;
+
+: ext-cell ( address ram -- cell )
+    ext>> ?nth ;
+
+: ext-cell-read ( cell -- n )
+    dup cell? [ value>> ] [ drop f ] if ;
     
- 
+ ! External memory
+: ext-read ( address ram -- n )
+    ext-cell ext-cell-read ;
+
+
+    
