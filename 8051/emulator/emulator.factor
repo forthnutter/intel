@@ -2104,7 +2104,28 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 
 ! MOVX A,@DPTR
 : (opcode-E0) ( cpu -- )
-    
+    [ DPTR> ] keep [ ram>> ext-read ] keep [ >A ] keep pc+ ;
+
+: (opcode-E1) ( cpu -- )
+    (opcode-C1) ;
+
+! MOVX A,@R0
+: (opcode-E2) ( cpu -- )
+    [ @R0> ] keep [ ram>> ext-read ] keep [ >A ] keep pc+ ;
+
+! MOVX A,@R1
+: (opcode-E3) ( cpu -- )
+    [ @R1> ] keep [ ram>> ext-read ] keep [ >A ] keep pc+ ;
+
+! CLR A
+: (opcode-E4) ( cpu -- )
+    [ 0 ] dip [ >A ] keep pc+ ;
+
+! MOV A,direct
+: (opcode-E5) ( cpu -- )
+    [ pc+ ] keep [ rom-pcread ] keep [ ram>> ram-direct-read ] keep
+    [ >A ] keep pc+ ;
+
 
 ! MOV A,@R0
 : (opcode-E6) ( cpu -- )
@@ -2115,9 +2136,38 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 : (opcode-E7) ( cpu -- )
     [ @R1> ] keep [ >A ] keep pc+ ;
 
+! MOV A,R0
+: (opcode-E8) ( cpu -- )
+    [ R0> ] keep [ >A ] keep pc+ ;
 
+! MOV A,R1
+: (opcode-E9) ( cpu -- )
+    [ R1> ] keep [ >A ] keep pc+ ;
 
+! MOV A,R2
+: (opcode-EA) ( cpu -- )
+    [ R2> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R3
+: (opcode-EB) ( cpu -- )
+    [ R3> ] keep [ >A ] keep pc+ ;
  
+! MOV A,R4
+: (opcode-EC) ( cpu -- )
+    [ R4> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R5
+: (opcode-ED) ( cpu -- )
+    [ R5> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R6
+: (opcode-EE) ( cpu -- )
+    [ R6> ] keep [ >A ] keep pc+ ;
+
+! MOV A,R7
+: (opcode-EF) ( cpu -- )
+    [ R7> ] keep [ >A ] keep pc+ ;
+
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
