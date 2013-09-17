@@ -124,12 +124,12 @@ TUPLE: ram array sfr ext ;
 : ext-cell ( address ram -- cell )
     ext>> ?nth ;
 
-: ext-cell-read ( cell -- n )
-    dup cell? [ value>> ] [ drop f ] if ;
-    
- ! External memory
+! External memory
 : ext-read ( address ram -- n )
     ext-cell read ;  ! ext-cell-read ;
 
+! external memory write
+: ext-write ( n address ram -- )
+    ext-cell write ;
 
     
