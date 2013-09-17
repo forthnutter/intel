@@ -2168,6 +2168,70 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 : (opcode-EF) ( cpu -- )
     [ R7> ] keep [ >A ] keep pc+ ;
 
+! MOVX @DPTR,A
+: (opcode-F0) ( cpu -- )
+    [ A> ] keep [ DPTR> ] keep [ ram>> ext-write ] keep pc+ ;
+
+: (opcde-F1) ( cpu -- )
+    (opcode-D1) ;
+
+! MOVX @R0,A
+: (opcode-F2) ( cpu -- )
+    [ A> ] keep [ R0> ] keep [ ram>> ext-write ] keep pc+ ;
+
+! MOVX @R1,A
+: (opcode-F3) ( cpu -- )
+    [ A> ] keep [ R1> ] keep [ ram>> ext-write ] keep pc+ ;
+
+! CPL A
+: (opcode-F4) ( cpu -- )
+    [ A> ] keep [ bitnot 8 bits ] dip [ >A ] keep pc+ ;
+
+! MOV direct,A
+: (opcode-F5) ( cpu -- )
+    [ A> ] keep [ pc+ ] keep [ rom-pcread ] keep
+    [ ram>> ram-direct-write ] keep pc+ ;
+
+! MOV @R0,A
+: (opcode-F6) ( cpu -- )
+    [ A> ] keep [ >@R0 ] keep pc+ ;
+
+! MOV @R1,A
+: (opcode-F7) ( cpu -- )
+    [ A> ] keep [ >@R1 ] keep pc+ ;
+
+! MOV R0,A
+: (opcode-F8) ( cpu -- )
+    [ A> ] keep [ >R0 ] keep pc+ ;
+
+! MOV R1,A
+: (opcode-F9) ( cpu -- )
+    [ A> ] keep [ >R1 ] keep pc+ ;
+
+! MOV R2,A
+: (opcode-FA) ( cpu -- )
+    [ A> ] keep [ >R2 ] keep pc+ ;
+
+! MOV R3,A
+: (opcode-FB) ( cpu -- )
+    [ A> ] keep [ >R3 ] keep pc+ ;
+
+! MOV R4,A
+: (opcode-FC) ( cpu -- )
+    [ A> ] keep [ >R4 ] keep pc+ ;
+
+! MOV R5,A
+: (opcode-FD) ( cpu -- )
+    [ A> ] keep [ >R5 ] keep pc+ ;
+
+! MOV R6,A
+: (opcode-FE) ( cpu -- )
+    [ A> ] keep [ >R6 ] keep pc+ ;
+
+! MOV R7,A
+: (opcode-FF) ( cpu -- )
+    [ A> ] keep [ >R7 ] keep pc+ ;
+
 : emu-test ( -- c )
   break
   "work/intel/hex/EZSHOT.HEX"
