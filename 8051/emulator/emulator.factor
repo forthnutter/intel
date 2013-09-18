@@ -14,27 +14,8 @@ IN: intel.8051.emulator
 
 
 
-TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
+TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 
-: <cpu> ( -- cpu )
-  cpu new
-  f >>hp    ! High Priority Interrupt
-  f >>lp    ! Low Priority Interrupt
-  0 >>pc
-  0 >>b
-  0 <psw> >>psw
-  0 >>dptr
-  0 >>sp
-  <ram> >>ram
-!  <reg> >>reg
-;
-
-! read 8 bit from RAM
-! : ram-readbyte ( address cpu -- dd )
-!  ram>> ram-read ;
-
-! : ram-writebyte ( dd address cpu -- )
-!  ram>> ram-write ;
 
 ! write to ACC
 : >A ( b cpu -- )
@@ -2231,6 +2212,20 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram ;
 ! MOV R7,A
 : (opcode-FF) ( cpu -- )
     [ A> ] keep [ >R7 ] keep pc+ ;
+
+: <cpu> ( -- cpu )
+    cpu new
+    f >>hp    ! High Priority Interrupt
+    f >>lp    ! Low Priority Interrupt
+    0 >>pc
+    0 >>b
+    0 <psw> >>psw
+    0 >>dptr
+    0 >>sp
+    <ram> >>ram
+    256 [ not-implemented ] <array> >>opcodes
+;
+
 
 : emu-test ( -- c )
   break
