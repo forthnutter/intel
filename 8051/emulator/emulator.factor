@@ -2153,7 +2153,7 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 : (opcode-F0) ( cpu -- )
     [ A> ] keep [ DPTR> ] keep [ ram>> ext-write ] keep pc+ ;
 
-: (opcde-F1) ( cpu -- )
+: (opcode-F1) ( cpu -- )
     (opcode-D1) ;
 
 ! MOVX @R0,A
