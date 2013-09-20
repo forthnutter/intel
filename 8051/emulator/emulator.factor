@@ -245,18 +245,6 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 : not-implemented ( cpu -- )
   drop ;
 
-: instructions ( -- vector )
-  \ instructions get-global
-  [
-    ! make sure we always return with array
-    256 [ not-implemented ] <array> \ instructions set-global
-  ] unless
-  \ instructions get-global ;
-
-: set-instruction ( quot n -- )
-  instructions set-nth ;
-
-
 ! NOP Instruction
 : (opcode-00) ( cpu -- )
   pc+ ;
