@@ -4,10 +4,15 @@
 
 USING:
     accessors kernel intel.8051.emulator intel.hex sequences tools.continuations
-    math.parser unicode.case words quotations
+    math.parser unicode.case words quotations io
 ;
 
 IN: intel.8051
+
+
+! execute one instruction
+: execute-opcode ( cpu -- )
+    [ pc>> ] keep [ opcodes>> nth ] keep swap call( cpu -- ) ;
 
 
 ! generate the opcode array here
