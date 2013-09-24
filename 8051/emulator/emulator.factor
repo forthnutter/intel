@@ -1638,13 +1638,12 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 : (opcode-B8) ( cpu -- )
     [ R0> ] keep
     [ pc+ ] keep [ rom-pcread ] keep
+    [ < ] dip swap
+    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
+    [ R0> ] keep
+    [ rom-pcread ] keep
     [ = ] dip swap
     [
-        [ R0> ] keep
-        [ rom-pcread ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
         [ pc+ ] keep pc+
     ]
     [
@@ -1657,13 +1656,12 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 : (opcode-B9) ( cpu -- )
     [ R1> ] keep
     [ pc+ ] keep [ rom-pcread ] keep
+    [ < ] dip swap
+    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
+    [ R1> ] keep
+    [ rom-pcread ] keep
     [ = ] dip swap
     [
-        [ R1> ] keep
-        [ rom-pcread ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
         [ pc+ ] keep pc+
     ]
     [
@@ -1675,14 +1673,13 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 ! CJNE R2,#data,rel
 : (opcode-BA) ( cpu -- )
     [ R2> ] keep
-    [ pc+ ] keep [ rom-pcread ] keep
+    [ pc+ ] [ rom-pcread ] keep
+    [ < ] dip swap
+    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
+    [ R2> ] keep
+    [ rom-pcread ] keep
     [ = ] dip swap
     [
-        [ R2> ] keep
-        [ rom-pcread ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
         [ pc+ ] keep pc+
     ]
     [
@@ -1751,14 +1748,13 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 ! CJNE R6,#data,rel
 : (opcode-BE) ( cpu -- )
     [ R6> ] keep
+    [ rom-pcread ] keep
+    [ < ] dip swap
+    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
+    [ R6> ] keep
     [ pc+ ] keep [ rom-pcread ] keep
     [ = ] dip swap
     [
-        [ R6> ] keep
-        [ rom-pcread ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
         [ pc+ ] keep pc+
     ]
     [
