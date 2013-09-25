@@ -1172,37 +1172,45 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
     [ pc+ ] keep [ rom-pcread ] keep
     [ >@R1 ] keep pc+ ;
  
-! MOV A,R0
+! MOV R0,#data
 : (opcode-78) ( cpu -- )
-    [ R0> ] keep [ >A ] keep pc+ ;
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >R0 ] keep pc+ ;
 
-! MOV A,R1
+! MOV R1,#data
 : (opcode-79) ( cpu -- )
-    [ R1> ] keep [ >A ] keep pc+ ;   
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >R1 ] keep pc+ ;   
 
-! MOV A,R2
+! MOV R2,#data
 : (opcode-7A) ( cpu -- )
-    [ R2> ] keep [ >A ] keep pc+ ;
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >R2 ] keep pc+ ;
 
-! MOV A,R3
+! MOV R3,#data
 : (opcode-7B) ( cpu -- )
-    [ R3> ] keep [ >A ] keep pc+ ;
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >R3 ] keep pc+ ;
 
-! MOV A,R4
+! MOV R4,#data
 : (opcode-7C) ( cpu -- )
-    [ R4> ] keep [ >A ] keep pc+ ;
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >R4 ] keep pc+ ;
 
-! MOV A,R5
+! MOV R5,#data
 : (opcode-7D) ( cpu -- )
-    [ R5> ] keep [ >A ] keep pc+ ;
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >R5 ] keep pc+ ;
 
-! MOV A,R6
+! MOV R6,#data
 : (opcode-7E) ( cpu -- )
-    [ R6> ] keep [ >A ] keep pc+ ;
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >R6 ] keep pc+ ;
 
-! MOV A,R7
+! MOV R7,#data
 : (opcode-7F) ( cpu -- )
-    [ R7> ] keep [ >A ] keep pc+ ;
+    [ pc+ ] keep [ rom-pcread ] keep
+    [ >R7 ] keep pc+ ;
 
 ! SJMP rel
 : (opcode-80) ( cpu -- )
