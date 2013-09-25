@@ -1153,11 +1153,13 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 : (opcode-74) ( cpu -- )
     [ pc+ ] keep [ rom-pcread ] keep [ >A ] keep pc+ ;
     
-! MOV A,direct
+! MOV direct,#data
 : (opcode-75) ( cpu -- )
-    [ pc+ ] keep [ rom-pcread ] keep
-    [ ram>> ram-direct-read ] keep
-    [ >A ] keep pc+ ;
+    [ pc+ ] keep [ rom-pcread ] keep    ! Direct Address
+    [ pc+ ] keep [ rom-pcread ] keep    ! imediate data
+    [ swap ] dip
+    [ ram>> ram-direct-write ] keep
+    pc+ ;
     
  
 ! MOV @R0,#data
@@ -1673,7 +1675,7 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 ! CJNE R2,#data,rel
 : (opcode-BA) ( cpu -- )
     [ R2> ] keep
-    [ pc+ ] [ rom-pcread ] keep
+    [ pc+ ] keep [ rom-pcread ] keep
     [ < ] dip swap
     [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
     [ R2> ] keep
@@ -1692,13 +1694,12 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 : (opcode-BB) ( cpu -- )
     [ R3> ] keep
     [ pc+ ] keep [ rom-pcread ] keep
+    [ < ] dip swap
+    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
+    [ R3> ] keep
+    [ rom-pcread ] keep
     [ = ] dip swap
     [
-        [ R3> ] keep
-        [ rom-pcread ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
         [ pc+ ] keep pc+
     ]
     [
@@ -1711,13 +1712,12 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 : (opcode-BC) ( cpu -- )
     [ R4> ] keep
     [ pc+ ] keep [ rom-pcread ] keep
+    [ < ] dip swap
+    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
+    [ R4> ] keep
+    [ rom-pcread ] keep
     [ = ] dip swap
     [
-        [ R4> ] keep
-        [ rom-pcread ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
         [ pc+ ] keep pc+
     ]
     [
@@ -1730,13 +1730,12 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 : (opcode-BD) ( cpu -- )
     [ R5> ] keep
     [ pc+ ] keep [ rom-pcread ] keep
+    [ < ] dip swap
+    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
+    [ R5> ] keep
+    [ rom-pcread ] keep
     [ = ] dip swap
     [
-        [ R5> ] keep
-        [ rom-pcread ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
         [ pc+ ] keep pc+
     ]
     [
@@ -1767,13 +1766,12 @@ TUPLE: cpu hp lp b psw dptr sp pc rom ram opcodes ;
 : (opcode-BF) ( cpu -- )
     [ R7> ] keep
     [ pc+ ] keep [ rom-pcread ] keep
+    [ < ] dip swap
+    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
+    [ R7> ] keep
+    [ rom-pcread ] keep
     [ = ] dip swap
     [
-        [ R7> ] keep
-        [ rom-pcread ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
         [ pc+ ] keep pc+
     ]
     [
