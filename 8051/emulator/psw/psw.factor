@@ -292,3 +292,6 @@ TUPLE: psw < model ;
     [ dup 0x99 > ] dip swap
     [ psw-cy-set 8 bits ] [ drop 8 bits ] if ;
 
+! return the binary string of psw
+: psw-binary ( psw -- b )
+;
