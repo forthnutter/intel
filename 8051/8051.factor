@@ -12,7 +12,7 @@ IN: intel.8051
 
 ! execute one instruction
 : execute-opcode ( cpu -- )
-    [ pc>> ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
+    [ rom-pcread ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
 
 
 ! generate the opcode array here
