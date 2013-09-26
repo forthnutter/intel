@@ -24,12 +24,13 @@ M: cell read value>> ;
 
 M: cell write set-model ;
 
-TUPLE: ram array sfr ext ;
+TUPLE: memory ram sfr ext ;
 
-: <ram> ( -- ram )
-    ram new
+! create a memory tuple
+: <memory> ( -- memory )
+    memory new
     256 0 <array> [ <cell> ] map
-    >>array
+    >>ram
     128 0 <array> [ <cell> ] map
     >>sfr
     0x10000 0 <array> [ <cell> ] map
@@ -37,8 +38,8 @@ TUPLE: ram array sfr ext ;
 
 
 ! return ram cell
-: ram-cell ( a ram -- cell/? )
-    array>> ?nth ;
+: ram-cell ( a memory -- cell/? )
+    ram>> ?nth ;
 
 
 
@@ -47,44 +48,41 @@ TUPLE: ram array sfr ext ;
     dup cell? [ value>> ] [ drop f ] if ;
 
 ! return the cell or address of bit
-: ram-bitcell ( ba ram -- cell )
+: ram-bitcell ( ba memory -- cell )
     swap dup 0x7f >
     [ 7 3 bit-range swap ram-cell ] [ 7 3 bit-range 0x20 + swap ram-cell ] if
 ;
 
     
-: ram-bitstatus ( ba ram -- ? )
+: ram-bitstatus ( ba memory -- ? )
     [ ram-bitcell read ] 2keep  ! ram-cellvalue ] 2keep
     drop 2 0 bit-range bit? ;
 
-: ram-bitclr ( ba ram -- )
+: ram-bitclr ( ba memory -- )
     2dup ram-bitcell swap drop [ ram-cellvalue ] keep
     [ swap 2 0 bit-range clear-bit ] dip set-model ;
     
-: ram-bitset ( ba ram -- )
+: ram-bitset ( ba memory -- )
     2dup ram-bitcell swap drop [ ram-cellvalue ] keep
     [ swap 2 0 bit-range set-bit ] dip set-model ;
     
-: >ram-bit ( ? ba ram -- )
+: >ram-bit ( ? ba memory -- )
     rot [ ram-bitset ] [ ram-bitclr ] if ;
 
 ! for general testing ram fill
-: ram-fill ( b ram -- )
-    array>>
-    swap [ swap set-model ] curry each
-   
-    ;
+: ram-fill ( b memory -- )
+    ram>> swap [ swap set-model ] curry each ;
 
-: sfr-cell ( a ram -- cell/? )
+: sfr-cell ( a memory -- cell/? )
    sfr>> ?nth ;
 
-: sfr-write ( b a ram -- )
+: sfr-write ( b a memory -- )
     sfr-cell dup
     [ dup cell? [ set-model ] [ drop drop ] if ]
     [ drop drop ] if
     ;
 
-: sfr-read ( address ram -- n )
+: sfr-read ( address memory -- n )
     sfr-cell dup
     [ dup cell? [ value>> ] [ ] if ]
     [ drop 0 ]
@@ -92,44 +90,48 @@ TUPLE: ram array sfr ext ;
 
 
 
-: ram-indirect-read ( address ram -- n )
+: ram-indirect-read ( address memory -- n )
     ram-cell dup
     [ dup cell? [ value>> ] [ ] if ]
     [ drop 0 ]
     if ;
 
-: ram-direct-cell ( address ram -- cell/? )
+: ram-direct-cell ( address memory -- cell/? )
     [ dup 0x80 < ] dip swap
     [ ram-cell ] [ [ 0x80 - ] dip sfr-cell ] if ; 
     
     
-: ram-direct-read ( address ram -- n )
+: ram-direct-read ( address memory -- n )
     ram-direct-cell
     dup cell?
     [ value>> ] [ drop 0 ] if ;
 
 
-: ram-indirect-write ( n address ram -- )
+: ram-indirect-write ( n address memory -- )
     ram-cell dup
     [ dup cell? [ set-model ] [ drop drop ] if ]
     [ drop drop ] if
     ;
 
 
-: ram-direct-write ( n address ram -- )
+: ram-direct-write ( n address memory -- )
     ram-direct-cell
     dup cell?
     [ set-model ] [ drop drop ] if ;
 
-: ext-cell ( address ram -- cell )
+: ext-cell ( address memory -- cell )
     ext>> ?nth ;
 
 ! External memory
-: ext-read ( address ram -- n )
+: ext-read ( address memory -- n )
     ext-cell read ;  ! ext-cell-read ;
 
 ! external memory write
-: ext-write ( n address ram -- )
+: ext-write ( n address memory -- )
     ext-cell write ;
+
+! Hex Dump into string RAM memory
+
+
 
     
