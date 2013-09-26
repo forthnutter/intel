@@ -3,7 +3,7 @@
 !
 
 USING: accessors arrays io io.encodings.binary io.files
-       kernel lexer math math.bitwise models namespaces sequences
+       kernel lexer math math.bitwise math.parser models namespaces sequences
        syntax tools.continuations ;
    
 IN: intel.8051.emulator.psw
@@ -293,5 +293,5 @@ TUPLE: psw < model ;
     [ psw-cy-set 8 bits ] [ drop 8 bits ] if ;
 
 ! return the binary string of psw
-: psw-binary ( psw -- b )
-;
+: psw-binary ( psw -- bs )
+    value>> >bin 8 CHAR: 0 pad-head ;
