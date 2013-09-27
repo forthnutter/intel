@@ -16,6 +16,14 @@ IN: intel.8051.emulator
 
 TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes ;
 
+! write to PSW
+: >PSW ( b cpu -- )
+    psw>> psw-write ;
+
+! read PSW
+: PSW> ( cpu -- b )
+    psw>> psw-read ;
+
 
 ! write to ACC
 : >A ( b cpu -- )
