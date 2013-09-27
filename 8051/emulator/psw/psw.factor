@@ -21,7 +21,15 @@ TUPLE: psw < model ;
 : <psw> ( value -- psw )
     psw new-model ;
 
+! PSW write
+: psw-write ( b psw -- )
+    [ 8 bits ] dip set-model ;
 
+! PSW read
+: psw-read ( psw -- b )
+    value>> 8 bits ;
+
+! set PSW CY Flag
 : psw-cy-set ( psw -- )
     dup psw?
     [
@@ -29,7 +37,7 @@ TUPLE: psw < model ;
     ]
     [ drop ] if ;
 
-
+! clear PSW CY flag
 : psw-cy-clr ( psw -- )
     dup psw?
     [
@@ -37,16 +45,17 @@ TUPLE: psw < model ;
     ]
     [ drop ] if ;
 
+! get CY bolean state
 : psw-cy? ( psw -- ? )
     dup psw?
     [ value>> 7 bit? ]
     [ drop f ] if ;
 
-! push b into cy
+! write bit into cy
 : >psw-cy ( ? psw -- )
     swap [ psw-cy-set ] [ psw-cy-clr ] if ;
 
-! return the carry flag status
+! get bit status of CY
 : psw-cy ( psw -- b )
     dup psw?
     [ value>> 7 7 bit-range ]
