@@ -3,8 +3,8 @@
 !
 
 USING:
-    accessors kernel intel.8051.emulator intel.hex sequences tools.continuations
-    math.parser unicode.case words quotations io
+    accessors kernel intel.8051.emulator intel.8051.emulator.psw 
+    intel.hex sequences tools.continuations math.parser unicode.case words quotations io
 ;
 
 IN: intel.8051
@@ -40,15 +40,28 @@ IN: intel.8051
     [ "PSW " ] dip
     [ PSW> ] keep [ >hex 2 CHAR: 0 pad-head append " " append ] dip
     [ PSW> ] keep [ >bin 8 CHAR: 0 pad-head append " " append ] dip
+    [ psw>> psw-cy? [ "CY " ] [ "-- " ] if append ] keep
+    [ psw>> psw-ac? [ "AC " ] [ "-- " ] if append ] keep
+    [ psw>> psw-f0? [ "F0 " ] [ "-- " ] if append ] keep
+    [ psw>> psw-br1? [ "B1 " ] [ "-- " ] if append ] keep
+    [ psw>> psw-br0? [ "B0 " ] [ "-- " ] if append ] keep
+    [ psw>> psw-ov? [ "OV " ] [ "-- " ] if append ] keep
+    [ psw>> psw-f1? [ "F1 " ] [ "-- " ] if append ] keep
+    [ psw>> psw-p? [ "P " ] [ "- " ] if append ] keep
+    [ "BANK " append ] dip
+    [ psw>> psw-bank-read number>string 3 32 pad-head append ] keep
     drop ;
 
+! print registers
+: print-registers ( cpu -- )
+    [ string-ab-reg ] keep [ print ] dip
+    [ string-psw-reg ] keep [ print ] dip
+    drop ;
 
 ! single step execute one instruction then displays all registers
 : single-step ( cpu -- )
     [ execute-opcode ] keep
-    [ string-ab-reg ] keep [ print ] dip
-    drop
-;
+    print-registers ;
 
 ! generate the opcode array here
 : opcode-build ( cpu -- )
