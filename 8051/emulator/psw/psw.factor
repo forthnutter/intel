@@ -98,6 +98,11 @@ TUPLE: psw < model ;
     ]
     [ drop ] if ;
 
+: psw-f0? ( psw -- ? )
+    dup psw?
+    [ value>> 5 bit? ]
+    [ drop f ] if ;
+
 : psw-br0-set ( psw -- )
     dup psw?
     [
@@ -112,6 +117,12 @@ TUPLE: psw < model ;
     ]
     [ drop ] if ;
 
+: psw-br0? ( psw -- ? )
+    dup psw?
+    [ value>> 3 bit? ]
+    [ drop f ] if ;
+
+
 : psw-br1-set ( psw -- )
     dup psw?
     [
@@ -125,6 +136,11 @@ TUPLE: psw < model ;
         [ value>> 4 clear-bit ] keep set-model
     ]
     [ drop ] if ;
+
+: psw-br1? ( psw -- ? )
+    dup psw?
+    [ value>> 4 bit? ]
+    [ drop f ] if ;
 
 : psw-bank0-set ( psw -- )
     dup psw?
@@ -166,7 +182,7 @@ TUPLE: psw < model ;
 : psw-ov-set ( psw -- )
     dup psw?
     [
-       [ value>> 7 set-bit ] keep set-model
+       [ value>> 2 set-bit ] keep set-model
     ]
     [ drop ] if ;
 
@@ -191,10 +207,46 @@ TUPLE: psw < model ;
 ! return the OV flag status
 : psw-ov ( psw -- b )
     dup psw?
-    [ value>> 7 7 bit-range ]
+    [ value>> 2 2 bit-range ]
     [ drop 0 ] if ;
     
-    
+ : psw-f1-set ( psw -- )
+    dup psw?
+    [
+        [ value>> 1 set-bit ] keep set-model
+    ]
+    [ drop ] if ;
+
+: psw-f1-clr ( psw -- )
+    dup psw?
+    [
+        [ value>> 1 clear-bit ] keep set-model
+    ]
+    [ drop ] if ;
+
+: psw-f1? ( psw -- ? )
+    dup psw?
+    [ value>> 1 bit? ]
+    [ drop f ] if ;
+
+: psw-p-set ( psw -- )
+    dup psw?
+    [
+        [ value>> 0 set-bit ] keep set-model
+    ]
+    [ drop ] if ;
+
+: psw-p-clr ( psw -- )
+    dup psw?
+    [
+        [ value>> 0 clear-bit ] keep set-model
+    ]
+    [ drop ] if ;
+
+: psw-p? ( psw -- ? )
+    dup psw?
+    [ value>> 0 bit? ]
+    [ drop f ] if ;
 
 ! RRC instruction affects the  flags so we do it here
 ! Rotate Right thrugh carry
