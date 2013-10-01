@@ -52,6 +52,7 @@ IN: intel.8051
     [ psw>> psw-bank-read number>string 3 32 pad-head append ] keep
     drop ;
 
+
 ! print registers
 : print-registers ( cpu -- )
     [ string-ab-reg ] keep [ print ] dip
