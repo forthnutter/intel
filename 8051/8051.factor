@@ -10,6 +10,8 @@ USING:
 IN: intel.8051
 
 
+! rom dump number of bytes
+
 ! execute one instruction
 : execute-opcode ( cpu -- )
     [ rom-pcread ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
@@ -52,11 +54,19 @@ IN: intel.8051
     [ psw>> psw-bank-read number>string 3 32 pad-head append ] keep
     drop ;
 
+! create a string for PC
+: string-pc-reg ( cpu -- s )
+    [ "PC " ] dip
+    [ pc>> >hex 4 CHAR: 0 pad-head append " " append ] keep
+    [ rom-pcread >hex 2 CHAR: 0 pad-head append " " append ] keep
+    drop ;
+
 
 ! print registers
 : print-registers ( cpu -- )
-    [ string-ab-reg ] keep [ print ] dip
-    [ string-psw-reg ] keep [ print ] dip
+    [ string-ab-reg print ] keep
+    [ string-psw-reg print ] keep
+    [ string-pc-reg print ] keep 
     drop ;
 
 ! single step execute one instruction then displays all registers
