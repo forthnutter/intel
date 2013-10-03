@@ -5,12 +5,27 @@
 USING:
     accessors kernel intel.8051.emulator intel.8051.emulator.psw 
     intel.hex sequences tools.continuations math.parser unicode.case words quotations io
+    math.bitwise math math.order
 ;
 
 IN: intel.8051
 
 
 ! rom dump number of bytes
+: hexdump-rom ( n address cpu -- str )
+    [
+        16 bits
+        [ dup 16 < ] dip
+        [ swap [ + ] [ drop 16 ] if ] keep
+        [ 16 bits ] dip
+        [ min ] [ max ] 2bi
+        2dup
+    ] dip 
+    rom>> subseq [ drop ] dip
+    [ >hex 4 CHAR: 0 pad-head " " append ] dip
+    [ >hex 3 CHAR: 0 pad-head " " append ] { } map-as
+
+    ;
 
 ! execute one instruction
 : execute-opcode ( cpu -- )
