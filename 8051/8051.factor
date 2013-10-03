@@ -16,14 +16,14 @@ IN: intel.8051
     [
         16 bits
         [ dup 16 < ] dip
-        [ swap [ + ] [ drop 16 ] if ] keep
+        [ swap [ + ] [ swap drop 16 + ] if ] keep
         [ 16 bits ] dip
         [ min ] [ max ] 2bi
         2dup
     ] dip 
     rom>> subseq [ drop ] dip
     [ >hex 4 CHAR: 0 pad-head " " append ] dip
-    [ >hex 3 CHAR: 0 pad-head " " append ] { } map-as
+    [ >hex 2 CHAR: 0 pad-head " " append ] { } map-as concat append
 
     ;
 
