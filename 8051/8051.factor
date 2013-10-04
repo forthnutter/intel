@@ -22,8 +22,8 @@ IN: intel.8051
         2dup
     ] dip 
     rom>> subseq [ drop ] dip
-    [ >hex 4 CHAR: 0 pad-head " " append ] dip
-    [ >hex 2 CHAR: 0 pad-head " " append ] { } map-as concat append
+    [ >hex 4 CHAR: 0 pad-head >upper " " append ] dip
+    [ >hex 2 CHAR: 0 pad-head >upper " " append ] { } map-as concat append
 
     ;
 
@@ -35,7 +35,7 @@ IN: intel.8051
 ! A HH BBBBBBBB DDD
 : string-a-reg ( cpu -- s )
     [ "A " ] dip
-    [ A> ] keep [ >hex 2 CHAR: 0 pad-head append " " append ] dip
+    [ A> ] keep [ >hex 2 CHAR: 0 pad-head >upper append " " append ] dip
     [ A> ] keep [ >bin 8 CHAR: 0 pad-head append " " append ] dip
     A> number>string 3 32 pad-head append ; 
 
@@ -43,7 +43,7 @@ IN: intel.8051
 ! B HH BBBBBBBB DDD
 : string-b-reg ( cpu -- s )
     [ "B " ] dip
-    [ B> ] keep [ >hex 2 CHAR: 0 pad-head append " " append ] dip
+    [ B> ] keep [ >hex 2 CHAR: 0 pad-head >upper append " " append ] dip
     [ B> ] keep [ >bin 8 CHAR: 0 pad-head append " " append ] dip
     B> number>string 3 32 pad-head append ;
 
@@ -55,7 +55,7 @@ IN: intel.8051
 ! build a string for PSW
 : string-psw-reg ( cpu -- s )
     [ "PSW " ] dip
-    [ PSW> ] keep [ >hex 2 CHAR: 0 pad-head append " " append ] dip
+    [ PSW> ] keep [ >hex 2 CHAR: 0 pad-head >upper append " " append ] dip
     [ PSW> ] keep [ >bin 8 CHAR: 0 pad-head append " " append ] dip
     [ psw>> psw-cy? [ "CY " ] [ "-- " ] if append ] keep
     [ psw>> psw-ac? [ "AC " ] [ "-- " ] if append ] keep
@@ -72,8 +72,7 @@ IN: intel.8051
 ! create a string for PC
 : string-pc-reg ( cpu -- s )
     [ "PC " ] dip
-    [ pc>> >hex 4 CHAR: 0 pad-head append " " append ] keep
-    [ rom-pcread >hex 2 CHAR: 0 pad-head append " " append ] keep
+    [ 1 ] dip [ pc>> ] keep [ hexdump-rom ] keep [ append ] dip
     drop ;
 
 
