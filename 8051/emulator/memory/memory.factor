@@ -130,7 +130,6 @@ TUPLE: memory ram sfr ext ;
 : ext-write ( n address memory -- )
     ext-cell write ;
 
-! Hex Dump into string RAM memory
 
 
 
