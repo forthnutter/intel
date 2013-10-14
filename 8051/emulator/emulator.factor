@@ -14,7 +14,7 @@ IN: intel.8051.emulator
 
 
 
-TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes ;
+TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles ;
 
 ! write to PSW
 : >PSW ( b cpu -- )
@@ -2210,6 +2210,20 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes ;
 ! MOV R7,A
 : (opcode-FF) ( cpu -- )
     [ A> ] keep [ >R7 ] keep pc+ ;
+
+: nbytes-seq ( -- seq )
+    {
+        1,2,3,1,1,2,1,1,1,1,1,1,1,1,1,1,
+        3,2,3,1,1,2,1,1,1,1,1,1,1,1,1,1,
+        3,2,1,1,2,2,1,1,1,1,1,1,1,1,1,1,
+        3,2,1,1,2,2,1,1,1,1,1,1,1,1,1,1,
+        2,2,2,3,2,2,1,1,1,1,1,1,1,1,1,1,
+        2,2,2,3,2,2,1,1,1,1,1,1,1,1,1,1,
+        2,2,2,3,3,3,1,1,1,1,1,1,1,1,1,1,
+        2,2,2,1,2,3,2,2,2,2,2,2,2,2,2,2,
+        2,2,2,1,1,3,2,2,2,2,2,2,2,2,2,2,
+    
+    } ;
 
 : <cpu> ( -- cpu )
     cpu new
