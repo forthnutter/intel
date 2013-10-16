@@ -72,7 +72,8 @@ IN: intel.8051
 ! create a string for PC
 : string-pc-reg ( cpu -- s )
     [ "PC " ] dip
-    [ 1 ] dip [ pc>> ] keep [ hexdump-rom ] keep [ append ] dip
+    [ rom-pcread ] keep [ nbytes-seq nth ] dip
+    [ pc>> ] keep [ hexdump-rom ] keep [ append ] dip
     drop ;
 
 
