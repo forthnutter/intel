@@ -29,7 +29,7 @@ IN: intel.8051
 
 ! execute one instruction
 : execute-opcode ( cpu -- )
-    [ rom-pcread ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
+    [ rom-pc-read ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
 
 ! build string of register A
 ! A HH BBBBBBBB DDD
@@ -72,8 +72,7 @@ IN: intel.8051
 ! create a string for PC
 : string-pc-reg ( cpu -- s )
     [ "PC " ] dip
-    [ rom-pcread ] keep [ nbytes-seq nth ] dip
-    [ pc>> ] keep [ hexdump-rom ] keep [ append ] dip
+    [ rom-pc-nbytes ] keep [ pc>> ] keep [ hexdump-rom ] keep [ append ] dip
     drop ;
 
 
