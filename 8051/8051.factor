@@ -88,18 +88,6 @@ IN: intel.8051
     [ execute-opcode ] keep
     print-registers ;
 
-! generate the opcode array here
-: opcode-build ( cpu -- )
-    opcodes>> dup
-    [
-        [ drop ] dip
-        [
-            >hex 2 CHAR: 0 pad-head >upper
-            "(opcode-" swap append ")" append
-            "intel.8051.emulator" lookup-word 1quotation
-        ] keep
-        [ swap ] dip swap [ set-nth ] keep
-    ] each-index drop ;
 
 : start-test ( -- cpu )
     "work/intel/hex/EZSHOT.HEX" <ihex> array>>
