@@ -6,8 +6,8 @@ USING: accessors arrays io io.encodings.binary io.files
        intel.hex
        kernel lexer intel.8051.emulator.psw intel.8051.emulator.register
        intel.8051.emulator.memory
-       math math.bitwise namespaces sequences
-       tools.continuations ;
+       math math.bitwise math.parser namespaces quotations sequences
+       tools.continuations unicode.case words ;
 
 
 IN: intel.8051.emulator
@@ -2262,6 +2262,21 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles ;
 ! MOV R7,A
 : (opcode-FF) ( cpu -- )
     [ A> ] keep [ >R7 ] keep pc+ ;
+
+
+
+! generate the opcode array here
+: opcode-build ( cpu -- )
+    opcodes>> dup
+    [
+        [ drop ] dip
+        [
+            >hex 2 CHAR: 0 pad-head >upper
+            "(opcode-" swap append ")" append
+            "intel.8051.emulator" lookup-word 1quotation
+        ] keep
+        [ swap ] dip swap [ set-nth ] keep
+    ] each-index drop ;
 
 
 : <cpu> ( -- cpu )
