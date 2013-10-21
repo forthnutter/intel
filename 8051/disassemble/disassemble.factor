@@ -464,1216 +464,640 @@ TUPLE: mnemonic code ;
 
 ! JZ
 ! if A = 0 jump rel
-: (opcode-60) ( cpu -- )
-  [ A> 0 = ] keep  ! carry bit
-  swap
-  [
-    [ pc+ ] keep
-    [ rom-pc-read ] keep
-    [ pc+ ] keep
-    [ pc>> relative ] keep pc<<
-  ]
-  [ [ pc+ ] keep pc+ ] if ;    
+: $(opcode-60) ( -- str )
+    "JZ" ;
 
 !
-: (opcode-61) ( cpu -- )
-    (opcode-41) ;
+: $(opcode-61) ( -- str )
+    $(opcode-41) ;
 
 
 ! XRL direct,A
-: (opcode-62) ( cpu -- )
-  [ pc+ ] keep [ rom-pc-read dup ] keep [ memory>> ram-direct-read ] keep
-  [ A> ] keep
-  [ bitxor 8 bits swap ] dip
-  [ memory>> ram-direct-write ] keep
-  pc+ ;
+: $(opcode-62) ( -- str )
+    "XRL ,A" ;
 
 ! XRL direct,#data
-: (opcode-63) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read dup ] keep [ memory>> ram-direct-read ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ bitxor 8 bits swap ] dip
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-63) ( cpu -- )
+;
 
 ! XRL A,#data
-: (opcode-64) ( cpu -- )
-    [ A> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;
+: $(opcode-64) ( cpu -- )
+;
 
 ! XRL A,direct
-: (opcode-65) ( cpu -- )
-    [ A> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;
+: $(opcode-65) ( cpu -- )
+;
 
 ! XRL A,@R0
-: (opcode-66) ( cpu -- )
-    [ A> ] keep
-    [ @R0> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;
+: $(opcode-66) ( cpu -- )
+;
     
 ! XRL A,@R1
-: (opcode-67) ( cpu -- )
-    [ A> ] keep
-    [ @R1> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;
-    
-    
+: $(opcode-67) ( cpu -- )
+;
+ 
 ! XRL A,R0
-: (opcode-68) ( cpu -- )
-    [ A> ] keep
-    [ R0> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;       
+: $(opcode-68) ( cpu -- )
+;
 
 ! XRL A,R1
-: (opcode-69) ( cpu -- )
-    [ A> ] keep
-    [ R1> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;           
+: $(opcode-69) ( cpu -- )
+;
 
 ! XRL A,R2
-: (opcode-6A) ( cpu -- )
-    [ A> ] keep
-    [ R2> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;
+: $(opcode-6A) ( cpu -- )
+;
 
 ! XRL A,R3
-: (opcode-6B) ( cpu -- )
-    [ A> ] keep
-    [ R3> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;           
+: $(opcode-6B) ( cpu -- )
+;
 
 ! XRL A,R4
-: (opcode-6C) ( cpu -- )
-    [ A> ] keep
-    [ R4> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;       
+: $(opcode-6C) ( cpu -- )
+;
 
 ! XRL A,R5
-: (opcode-6D) ( cpu -- )
-    [ A> ] keep
-    [ R5> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;    
+: $(opcode-6D) ( cpu -- )
+;
     
 ! XRL A,R6
-: (opcode-6E) ( cpu -- )
-    [ A> ] keep
-    [ R6> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;           
+: $(opcode-6E) ( cpu -- )
+;
 
 ! XRL A,R7
-: (opcode-6F) ( cpu -- )
-    [ A> ] keep
-    [ R7> ] keep
-    [ bitxor 8 bits ] dip
-    [ >A ] keep
-    pc+ ;    
+: $(opcode-6F) ( cpu -- )
+;
 
 ! JNZ
 ! if A != 0 jump rel
-: (opcode-70) ( cpu -- )
-  [ A> 0 = ] keep  ! carry bit
-  swap
-  [ [ pc+ ] keep pc+ ]
-  [
-    [ pc+ ] keep
-    [ rom-pc-read ] keep
-    [ pc+ ] keep
-    [ pc>> relative ] keep pc<<
-  ] if ;  
+: $(opcode-70) ( cpu -- )
+;
 
-: (opcode-71) ( cpu -- )
-    (opcode-51) ;
+: $(opcode-71) ( cpu -- )
+    $(opcode-51) ;
 
 ! ORL C,bit
-: (opcode-72) ( cpu -- )
-    [ psw>> psw-cy? ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-bitstatus ] keep
-    [ or ] dip
-    [ psw>> >psw-cy ] keep
-    pc+ ;
+: $(opcode-72) ( cpu -- )
+;
 
 ! JMP @A+DPTR    
-: (opcode-73) ( cpu -- )
-    [ A> ] keep
-    [ DPTR> ] keep
-    [ + 16 bits ] dip pc<< ;
+: $(opcode-73) ( cpu -- )
+;
 
 ! MOV A,#data
-: (opcode-74) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep [ >A ] keep pc+ ;
+: $(opcode-74) ( cpu -- )
+;
     
 ! MOV direct,#data
-: (opcode-75) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep    ! Direct Address
-    [ pc+ ] keep [ rom-pc-read ] keep    ! imediate data
-    [ swap ] dip
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
-    
- 
+: $(opcode-75) ( cpu -- )
+;
+
 ! MOV @R0,#data
-: (opcode-76) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >@R0 ] keep pc+ ;
+: $(opcode-76) ( cpu -- )
+;
  
 ! MOV @R1,#data
-: (opcode-77) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >@R1 ] keep pc+ ;
+: $(opcode-77) ( cpu -- )
+;
  
 ! MOV R0,#data
-: (opcode-78) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >R0 ] keep pc+ ;
+: $(opcode-78) ( cpu -- )
+;
 
 ! MOV R1,#data
-: (opcode-79) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >R1 ] keep pc+ ;   
+: $(opcode-79) ( cpu -- )
+;
 
 ! MOV R2,#data
-: (opcode-7A) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >R2 ] keep pc+ ;
+: $(opcode-7A) ( cpu -- )
+;
 
 ! MOV R3,#data
-: (opcode-7B) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >R3 ] keep pc+ ;
+: $(opcode-7B) ( cpu -- )
+;
 
 ! MOV R4,#data
-: (opcode-7C) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >R4 ] keep pc+ ;
+: $(opcode-7C) ( cpu -- )
+;
 
 ! MOV R5,#data
-: (opcode-7D) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >R5 ] keep pc+ ;
+: $(opcode-7D) ( cpu -- )
+;
 
 ! MOV R6,#data
-: (opcode-7E) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >R6 ] keep pc+ ;
+: $(opcode-7E) ( cpu -- )
+;
 
 ! MOV R7,#data
-: (opcode-7F) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ >R7 ] keep pc+ ;
+: $(opcode-7F) ( cpu -- )
+;
 
 ! SJMP rel
-: (opcode-80) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-    [ pc>> relative ] keep pc<< ;
+: $(opcode-80) ( cpu -- )
+;
 
-: (opcode-81) ( cpu -- )
-    (opcode-61) ;
+: $(opcode-81) ( cpu -- )
+    $(opcode-61) ;
     
 ! ANL C,bit
-: (opcode-82) ( cpu -- )
-    [ psw>> psw-cy? ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-bitstatus ] keep
-    [ and ] dip
-    [ psw>> >psw-cy ] keep
-    pc+ ;
+: $(opcode-82) ( cpu -- )
+;
 
 ! MOVC A,@A+PC
-: (opcode-83) ( cpu -- )
-    [ pc+ ] keep
-    [ A> ] keep
-    [ pc>> ] keep
-    [ + 16 bits ] dip [ rom-read ] keep >A ;
+: $(opcode-83) ( cpu -- )
+;
  
 ! DIV AB 
-: (opcode-84) ( cpu -- )
-    [ A> ] keep
-    [ B> ] keep
-    [ psw>> psw-div ] keep
-    [ >B ] keep
-    [ >A ] keep
-    pc+ ;
+: $(opcode-84) ( cpu -- )
+;
 
 ! MOV direct,direct
-: (opcode-85) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ swap ] dip
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-85) ( cpu -- )
+;
 
 ! MOV direct,@R0
-: (opcode-86) ( cpu -- )
-    [ @R0> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-86) ( cpu -- )
+;
     
 ! MOV direct,@R1
-: (opcode-87) ( cpu -- )
-    [ @R1> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-87) ( cpu -- )
+;
     
 ! MOV direct,R0
-: (opcode-88) ( cpu -- )
-    [ R0> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-88) ( cpu -- )
+;
 
 ! MOV direct,R1
-: (opcode-89) ( cpu -- )
-    [ R1> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;    
+: $(opcode-89) ( cpu -- )
+;
 
 ! MOV direct,R2
-: (opcode-8A) ( cpu -- )
-    [ R2> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;    
+: $(opcode-8A) ( cpu -- )
+;
 
 ! MOV direct,R3
-: (opcode-8B) ( cpu -- )
-    [ R3> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-8B) ( cpu -- )
+;
 
 ! MOV direct,R4
-: (opcode-8C) ( cpu -- )
-    [ R4> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-8C) ( cpu -- )
+;
 
 ! MOV direct,R5
-: (opcode-8D) ( cpu -- )
-    [ R5> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-8D) ( cpu -- )
+;
 
 ! MOV direct,R6
-: (opcode-8E) ( cpu -- )
-    [ R6> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-8E) ( cpu -- )
+;
 
 ! MOV direct,R7
-: (opcode-8F) ( cpu -- )
-    [ R7> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-8F) ( cpu -- )
+;
 
 ! MOV DPTR,#data16
-: (opcode-90) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ RAM_DPH ] dip [ memory>> ram-direct-write ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ RAM_DPL ] dip [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-90) ( cpu -- )
+;
 
-: (opcode-91) ( cpu -- )
-    (opcode-71) ;
+: $(opcode-91) ( cpu -- )
+    $(opcode-71) ;
 
 ! MOV bit,C
-: (opcode-92) ( cpu -- )
-    [ psw>> psw-cy? ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> >ram-bit ] keep
-    pc+ ;
+: $(opcode-92) ( cpu -- )
+;
 
 ! MOVC A,@A+DPTR    
-: (opcode-93) ( cpu -- )
-    [ A> ] keep
-    [ DPTR> ] keep
-    [ + 16 bits ] dip [ rom-read ] keep [ >A ] keep
-    pc+ ;
+: $(opcode-93) ( cpu -- )
+;
 
 ! SUBB A,#data
-: (opcode-94) ( cpu -- )
-    [ A> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep
-    pc+ ;
+: $(opcode-94) ( cpu -- )
+;
  
 ! SUBB A,direct 
-: (opcode-95) ( cpu -- )
-    [ A> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep
-    pc+ ;
+: $(opcode-95) ( cpu -- )
+;
     
 ! SUBB A,@R0
-: (opcode-96) ( cpu -- )
-  [ A> ] keep
-  [ @R0> ] keep
-  [ psw>> psw-cy ] keep
-  [ psw>> psw-sub ] keep
-  [ >A ] keep pc+ ;
+: $(opcode-96) ( cpu -- )
+;
 
 ! SUBB A,@R1
-: (opcode-97) ( cpu -- )
-  [ A> ] keep
-  [ @R1> ] keep
-  [ psw>> psw-cy ] keep
-  [ psw>> psw-sub ] keep
-  [ >A ] keep pc+ ;
+: $(opcode-97) ( cpu -- )
+;
 
 ! SUBB A,R0
-: (opcode-98) ( cpu -- )
-    [ A> ] keep
-    [ R0> ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-98) ( cpu -- )
+;
 
 ! SUBB A,R1
-: (opcode-99) ( cpu -- )
-    [ A> ] keep
-    [ R1> ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;    
+: $(opcode-99) ( cpu -- )
+;
 
 ! SUBB A,R2
-: (opcode-9A) ( cpu -- )
-    [ A> ] keep
-    [ R2> ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-9A) ( cpu -- )
+;
 
 ! SUBB A,R3
-: (opcode-9B) ( cpu -- )
-    [ A> ] keep
-    [ R3> ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-9B) ( cpu -- )
+;
 
 ! SUBB A,R4
-: (opcode-9C) ( cpu -- )
-    [ A> ] keep
-    [ R4> ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-9C) ( cpu -- )
+;
 
 ! SUBB A,R5
-: (opcode-9D) ( cpu -- )
-    [ A> ] keep
-    [ R5> ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-9D) ( cpu -- )
+;
 
 ! SUBB A,R6
-: (opcode-9E) ( cpu -- )
-    [ A> ] keep
-    [ R6> ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-9E) ( cpu -- )
+;
 
 ! SUBB A,R7
-: (opcode-9F) ( cpu -- )
-    [ A> ] keep
-    [ R7> ] keep
-    [ psw>> psw-cy ] keep
-    [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;    
+: $(opcode-9F) ( cpu -- )
+;
 
 ! ORL C,/bit
-: (opcode-A0) ( cpu -- )
-    [ psw>> psw-cy? ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-bitstatus not ] keep
-    [ or ] dip
-    [ psw>> >psw-cy ] keep
-    pc+ ;
+: $(opcode-A0) ( cpu -- )
+;
 
-: (opcode-A1) ( cpu -- )
-    (opcode-81) ;
+: $(opcode-A1) ( cpu -- )
+    $(opcode-81) ;
     
     
 ! MOV C,bit
-: (opcode-A2) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-bitstatus ] keep
-    [ psw>> >psw-cy ] keep
-    pc+ ;    
+: $(opcode-A2) ( cpu -- )
+;
     
 ! INC DPTR
-: (opcode-A3) ( cpu -- )
-    [ DPTR> ] keep
-    [ 1 + ] dip
-    [ >DPTR ] keep
-    pc+ ;
-    
+: $(opcode-A3) ( cpu -- )
+;
 
 ! MUL AB
-: (opcode-A4) ( cpu -- )
-    [ A> ] keep [ B> ] keep [ psw>> psw-mul ] keep
-    [ >B ] keep [ >A ] keep pc+ ;
+: $(opcode-A4) ( cpu -- )
+;
     
-: (opcode-A5) ( cpu -- )
-    (opcode-00) ;
+: $(opcode-A5) ( cpu -- )
+    $(opcode-00) ;
 
 
 ! MOV @R0,direct
-: (opcode-A6) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ >@R0 ] keep pc+ ;
+: $(opcode-A6) ( cpu -- )
+;
 
 ! MOV @R0,direct
-: (opcode-A7) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ >@R1 ] keep pc+ ;   
+: $(opcode-A7) ( cpu -- )
+;
 
 ! MOV A,R0
-: (opcode-A8) ( cpu -- )
-    [ R0> ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-A8) ( cpu -- )
+;
 
 ! MOV A,R1
-: (opcode-A9) ( cpu -- )
-    [ R1> ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-A9) ( cpu -- )
+;
 
 ! MOV A,R2
-: (opcode-AA) ( cpu -- )
-    [ R2> ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-AA) ( cpu -- )
+;
 
 ! MOV A,R3
-: (opcode-AB) ( cpu -- )
-    [ R3> ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-AB) ( cpu -- )
+;
 
 ! MOV A,R4
-: (opcode-AC) ( cpu -- )
-    [ R4> ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-AC) ( cpu -- )
+;
 
 ! MOV A,R5
-: (opcode-AD) ( cpu -- )
-    [ R5> ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-AD) ( cpu -- )
+;
 
 ! MOV A,R6
-: (opcode-AE) ( cpu -- )
-    [ R6> ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-AE) ( cpu -- )
+;
 
 ! MOV A,R7
-: (opcode-AF) ( cpu -- )
-    [ R7> ] keep
-    [ >A ] keep pc+ ;
+: $(opcode-AF) ( cpu -- )
+;
 
 ! ANL C,/bit
-: (opcode-B0) ( cpu -- )
-    [ psw>> psw-cy? not ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-bitstatus ] keep
-    [ and ] dip
-    [ psw>> >psw-cy ] keep
-    pc+ ;
+: $(opcode-B0) ( cpu -- )
+;
 
-: (opcode-B1) ( cpu -- )
-    (opcode-91) ;
+: $(opcode-B1) ( cpu -- )
+    $(opcode-91) ;
 
 ! CPL bit
-: (opcode-B2) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-bitstatus ] keep swap
-    [
-        [ rom-pc-read ] keep
-        [ memory>> ram-bitclr ] keep
-    ]
-    [
-        [ rom-pc-read ] keep
-        [ memory>> ram-bitset ] keep
-    ] if
-    pc+ ;
+: $(opcode-B2) ( cpu -- )
+;
 
 ! CPL C
-: (opcode-B3) ( cpu -- )
-    [ psw>> psw-cy? not ] keep
-    [ psw>> >psw-cy ] keep
-    pc+ ;
+: $(opcode-B3) ( cpu -- )
+;
 
 ! CJNE A,#data,rel
 ! (PC) ← (PC) + 3
 ! IF (A) < > data THEN (PC) ← (PC) + relative offset
 ! IF (A) < data THEN (C) ← 1 ELSE(C) ← 0
-: (opcode-B4) ( cpu -- )
-    [ A> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ A> ] keep
-        [ rom-pc-read ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-B4) ( cpu -- )
+;
 
 ! CJNE A,direct,rel
-: (opcode-B5) ( cpu -- )
-    [ A> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ = ] dip swap
-    [
-        [ A> ] keep
-        [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;    
+: $(opcode-B5) ( cpu -- )
+;
 
 ! CJNE @R0,data,rel
-: (opcode-B6) ( cpu -- )
-    [ @R0> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ @R0> ] keep
-        [ rom-pc-read ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-B6) ( cpu -- )
+;
 
 ! CJNE @R1,data,rel
-: (opcode-B7) ( cpu -- )
-    [ @R1> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ @R1> ] keep
-        [ rom-pc-read ] keep
-        [ < ] dip swap
-        [ [ psw>> psw-cy-set ] keep ]
-        [ [ psw>> psw-cy-clr ] keep ] if
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-B7) ( cpu -- )
+;
 
 ! CJNE R0,#data,rel
-: (opcode-B8) ( cpu -- )
-    [ R0> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ < ] dip swap
-    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
-    [ R0> ] keep
-    [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-B8) ( cpu -- )
+;
 
 ! CJNE R1,#data,rel
-: (opcode-B9) ( cpu -- )
-    [ R1> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ < ] dip swap
-    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
-    [ R1> ] keep
-    [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-B9) ( cpu -- )
+;
 
 ! CJNE R2,#data,rel
-: (opcode-BA) ( cpu -- )
-    [ R2> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ < ] dip swap
-    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
-    [ R2> ] keep
-    [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-BA) ( cpu -- )
+;
 
 ! CJNE R3,#data,rel
-: (opcode-BB) ( cpu -- )
-    [ R3> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ < ] dip swap
-    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
-    [ R3> ] keep
-    [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-BB) ( cpu -- )
+;
 
 ! CJNE R4,#data,rel
-: (opcode-BC) ( cpu -- )
-    [ R4> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ < ] dip swap
-    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
-    [ R4> ] keep
-    [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-BC) ( cpu -- )
+;
 
 ! CJNE R5,#data,rel
-: (opcode-BD) ( cpu -- )
-    [ R5> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ < ] dip swap
-    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
-    [ R5> ] keep
-    [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-BD) ( cpu -- )
+;
 
 ! CJNE R6,#data,rel
-: (opcode-BE) ( cpu -- )
-    [ R6> ] keep
-    [ rom-pc-read ] keep
-    [ < ] dip swap
-    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
-    [ R6> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-BE) ( cpu -- )
+;
 
 ! CJNE R7,#data,rel
-: (opcode-BF) ( cpu -- )
-    [ R7> ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ < ] dip swap
-    [ [ psw>> psw-cy-set ] keep ] [ [ psw>> psw-cy-clr ] keep ] if
-    [ R7> ] keep
-    [ rom-pc-read ] keep
-    [ = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [
-        [ pc+ ] keep [ rom-pc-read ] keep
-        [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
-
+: $(opcode-BF) ( cpu -- )
+;
 
 ! PUSH direct
-: (opcode-C0) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ sp-push ] keep
-    pc+ ;
+: $(opcode-C0) ( cpu -- )
+;
 
-: (opcode-C1) ( cpu -- )
-    (opcode-A1) ;
+: $(opcode-C1) ( cpu -- )
+    $(opcode-A1) ;
 
 ! CLR bit
-: (opcode-C2) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-bitclr ] keep
-    pc+ ;
+: $(opcode-C2) ( cpu -- )
+;
 
 ! CLR C
-: (opcode-C3) ( cpu -- )
-    [ psw>> psw-cy-clr ] keep pc+ ;
+: $(opcode-C3) ( cpu -- )
+;
 
 ! SWAP A
-: (opcode-C4) ( cpu -- )
-    [ A> ] keep [ [ 7 4 bit-range ] keep 3 0 bit-range 4 shift bitor 8 bits ] dip
-    [ >A ] keep pc+ ;
+: $(opcode-C4) ( cpu -- )
+;
 
 ! XCH A,direct
-: (opcode-C5) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ rom-pc-read ] keep [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-C5) ( cpu -- )
+;
 
 ! XCH A,@R0
-: (opcode-C6) ( cpu -- )
-    [ @R0> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >@R0 ] keep
-    pc+ ;
+: $(opcode-C6) ( cpu -- )
+;
 
 ! XCH A,@R1
-: (opcode-C7) ( cpu -- )
-    [ @R1> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >@R1 ] keep
-    pc+ ;
+: $(opcode-C7) ( cpu -- )
+;
 
 ! XCH A,R0
-: (opcode-C8) ( cpu -- )
-    [ R0> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >R0 ] keep
-    pc+ ;
+: $(opcode-C8) ( cpu -- )
+;
 
 ! XCH A,R1
-: (opcode-C9) ( cpu -- )
-    [ R1> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >R1 ] keep
-    pc+ ;
+: $(opcode-C9) ( cpu -- )
+;
 
 ! XCH A,R2
-: (opcode-CA) ( cpu -- )
-    [ R2> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >R2 ] keep
-    pc+ ;
+: $(opcode-CA) ( cpu -- )
+;
 
 ! XCH A,R3
-: (opcode-CB) ( cpu -- )
-    [ R3> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >R3 ] keep
-    pc+ ;
+: $(opcode-CB) ( cpu -- )
+;
 
 ! XCH A,R4
-: (opcode-CC) ( cpu -- )
-    [ R4> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >R4 ] keep
-    pc+ ;
+: $(opcode-CC) ( cpu -- )
+;
 
 ! XCH A,R5
-: (opcode-CD) ( cpu -- )
-    [ R5> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >R5 ] keep
-    pc+ ;
+: $(opcode-CD) ( cpu -- )
+;
 
 ! XCH A,R6
-: (opcode-CE) ( cpu -- )
-    [ R6> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >R6 ] keep
-    pc+ ;
+: $(opcode-CE) ( cpu -- )
+;
 
 ! XCH A,R7
-: (opcode-CF) ( cpu -- )
-    [ R7> ] keep
-    [ A> ] keep [ swap ] dip
-    [ >A ] keep
-    [ >R7 ] keep
-    pc+ ;
+: $(opcode-CF) ( cpu -- )
+;
 
 ! POP direct
-: (opcode-D0) ( cpu -- )
-    [ sp-pop ] keep
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-write ] keep
-    pc+ ;
+: $(opcode-D0) ( cpu -- )
+;
 
-: (opcode-D1) ( cpu -- )
-    (opcode-B1) ;
+: $(opcode-D1) ( cpu -- )
+    $(opcode-B1) ;
 
 
 ! SETB bit
-: (opcode-D2) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-bitset ] keep
-    pc+ ;
+: $(opcode-D2) ( cpu -- )
+;
 
 ! SETB C
-: (opcode-D3) ( cpu -- )
-    [ psw>> psw-cy-set ] keep
-    pc+ ;
+: $(opcode-D3) ( cpu -- )
+;
 
 ! DA A
-: (opcode-D4) ( cpu -- )
-    [ A> ] keep
-    [ psw>> psw-decimaladjust ] keep
-    [ >A ] keep
-    pc+ ;
+: $(opcode-D4) ( cpu -- )
+;
 
 ! DJNZ direct,rel
-: (opcode-D5) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ 1 - 8 bits dup ] dip [ rom-pc-read ] keep [ memory>> ram-direct-write ] keep
-    [ 0 = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [ 
-        [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
-
-! split 8 bits into 2 4 bits
-: nibble ( n -- hn ln )
-    8 bits [ 7 4 bit-range ] keep 3 0 bit-range ;
-
-! return the two 4 bit nibble back into on 8 bit
-: denibble ( hn ln -- n )
-    [ -4 shift ] dip bitor 8 bits ;
-
+: $(opcode-D5) ( cpu -- )
+;
 
 ! XCHD A,@R0
-: (opcode-D6) ( cpu -- )
-    [ @R0> nibble ] keep
-    [ A> nibble ] keep
-    [ swap [ swap ] dip swap ] dip
-    [ denibble ] dip [ >A ] keep
-    [ denibble ] dip [ >@R0 ] keep
-    pc+ ;
+: $(opcode-D6) ( cpu -- )
+;
 
 ! XCHD A,@R1
-: (opcode-D7) ( cpu -- )
-    [ @R1> nibble ] keep
-    [ A> nibble ] keep
-    [ swap [ swap ] dip swap ] dip
-    [ denibble ] dip [ >A ] keep
-    [ denibble ] dip [ >@R1 ] keep
-    pc+ ;
+: $(opcode-D7) ( cpu -- )
+;
 
 ! DJNZ R0,rel
-: (opcode-D8) ( cpu -- )
-    [ R0> ] keep
-    [ 1 - 8 bits dup ] dip [ >R0 ] keep
-    [ 0 = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [ 
-        [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-D8) ( cpu -- )
+;
 
 ! DJNZ R1,rel
-: (opcode-D9) ( cpu -- )
-    [ R1> ] keep
-    [ 1 - 8 bits dup ] dip [ >R1 ] keep
-    [ 0 = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [ 
-        [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-D9) ( cpu -- )
+;
 
 ! DJNZ R2,rel
-: (opcode-DA) ( cpu -- )
-    [ R2> ] keep
-    [ 1 - 8 bits dup ] dip [ >R2 ] keep
-    [ 0 = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [ 
-        [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-DA) ( cpu -- )
+;
 
 ! DJNZ R3,rel
-: (opcode-DB) ( cpu -- )
-    [ R3> ] keep
-    [ 1 - 8 bits dup ] dip [ >R3 ] keep
-    [ 0 = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [ 
-        [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-DB) ( cpu -- )
+;
 
 ! DJNZ R4,rel
-: (opcode-DC) ( cpu -- )
-    [ R4> ] keep
-    [ 1 - 8 bits dup ] dip [ >R4 ] keep
-    [ 0 = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [ 
-        [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-DC) ( cpu -- )
+;
 
 ! DJNZ R5,rel
-: (opcode-DD) ( cpu -- )
-    [ R5> ] keep
-    [ 1 - 8 bits dup ] dip [ >R5 ] keep
-    [ 0 = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [ 
-        [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-DD) ( cpu -- )
+;
 
 ! DJNZ R6,rel
-: (opcode-DE) ( cpu -- )
-    [ R6> ] keep
-    [ 1 - 8 bits dup ] dip [ >R6 ] keep
-    [ 0 = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [ 
-        [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-DE) ( cpu -- )
+;
 
 ! DJNZ R7,rel
-: (opcode-DF) ( cpu -- )
-    [ R7> ] keep
-    [ 1 - 8 bits dup ] dip [ >R7 ] keep
-    [ 0 = ] dip swap
-    [
-        [ pc+ ] keep pc+
-    ]
-    [ 
-        [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
-        [ pc>> relative ] keep pc<<
-    ] if ;
+: $(opcode-DF) ( cpu -- )
+;
 
 ! MOVX A,@DPTR
-: (opcode-E0) ( cpu -- )
-    [ DPTR> ] keep [ memory>> ext-read ] keep [ >A ] keep pc+ ;
+: $(opcode-E0) ( cpu -- )
+;
 
-: (opcode-E1) ( cpu -- )
-    (opcode-C1) ;
+: $(opcode-E1) ( cpu -- )
+    $(opcode-C1) ;
 
 ! MOVX A,@R0
-: (opcode-E2) ( cpu -- )
-    [ @R0> ] keep [ memory>> ext-read ] keep [ >A ] keep pc+ ;
+: $(opcode-E2) ( cpu -- )
+;
 
 ! MOVX A,@R1
-: (opcode-E3) ( cpu -- )
-    [ @R1> ] keep [ memory>> ext-read ] keep [ >A ] keep pc+ ;
+: $(opcode-E3) ( cpu -- )
+;
 
 ! CLR A
-: (opcode-E4) ( cpu -- )
-    [ 0 ] dip [ >A ] keep pc+ ;
+: $(opcode-E4) ( cpu -- )
+;
 
 ! MOV A,direct
-: (opcode-E5) ( cpu -- )
-    [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ >A ] keep pc+ ;
-
+: $(opcode-E5) ( cpu -- )
+;
 
 ! MOV A,@R0
-: (opcode-E6) ( cpu -- )
-    [ @R0> ] keep [ >A ] keep pc+ ;
+: $(opcode-E6) ( cpu -- )
+;
 
 
 ! MOV A,@R1
-: (opcode-E7) ( cpu -- )
-    [ @R1> ] keep [ >A ] keep pc+ ;
+: $(opcode-E7) ( cpu -- )
+;
 
 ! MOV A,R0
-: (opcode-E8) ( cpu -- )
-    [ R0> ] keep [ >A ] keep pc+ ;
+: $(opcode-E8) ( cpu -- )
+;
 
 ! MOV A,R1
-: (opcode-E9) ( cpu -- )
-    [ R1> ] keep [ >A ] keep pc+ ;
+: $(opcode-E9) ( cpu -- )
+;
 
 ! MOV A,R2
-: (opcode-EA) ( cpu -- )
-    [ R2> ] keep [ >A ] keep pc+ ;
+: $(opcode-EA) ( cpu -- )
+;
 
 ! MOV A,R3
-: (opcode-EB) ( cpu -- )
-    [ R3> ] keep [ >A ] keep pc+ ;
+: $(opcode-EB) ( cpu -- )
+;
  
 ! MOV A,R4
-: (opcode-EC) ( cpu -- )
-    [ R4> ] keep [ >A ] keep pc+ ;
+: $(opcode-EC) ( cpu -- )
+;
 
 ! MOV A,R5
-: (opcode-ED) ( cpu -- )
-    [ R5> ] keep [ >A ] keep pc+ ;
+: $(opcode-ED) ( cpu -- )
+;
 
 ! MOV A,R6
-: (opcode-EE) ( cpu -- )
-    [ R6> ] keep [ >A ] keep pc+ ;
+: $(opcode-EE) ( cpu -- )
+;
 
 ! MOV A,R7
-: (opcode-EF) ( cpu -- )
-    [ R7> ] keep [ >A ] keep pc+ ;
+: $(opcode-EF) ( cpu -- )
+;
 
 ! MOVX @DPTR,A
-: (opcode-F0) ( cpu -- )
-    [ A> ] keep [ DPTR> ] keep [ memory>> ext-write ] keep pc+ ;
+: $(opcode-F0) ( cpu -- )
+;
 
-: (opcode-F1) ( cpu -- )
-    (opcode-D1) ;
+: $(opcode-F1) ( cpu -- )
+    $(opcode-D1) ;
 
 ! MOVX @R0,A
-: (opcode-F2) ( cpu -- )
-    [ A> ] keep [ R0> ] keep [ memory>> ext-write ] keep pc+ ;
+: $(opcode-F2) ( cpu -- )
+;
 
 ! MOVX @R1,A
-: (opcode-F3) ( cpu -- )
-    [ A> ] keep [ R1> ] keep [ memory>> ext-write ] keep pc+ ;
+: $(opcode-F3) ( cpu -- )
+;
 
 ! CPL A
-: (opcode-F4) ( cpu -- )
-    [ A> ] keep [ bitnot 8 bits ] dip [ >A ] keep pc+ ;
+: $(opcode-F4) ( cpu -- )
+;
 
 ! MOV direct,A
-: (opcode-F5) ( cpu -- )
-    [ A> ] keep [ pc+ ] keep [ rom-pc-read ] keep
-    [ memory>> ram-direct-write ] keep pc+ ;
+: $(opcode-F5) ( cpu -- )
+;
 
 ! MOV @R0,A
-: (opcode-F6) ( cpu -- )
-    [ A> ] keep [ >@R0 ] keep pc+ ;
+: $(opcode-F6) ( cpu -- )
+;
 
 ! MOV @R1,A
-: (opcode-F7) ( cpu -- )
-    [ A> ] keep [ >@R1 ] keep pc+ ;
+: $(opcode-F7) ( cpu -- )
+;
 
 ! MOV R0,A
-: (opcode-F8) ( cpu -- )
-    [ A> ] keep [ >R0 ] keep pc+ ;
+: $(opcode-F8) ( cpu -- )
+;
 
 ! MOV R1,A
-: (opcode-F9) ( cpu -- )
-    [ A> ] keep [ >R1 ] keep pc+ ;
+: $(opcode-F9) ( cpu -- )
+;
 
 ! MOV R2,A
-: (opcode-FA) ( cpu -- )
-    [ A> ] keep [ >R2 ] keep pc+ ;
+: $(opcode-FA) ( cpu -- )
+;
 
 ! MOV R3,A
-: (opcode-FB) ( cpu -- )
-    [ A> ] keep [ >R3 ] keep pc+ ;
+: $(opcode-FB) ( cpu -- )
+;
 
 ! MOV R4,A
-: (opcode-FC) ( cpu -- )
-    [ A> ] keep [ >R4 ] keep pc+ ;
+: $(opcode-FC) ( cpu -- )
+;
 
 ! MOV R5,A
-: (opcode-FD) ( cpu -- )
-    [ A> ] keep [ >R5 ] keep pc+ ;
+: $(opcode-FD) ( cpu -- )
+;
 
 ! MOV R6,A
-: (opcode-FE) ( cpu -- )
-    [ A> ] keep [ >R6 ] keep pc+ ;
+: $(opcode-FE) ( cpu -- )
+;
 
 ! MOV R7,A
-: (opcode-FF) ( cpu -- )
-    [ A> ] keep [ >R7 ] keep pc+ ;
+: $(opcode-FF) ( cpu -- )
+;
