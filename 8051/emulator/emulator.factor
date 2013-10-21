@@ -5,7 +5,7 @@
 USING: accessors arrays io io.encodings.binary io.files
        intel.hex
        kernel lexer intel.8051.emulator.psw intel.8051.emulator.register
-       intel.8051.emulator.memory
+       intel.8051.emulator.memory intel.8051.disassemble
        math math.bitwise math.parser namespaces quotations sequences
        tools.continuations unicode.case words ;
 
@@ -52,7 +52,7 @@ CONSTANT: nbytes-seq {
         1 2 1 1 1 2 1 1 1 1 1 1 1 1 1 1
     }
 
-TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles ;
+TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
 
 ! write to PSW
 : >PSW ( b cpu -- )
@@ -2264,6 +2264,10 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles ;
     [ A> ] keep [ >R7 ] keep pc+ ;
 
 
+! execute one instruction
+: execute-opcode ( cpu -- )
+    [ rom-pc-read ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
+
 
 ! generate the opcode array here
 : opcode-build ( cpu -- )
@@ -2274,6 +2278,20 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles ;
             >hex 2 CHAR: 0 pad-head >upper
             "(opcode-" swap append ")" append
             "intel.8051.emulator" lookup-word 1quotation
+        ] keep
+        [ swap ] dip swap [ set-nth ] keep
+    ] each-index drop ;
+
+
+! generate opcode mnemonics
+: mnemonic-build ( cpu -- )
+    mnemo>> dup
+    [
+        [ drop ] dip 
+        [
+            >hex 2 CHAR: 0 pad-head >upper
+            "$(opcode-" swap append ")" append
+            "intel.8051.disassemble" lookup-word 1quotation
         ] keep
         [ swap ] dip swap [ set-nth ] keep
     ] each-index drop ;
@@ -2290,7 +2308,9 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles ;
     0 >>sp
     <memory> >>memory
     256 [ not-implemented ] <array> >>opcodes
-;
+    [ opcode-build ] keep
+    256 [ not-implemented ] <array> >>mnemo
+    [ mnemonic-build ] keep ;
 
 
 : emu-test ( -- c )
