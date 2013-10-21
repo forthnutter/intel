@@ -27,25 +27,27 @@ IN: intel.8051
 
     ;
 
-! execute one instruction
-: execute-opcode ( cpu -- )
-    [ rom-pc-read ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
+
+
+! build string from 8 bit data
+! HH BBBBBBBB DDD
+: string-data ( d -- str )
+    8 bits 
+    [ >hex 2 CHAR: 0 pad-head >upper " " append ] keep
+    [ >bin 8 CHAR: 0 pad-head append " " append ] keep
+    number>string 3 32 pad-head append ;
 
 ! build string of register A
 ! A HH BBBBBBBB DDD
 : string-a-reg ( cpu -- s )
     [ "A " ] dip
-    [ A> ] keep [ >hex 2 CHAR: 0 pad-head >upper append " " append ] dip
-    [ A> ] keep [ >bin 8 CHAR: 0 pad-head append " " append ] dip
-    A> number>string 3 32 pad-head append ; 
+    A> string-data append ; 
 
 ! build string of Register B
 ! B HH BBBBBBBB DDD
 : string-b-reg ( cpu -- s )
     [ "B " ] dip
-    [ B> ] keep [ >hex 2 CHAR: 0 pad-head >upper append " " append ] dip
-    [ B> ] keep [ >bin 8 CHAR: 0 pad-head append " " append ] dip
-    B> number>string 3 32 pad-head append ;
+    B> string-data append ;
 
 ! lets string a and b together
 ! A HH BBBBBBBB DDD B HH BBBBBBBB DDD
@@ -76,11 +78,80 @@ IN: intel.8051
     drop ;
 
 
+
+! make string R0
+: string-r0-reg ( cpu -- str )
+    [ "R0 " ] dip 
+    R0> string-data append ;
+
+! make string @R0
+: string-@r0-reg ( cpu -- str )
+    [ "@R0 " ] dip 
+    @R0> string-data append ;
+
+! lets string R0 and @R0 together
+: string-r0-all ( cpu -- str )
+    [ string-r0-reg ] keep [ " " append ] dip
+    string-@r0-reg append ;
+
+! make string R1
+: string-r1-reg ( cpu -- str )
+    [ "R1 " ] dip 
+    R1> string-data append ;
+
+! make string @R1
+: string-@r1-reg ( cpu -- str )
+    [ "@R1 " ] dip 
+    @R1> string-data append ;
+
+! lets string R0 and @R0 together
+: string-r1-all ( cpu -- str )
+    [ string-r1-reg ] keep [ " " append ] dip
+    string-@r1-reg append ;
+
+! make string R2
+: string-r2-reg ( cpu -- str )
+    [ "R2 " ] dip 
+    R2> string-data append ;
+
+! make string R3
+: string-r3-reg ( cpu -- str )
+    [ "R3 " ] dip 
+    R3> string-data append ;
+
+! make string R4
+: string-r4-reg ( cpu -- str )
+    [ "R4 " ] dip 
+    R4> string-data append ;
+
+! make string R5
+: string-r5-reg ( cpu -- str )
+    [ "R5 " ] dip 
+    R5> string-data append ;
+
+! make string R6
+: string-r6-reg ( cpu -- str )
+    [ "R6 " ] dip 
+    R6> string-data append ;
+
+! make string R7
+: string-r7-reg ( cpu -- str )
+    [ "R7 " ] dip 
+    R7> string-data append ;
+
 ! print registers
 : print-registers ( cpu -- )
     [ string-ab-reg print ] keep
     [ string-psw-reg print ] keep
-    [ string-pc-reg print ] keep 
+    [ string-pc-reg print ] keep
+    [ string-r0-all print ] keep
+    [ string-r1-all print ] keep
+    [ string-r2-reg print ] keep
+    [ string-r3-reg print ] keep
+    [ string-r4-reg print ] keep
+    [ string-r5-reg print ] keep
+    [ string-r6-reg print ] keep
+    [ string-r7-reg print ] keep
     drop ;
 
 ! single step execute one instruction then displays all registers
@@ -91,5 +162,4 @@ IN: intel.8051
 
 : start-test ( -- cpu )
     "work/intel/hex/EZSHOT.HEX" <ihex> array>>
-    <cpu> swap >>rom 
-    [ opcode-build ] keep ;
+    <cpu> swap >>rom ;
