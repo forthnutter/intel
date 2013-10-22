@@ -477,407 +477,407 @@ TUPLE: mnemonic code ;
     "XRL ,A" ;
 
 ! XRL direct,#data
-: $(opcode-63) ( cpu -- )
-;
+: $(opcode-63) ( -- str )
+    "XRL ";
 
 ! XRL A,#data
-: $(opcode-64) ( cpu -- )
-;
+: $(opcode-64) ( -- str )
+    "XRL A," ;
 
 ! XRL A,direct
-: $(opcode-65) ( cpu -- )
-;
+: $(opcode-65) ( -- str )
+    "XRL A," ;
 
 ! XRL A,@R0
-: $(opcode-66) ( cpu -- )
-;
+: $(opcode-66) ( -- str )
+    "XRL A,@R0" ;
     
 ! XRL A,@R1
-: $(opcode-67) ( cpu -- )
-;
+: $(opcode-67) ( -- str )
+    "XRL A,@R1" ;
  
 ! XRL A,R0
-: $(opcode-68) ( cpu -- )
-;
+: $(opcode-68) ( -- str )
+    "XRL A,R0" ;
 
 ! XRL A,R1
-: $(opcode-69) ( cpu -- )
-;
+: $(opcode-69) ( -- str )
+    "XRL A,R1" ;
 
 ! XRL A,R2
-: $(opcode-6A) ( cpu -- )
-;
+: $(opcode-6A) ( -- str )
+    "XRL A,R2" ;
 
 ! XRL A,R3
-: $(opcode-6B) ( cpu -- )
-;
+: $(opcode-6B) ( -- str )
+    "XRL A,R3" ;
 
 ! XRL A,R4
-: $(opcode-6C) ( cpu -- )
-;
+: $(opcode-6C) ( -- str )
+    "XRL A,R4" ;
 
 ! XRL A,R5
-: $(opcode-6D) ( cpu -- )
-;
+: $(opcode-6D) ( -- str )
+    "XRL A,R5" ;
     
 ! XRL A,R6
-: $(opcode-6E) ( cpu -- )
-;
+: $(opcode-6E) ( -- str )
+    "XRL A,R6" ;
 
 ! XRL A,R7
-: $(opcode-6F) ( cpu -- )
-;
+: $(opcode-6F) ( -- str )
+    "XRL A,R7" ;
 
 ! JNZ
 ! if A != 0 jump rel
-: $(opcode-70) ( cpu -- )
-;
+: $(opcode-70) ( -- str )
+    "JNZ" ;
 
-: $(opcode-71) ( cpu -- )
+: $(opcode-71) ( -- str )
     $(opcode-51) ;
 
 ! ORL C,bit
-: $(opcode-72) ( cpu -- )
-;
+: $(opcode-72) ( -- str )
+    "ORL C," ;
 
 ! JMP @A+DPTR    
-: $(opcode-73) ( cpu -- )
-;
+: $(opcode-73) ( -- str )
+    "JMP @A+DPTR" ;
 
 ! MOV A,#data
-: $(opcode-74) ( cpu -- )
-;
+: $(opcode-74) ( -- str )
+    "MOV A," ;
     
 ! MOV direct,#data
-: $(opcode-75) ( cpu -- )
-;
+: $(opcode-75) ( -- str )
+    "MOV " ;
 
 ! MOV @R0,#data
-: $(opcode-76) ( cpu -- )
-;
+: $(opcode-76) ( -- str )
+    "MOV @R0," ;
  
 ! MOV @R1,#data
-: $(opcode-77) ( cpu -- )
-;
+: $(opcode-77) ( -- str )
+    "MOV @R1," ;
  
 ! MOV R0,#data
-: $(opcode-78) ( cpu -- )
-;
+: $(opcode-78) ( -- str )
+    "MOV R0,#" ;
 
 ! MOV R1,#data
-: $(opcode-79) ( cpu -- )
-;
+: $(opcode-79) ( -- str )
+    "MOV R1,#" ;
 
 ! MOV R2,#data
-: $(opcode-7A) ( cpu -- )
-;
+: $(opcode-7A) ( -- str )
+    "MOV R2,#" ;
 
 ! MOV R3,#data
-: $(opcode-7B) ( cpu -- )
-;
+: $(opcode-7B) ( -- str )
+    "MOV R3,#" ;
 
 ! MOV R4,#data
-: $(opcode-7C) ( cpu -- )
-;
+: $(opcode-7C) ( -- str )
+    "MOV R4,#" ;
 
 ! MOV R5,#data
-: $(opcode-7D) ( cpu -- )
-;
+: $(opcode-7D) ( -- str )
+    "MOV R5,#" ;
 
 ! MOV R6,#data
-: $(opcode-7E) ( cpu -- )
-;
+: $(opcode-7E) ( -- str )
+    "MOV R6,#" ;
 
 ! MOV R7,#data
-: $(opcode-7F) ( cpu -- )
-;
+: $(opcode-7F) ( -- str )
+    "MOV R7,#" ;
 
 ! SJMP rel
-: $(opcode-80) ( cpu -- )
-;
+: $(opcode-80) ( -- str )
+    "SJMP " ;
 
-: $(opcode-81) ( cpu -- )
+: $(opcode-81) ( -- str )
     $(opcode-61) ;
     
 ! ANL C,bit
-: $(opcode-82) ( cpu -- )
-;
+: $(opcode-82) ( -- str )
+    "ANL C," ;
 
 ! MOVC A,@A+PC
-: $(opcode-83) ( cpu -- )
-;
+: $(opcode-83) ( -- str )
+    "MOVC A,@A+PC" ;
  
 ! DIV AB 
-: $(opcode-84) ( cpu -- )
-;
+: $(opcode-84) ( -- str )
+    "DIV AB" ;
 
 ! MOV direct,direct
-: $(opcode-85) ( cpu -- )
-;
+: $(opcode-85) ( -- str )
+    "MOV" ;
 
 ! MOV direct,@R0
-: $(opcode-86) ( cpu -- )
-;
+: $(opcode-86) ( -- str )
+    "MOV ,@R0" ;
     
 ! MOV direct,@R1
-: $(opcode-87) ( cpu -- )
-;
+: $(opcode-87) ( -- str )
+    "MOV ,@R1" ;
     
 ! MOV direct,R0
-: $(opcode-88) ( cpu -- )
-;
+: $(opcode-88) ( -- str )
+    "MOV ,R0" ;
 
 ! MOV direct,R1
-: $(opcode-89) ( cpu -- )
-;
+: $(opcode-89) ( -- str )
+    "MOV ,R1" ;
 
 ! MOV direct,R2
-: $(opcode-8A) ( cpu -- )
-;
+: $(opcode-8A) ( --  str )
+    "MOV ,R2" ;
 
 ! MOV direct,R3
-: $(opcode-8B) ( cpu -- )
-;
+: $(opcode-8B) ( -- str )
+    "MOV ,R3" ;
 
 ! MOV direct,R4
-: $(opcode-8C) ( cpu -- )
-;
+: $(opcode-8C) ( -- str )
+    "MOV ,R4" ;
 
 ! MOV direct,R5
-: $(opcode-8D) ( cpu -- )
-;
+: $(opcode-8D) ( -- str )
+    "MOV ,R5" ;
 
 ! MOV direct,R6
-: $(opcode-8E) ( cpu -- )
-;
+: $(opcode-8E) ( -- str )
+    "MOV ,R6" ;
 
 ! MOV direct,R7
-: $(opcode-8F) ( cpu -- )
-;
+: $(opcode-8F) ( -- str )
+    "MOV ,R7" ;
 
 ! MOV DPTR,#data16
-: $(opcode-90) ( cpu -- )
-;
+: $(opcode-90) ( -- str )
+    "MOV DPTR," ;
 
-: $(opcode-91) ( cpu -- )
+: $(opcode-91) ( -- str )
     $(opcode-71) ;
 
 ! MOV bit,C
-: $(opcode-92) ( cpu -- )
-;
+: $(opcode-92) ( -- str )
+    "MOV ,C" ;
 
 ! MOVC A,@A+DPTR    
-: $(opcode-93) ( cpu -- )
-;
+: $(opcode-93) ( -- str )
+    "MOVC A,@A+DPTR" ;
 
 ! SUBB A,#data
-: $(opcode-94) ( cpu -- )
-;
+: $(opcode-94) ( -- str )
+    "SUBB A,#" ;
  
 ! SUBB A,direct 
-: $(opcode-95) ( cpu -- )
-;
+: $(opcode-95) ( -- str )
+    "SUBB A," ;
     
 ! SUBB A,@R0
-: $(opcode-96) ( cpu -- )
-;
+: $(opcode-96) ( -- str )
+    "SUBB A,@R0" ;
 
 ! SUBB A,@R1
-: $(opcode-97) ( cpu -- )
-;
+: $(opcode-97) ( -- str )
+    "SUBB A,@R1" ;
 
 ! SUBB A,R0
-: $(opcode-98) ( cpu -- )
-;
+: $(opcode-98) ( -- str )
+    "SUBB A,R0" ;
 
 ! SUBB A,R1
-: $(opcode-99) ( cpu -- )
-;
+: $(opcode-99) ( -- str )
+    "SUBB A,R1" ;
 
 ! SUBB A,R2
-: $(opcode-9A) ( cpu -- )
-;
+: $(opcode-9A) ( -- str )
+    "SUBB A,R2" ;
 
 ! SUBB A,R3
-: $(opcode-9B) ( cpu -- )
-;
+: $(opcode-9B) ( -- str )
+    "SUBB A,R3" ;
 
 ! SUBB A,R4
-: $(opcode-9C) ( cpu -- )
-;
+: $(opcode-9C) ( -- str )
+    "SUBB A,R4" ;
 
 ! SUBB A,R5
-: $(opcode-9D) ( cpu -- )
-;
+: $(opcode-9D) ( -- str )
+    "SUBB A,R5" ;
 
 ! SUBB A,R6
-: $(opcode-9E) ( cpu -- )
-;
+: $(opcode-9E) ( -- str )
+    "SUBB A,R6" ;
 
 ! SUBB A,R7
-: $(opcode-9F) ( cpu -- )
-;
+: $(opcode-9F) ( -- str )
+    "SUBB A,R7" ;
 
 ! ORL C,/bit
-: $(opcode-A0) ( cpu -- )
-;
+: $(opcode-A0) ( -- str )
+    "ORL C,/" ;
 
-: $(opcode-A1) ( cpu -- )
+: $(opcode-A1) ( -- str )
     $(opcode-81) ;
     
     
 ! MOV C,bit
-: $(opcode-A2) ( cpu -- )
-;
+: $(opcode-A2) ( -- str )
+    "MOV C," ;
     
 ! INC DPTR
-: $(opcode-A3) ( cpu -- )
-;
+: $(opcode-A3) ( -- str )
+    "INC DPTR" ;
 
 ! MUL AB
-: $(opcode-A4) ( cpu -- )
-;
+: $(opcode-A4) ( -- str )
+    "MUL AB" ;
     
-: $(opcode-A5) ( cpu -- )
+: $(opcode-A5) ( -- str )
     $(opcode-00) ;
 
 
 ! MOV @R0,direct
-: $(opcode-A6) ( cpu -- )
-;
+: $(opcode-A6) ( -- str )
+    "MOV @R0," ;
 
-! MOV @R0,direct
-: $(opcode-A7) ( cpu -- )
-;
+! MOV @R1,direct
+: $(opcode-A7) ( -- str )
+    "MOV @R1," ;
 
 ! MOV A,R0
-: $(opcode-A8) ( cpu -- )
-;
+: $(opcode-A8) ( -- str )
+    "MOV A,R0" ;
 
 ! MOV A,R1
-: $(opcode-A9) ( cpu -- )
-;
+: $(opcode-A9) ( -- str )
+    "MOV A,R1" ;
 
 ! MOV A,R2
-: $(opcode-AA) ( cpu -- )
-;
+: $(opcode-AA) ( -- str )
+    "MOV A,R2" ;
 
 ! MOV A,R3
-: $(opcode-AB) ( cpu -- )
-;
+: $(opcode-AB) ( -- str )
+    "MOV A,R4" ;
 
 ! MOV A,R4
-: $(opcode-AC) ( cpu -- )
-;
+: $(opcode-AC) ( -- str )
+    "MOV A,R4" ;
 
 ! MOV A,R5
-: $(opcode-AD) ( cpu -- )
-;
+: $(opcode-AD) ( -- str )
+    "MOV A,R5" ;
 
 ! MOV A,R6
-: $(opcode-AE) ( cpu -- )
-;
+: $(opcode-AE) ( -- str )
+    "MOV A,R6" ;
 
 ! MOV A,R7
-: $(opcode-AF) ( cpu -- )
-;
+: $(opcode-AF) ( -- str )
+    "MOV A,R7" ;
 
 ! ANL C,/bit
-: $(opcode-B0) ( cpu -- )
-;
+: $(opcode-B0) ( -- str )
+    "ANL C,/" ;
 
-: $(opcode-B1) ( cpu -- )
+: $(opcode-B1) ( -- str )
     $(opcode-91) ;
 
 ! CPL bit
-: $(opcode-B2) ( cpu -- )
-;
+: $(opcode-B2) ( -- str )
+    "CPL " ;
 
 ! CPL C
-: $(opcode-B3) ( cpu -- )
-;
+: $(opcode-B3) ( -- str )
+    "CPL C" ;
 
 ! CJNE A,#data,rel
 ! (PC) ← (PC) + 3
 ! IF (A) < > data THEN (PC) ← (PC) + relative offset
 ! IF (A) < data THEN (C) ← 1 ELSE(C) ← 0
-: $(opcode-B4) ( cpu -- )
-;
+: $(opcode-B4) ( -- str )
+    "CJNE A,#," ;
 
 ! CJNE A,direct,rel
-: $(opcode-B5) ( cpu -- )
-;
+: $(opcode-B5) ( -- str )
+    "CJNE A,," ;
 
 ! CJNE @R0,data,rel
-: $(opcode-B6) ( cpu -- )
-;
+: $(opcode-B6) ( -- str )
+    "CJNE @R0,," ;
 
 ! CJNE @R1,data,rel
-: $(opcode-B7) ( cpu -- )
-;
+: $(opcode-B7) ( -- str )
+    "CJNE @R1,," ;
 
 ! CJNE R0,#data,rel
-: $(opcode-B8) ( cpu -- )
-;
+: $(opcode-B8) ( -- str )
+    "CJNE R0,#," ;
 
 ! CJNE R1,#data,rel
-: $(opcode-B9) ( cpu -- )
-;
+: $(opcode-B9) ( -- str )
+    "CJNE R1,#," ;
 
 ! CJNE R2,#data,rel
-: $(opcode-BA) ( cpu -- )
-;
+: $(opcode-BA) ( -- str )
+    "CJNE R2,#," ;
 
 ! CJNE R3,#data,rel
-: $(opcode-BB) ( cpu -- )
-;
+: $(opcode-BB) ( -- str )
+    "CJNE R3,#," ;
 
 ! CJNE R4,#data,rel
-: $(opcode-BC) ( cpu -- )
-;
+: $(opcode-BC) ( -- str )
+    "CJNE R4,#," ;
 
 ! CJNE R5,#data,rel
-: $(opcode-BD) ( cpu -- )
-;
+: $(opcode-BD) ( -- str )
+    "CJNE R5,#," ;
 
 ! CJNE R6,#data,rel
-: $(opcode-BE) ( cpu -- )
-;
+: $(opcode-BE) ( -- str )
+    "CJNE R6,#," ;
 
 ! CJNE R7,#data,rel
-: $(opcode-BF) ( cpu -- )
-;
+: $(opcode-BF) ( -- str )
+    "CJNE R7,#," ;
 
 ! PUSH direct
-: $(opcode-C0) ( cpu -- )
-;
+: $(opcode-C0) ( -- str )
+    "PUSH " ;
 
-: $(opcode-C1) ( cpu -- )
+: $(opcode-C1) ( -- str )
     $(opcode-A1) ;
 
 ! CLR bit
-: $(opcode-C2) ( cpu -- )
-;
+: $(opcode-C2) ( -- str )
+    "CLR " ;
 
 ! CLR C
-: $(opcode-C3) ( cpu -- )
-;
+: $(opcode-C3) ( -- str )
+    "CLR C" ;
 
 ! SWAP A
-: $(opcode-C4) ( cpu -- )
-;
+: $(opcode-C4) ( -- str )
+    "SWAP A" ;
 
 ! XCH A,direct
-: $(opcode-C5) ( cpu -- )
-;
+: $(opcode-C5) ( -- str )
+    "XCH A," ;
 
 ! XCH A,@R0
-: $(opcode-C6) ( cpu -- )
-;
+: $(opcode-C6) ( -- str )
+    "XCH A,@R0" ;
 
 ! XCH A,@R1
-: $(opcode-C7) ( cpu -- )
-;
+: $(opcode-C7) ( -- str )
+    "XCH A,@R1" ;
 
 ! XCH A,R0
 : $(opcode-C8) ( cpu -- )
