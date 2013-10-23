@@ -880,224 +880,226 @@ TUPLE: mnemonic code ;
     "XCH A,@R1" ;
 
 ! XCH A,R0
-: $(opcode-C8) ( cpu -- )
-;
+: $(opcode-C8) ( -- str )
+    "XCH A,R0" ;
 
 ! XCH A,R1
-: $(opcode-C9) ( cpu -- )
-;
+: $(opcode-C9) ( -- str )
+    "XCH A,R1" ;
 
 ! XCH A,R2
-: $(opcode-CA) ( cpu -- )
-;
+: $(opcode-CA) ( -- str )
+    "XCH A,R2" ;
 
 ! XCH A,R3
-: $(opcode-CB) ( cpu -- )
-;
+: $(opcode-CB) ( -- str )
+    "XCH A,R3" ;
 
 ! XCH A,R4
-: $(opcode-CC) ( cpu -- )
-;
+: $(opcode-CC) ( -- str )
+    "XCH A,R4" ;
 
 ! XCH A,R5
-: $(opcode-CD) ( cpu -- )
-;
+: $(opcode-CD) ( -- str )
+    "XCH A,R5" ;
 
 ! XCH A,R6
-: $(opcode-CE) ( cpu -- )
-;
+: $(opcode-CE) ( -- str )
+    "XCH A,R6" ;
 
 ! XCH A,R7
-: $(opcode-CF) ( cpu -- )
-;
+: $(opcode-CF) ( -- str )
+    "XCH A,R7" ;
 
 ! POP direct
-: $(opcode-D0) ( cpu -- )
-;
+: $(opcode-D0) ( -- str )
+    "POP " ;
 
-: $(opcode-D1) ( cpu -- )
+: $(opcode-D1) ( -- str )
     $(opcode-B1) ;
 
 
 ! SETB bit
-: $(opcode-D2) ( cpu -- )
-;
+: $(opcode-D2) ( -- str )
+    "SETB " ;
 
 ! SETB C
-: $(opcode-D3) ( cpu -- )
-;
+: $(opcode-D3) ( -- str )
+    "SETB C" ;
 
 ! DA A
-: $(opcode-D4) ( cpu -- )
-;
+: $(opcode-D4) ( -- str )
+    "DA A" ;
 
 ! DJNZ direct,rel
-: $(opcode-D5) ( cpu -- )
-;
+: $(opcode-D5) ( -- str )
+    "DJNZ" ;
 
 ! XCHD A,@R0
-: $(opcode-D6) ( cpu -- )
-;
+: $(opcode-D6) ( -- str )
+    "XCHD A,@R0" ;
 
 ! XCHD A,@R1
-: $(opcode-D7) ( cpu -- )
-;
+: $(opcode-D7) ( -- str )
+    "XCHD A,@R1" ;
 
 ! DJNZ R0,rel
-: $(opcode-D8) ( cpu -- )
-;
+: $(opcode-D8) ( -- str )
+    "DJNZ R0," ;
 
 ! DJNZ R1,rel
-: $(opcode-D9) ( cpu -- )
-;
+: $(opcode-D9) ( -- str )
+    "DJNZ R1" ;
 
 ! DJNZ R2,rel
-: $(opcode-DA) ( cpu -- )
-;
+: $(opcode-DA) ( -- str )
+    "DJNZ R2," ;
 
 ! DJNZ R3,rel
-: $(opcode-DB) ( cpu -- )
-;
+: $(opcode-DB) ( -- str )
+    "DJNZ R3," ;
 
 ! DJNZ R4,rel
-: $(opcode-DC) ( cpu -- )
-;
+: $(opcode-DC) ( -- str )
+    "DJNZ R4," ;
 
 ! DJNZ R5,rel
-: $(opcode-DD) ( cpu -- )
-;
+: $(opcode-DD) ( -- str )
+    "DJNZ R5," ;
 
 ! DJNZ R6,rel
-: $(opcode-DE) ( cpu -- )
-;
+: $(opcode-DE) ( -- str )
+    "DJNZ R6," ;
 
 ! DJNZ R7,rel
-: $(opcode-DF) ( cpu -- )
-;
+: $(opcode-DF) ( -- str )
+    "DJNZ R7," ;
 
 ! MOVX A,@DPTR
-: $(opcode-E0) ( cpu -- )
-;
+: $(opcode-E0) ( -- str )
+    "MOVX A,@DPTR" ;
 
-: $(opcode-E1) ( cpu -- )
+: $(opcode-E1) ( -- str )
     $(opcode-C1) ;
 
 ! MOVX A,@R0
-: $(opcode-E2) ( cpu -- )
-;
+: $(opcode-E2) ( -- str )
+    "MOVX A,@R0" ;
 
 ! MOVX A,@R1
-: $(opcode-E3) ( cpu -- )
-;
+: $(opcode-E3) ( -- str )
+    "MOVX A,@R1" ;
 
 ! CLR A
-: $(opcode-E4) ( cpu -- )
-;
+: $(opcode-E4) ( -- str )
+    "CLR A" ;
 
 ! MOV A,direct
-: $(opcode-E5) ( cpu -- )
-;
+: $(opcode-E5) ( -- str )
+    "MOV A," ;
 
 ! MOV A,@R0
-: $(opcode-E6) ( cpu -- )
-;
+: $(opcode-E6) ( -- str )
+    "MOV A,@R0" ;
 
 
 ! MOV A,@R1
-: $(opcode-E7) ( cpu -- )
-;
+: $(opcode-E7) ( -- str )
+    "MOV A,@R1" ;
 
 ! MOV A,R0
-: $(opcode-E8) ( cpu -- )
-;
+: $(opcode-E8) ( -- str )
+    "MOV A,R0" ;
 
 ! MOV A,R1
-: $(opcode-E9) ( cpu -- )
-;
+: $(opcode-E9) ( -- str )
+    "MOV A,R1" ;
 
 ! MOV A,R2
-: $(opcode-EA) ( cpu -- )
-;
+: $(opcode-EA) ( -- str )
+    "MOV A,R2" ;
 
 ! MOV A,R3
-: $(opcode-EB) ( cpu -- )
-;
+: $(opcode-EB) ( -- str )
+    "MOV A,R3" ;
  
 ! MOV A,R4
-: $(opcode-EC) ( cpu -- )
-;
+: $(opcode-EC) ( -- str )
+    "MOV A,R4" ;
 
 ! MOV A,R5
-: $(opcode-ED) ( cpu -- )
-;
+: $(opcode-ED) ( -- str )
+    "MOV A,R5" ;
 
 ! MOV A,R6
-: $(opcode-EE) ( cpu -- )
-;
+: $(opcode-EE) ( -- str )
+    "MOV A,R6" ;
 
 ! MOV A,R7
-: $(opcode-EF) ( cpu -- )
-;
+: $(opcode-EF) ( -- str )
+    "MOV A,R7" ;
 
 ! MOVX @DPTR,A
-: $(opcode-F0) ( cpu -- )
-;
+: $(opcode-F0) ( -- str )
+    "MOVX @DPTR,A" ;
 
-: $(opcode-F1) ( cpu -- )
+: $(opcode-F1) ( -- str )
     $(opcode-D1) ;
 
 ! MOVX @R0,A
-: $(opcode-F2) ( cpu -- )
-;
+: $(opcode-F2) ( -- str )
+    "MOVX @R0,A" ;
 
 ! MOVX @R1,A
-: $(opcode-F3) ( cpu -- )
-;
+: $(opcode-F3) ( -- str )
+    "MOVX @R1,A" ;
 
 ! CPL A
-: $(opcode-F4) ( cpu -- )
-;
+: $(opcode-F4) ( -- str )
+    "CPL A" ;
 
 ! MOV direct,A
-: $(opcode-F5) ( cpu -- )
-;
+: $(opcode-F5) ( -- str )
+    "MOV ,A" ;
 
 ! MOV @R0,A
-: $(opcode-F6) ( cpu -- )
-;
+: $(opcode-F6) ( -- str )
+    "MOV @R0,A" ;
 
 ! MOV @R1,A
-: $(opcode-F7) ( cpu -- )
-;
+: $(opcode-F7) ( -- str )
+    "MOV @R1,A" ;
 
 ! MOV R0,A
-: $(opcode-F8) ( cpu -- )
-;
+: $(opcode-F8) ( -- str )
+    "MOV @R0,A" ;
 
 ! MOV R1,A
-: $(opcode-F9) ( cpu -- )
-;
+: $(opcode-F9) ( -- str )
+    "MOV R1,A" ;
 
 ! MOV R2,A
-: $(opcode-FA) ( cpu -- )
-;
+: $(opcode-FA) ( -- str )
+    "MOV R2,A" ;
 
 ! MOV R3,A
-: $(opcode-FB) ( cpu -- )
-;
+: $(opcode-FB) ( -- str )
+    "MOV R3,A" ;
 
 ! MOV R4,A
-: $(opcode-FC) ( cpu -- )
-;
+: $(opcode-FC) ( -- str )
+    "MOV R4,A" ;
 
 ! MOV R5,A
-: $(opcode-FD) ( cpu -- )
-;
+: $(opcode-FD) ( -- str )
+    "MOV R5,A" ;
 
 ! MOV R6,A
-: $(opcode-FE) ( cpu -- )
-;
+: $(opcode-FE) ( -- str )
+    "MOV R6,A" ;
 
 ! MOV R7,A
-: $(opcode-FF) ( cpu -- )
-;
+: $(opcode-FF) ( -- str )
+    "MOV R7,A" ;
+
+
