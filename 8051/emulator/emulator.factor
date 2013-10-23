@@ -2268,6 +2268,9 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
 : execute-opcode ( cpu -- )
     [ rom-pc-read ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
 
+! get the string and values of current 
+: string-opcode ( cpu -- str )
+    [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap call( -- str ) ;
 
 ! generate the opcode array here
 : opcode-build ( cpu -- )
@@ -2283,6 +2286,8 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
     ] each-index drop ;
 
 
+
+
 ! generate opcode mnemonics
 : mnemonic-build ( cpu -- )
     mnemo>> dup
@@ -2295,6 +2300,7 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
         ] keep
         [ swap ] dip swap [ set-nth ] keep
     ] each-index drop ;
+
 
 
 : <cpu> ( -- cpu )
