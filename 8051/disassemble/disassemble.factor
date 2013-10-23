@@ -2,7 +2,7 @@
 ! See http://factorcode.org/license.txt for BSD license.
 !
 
-USING: kernel ;
+USING: kernel intel.8051.emulator ;
 
 
 IN: intel.8051.disassemble
@@ -12,191 +12,176 @@ TUPLE: mnemonic code ;
 
 
 ! NOP Instruction
-: $(opcode-00) ( -- str )
-    "NOP" 
-  ;
+: $(opcode-00) ( cpu -- str )
+    drop
+    "NOP" ;
 
 ! AJMP
 ! Absolute Jump
-: $(opcode-01) ( -- str )
-    "AJMP"
-  ;
+: $(opcode-01) ( cpu -- str )
+    drop
+    "AJMP" ;
 
 ! LJMP
 ! Long Jump
-: $(opcode-02) ( -- str )
-    "LJMP"
-  ;
+: $(opcode-02) ( cpu -- str )
+    drop
+    "LJMP" ;
 
 ! RR A
 ! Rotate Accumulator Right
-: $(opcode-03) ( -- str )
-    "RR A"
-   ;
+: $(opcode-03) ( cpu -- str )
+    drop
+    "RR A" ;
 
 
 ! INC A
 ! Increment Accumulator
-: $(opcode-04) ( -- str )
-    "INC A"
-   ;
+: $(opcode-04) ( cpu -- str )
+    drop "INC A" ;
 
 ! INC (DIR)
 ! Increment Data RAM or SFR
-: $(opcode-05) ( -- str )
-    "INC (DIR)"
-    ;
+: $(opcode-05) ( cpu -- str )
+    drop "INC (DIR)" ;
 
 ! INC @R0
 ! Increment 8-bit internal data RAM location (0-255) addressed
 ! indirectly through register R0.
-: $(opcode-06) ( -- str )
-    "INC @R0"
-    ;
+: $(opcode-06) ( cpu -- str )
+    drop "INC @R0" ;
 
 ! INC @R1
 ! Increment 8-bit internal RAM location (0 - 255) addressed
 ! indirectly through Register R1
-: $(opcode-07) ( -- str )
-    "INC @R1"
-    ;
+: $(opcode-07) ( cpu -- str )
+    drop "INC @R1" ;
 
 ! INC R0
 ! Increment R0
-: $(opcode-08) ( -- str )
-    "INC R0"
-    ;
+: $(opcode-08) ( cpu -- str )
+    drop "INC R0" ;
 
 
 ! INC R1
 ! Increment R1
-: $(opcode-09) ( -- str )
-    "INC R1"
-    ;
+: $(opcode-09) ( cpu -- str )
+    drop "INC R1" ;
 
 ! INC R2
 ! Increment R2
-: $(opcode-0A) ( -- str )
-    "INC R2"
-    ;
+: $(opcode-0A) ( cpu -- str )
+    drop "INC R2" ;
 
 
 ! INC R3
 ! Increment R3
-: $(opcode-0B) ( -- str )
-    "INC R3"
-    ;
+: $(opcode-0B) ( cpu -- str )
+    drop "INC R3" ;
 
 
 ! INC R4
 ! Increment R4
-: $(opcode-0C) ( -- str )
-    "INC R4"
-    ;
+: $(opcode-0C) ( cpu -- str )
+    drop "INC R4" ;
 
 ! INC R5
 ! Increment R5
-: $(opcode-0D) ( -- str )
-    "INC R5"
-    ;
+: $(opcode-0D) ( cpu -- str )
+    drop "INC R5" ;
 
 
 ! INC R6
 ! Increment R6
-: $(opcode-0E) ( -- str )
-    "INC R6"
-    ;
+: $(opcode-0E) ( cpu -- str )
+    drop "INC R6" ;
 
 ! INC R7
 ! Increment R7
-: $(opcode-0F) ( -- str )
-    "INC R7"
-    ;
+: $(opcode-0F) ( cpu -- str )
+    drop "INC R7" ;
 
 
 ! JBC bit,rel
 ! clear bit and Jump relative if bit is set
-: $(opcode-10) ( -- str )
-    "JBC BIT,REL"
-    ;
-
-
+: $(opcode-10) ( cpu -- str )
+    drop "JBC BIT,REL" ;
 
 ! ACALL
 ! Absolute Call
-: $(opcode-11) ( -- str )
-    "ACALL" ;
+: $(opcode-11) ( cpu -- str )
+    drop "ACALL" ;
 
 ! LCALL
 ! Long Call
-: $(opcode-12) ( -- str )
-    "LCALL" ;
+: $(opcode-12) ( cpu -- str )
+    drop "LCALL" ;
 
 ! RRC A
 ! Rotate Right A through Carry
-: $(opcode-13) ( -- str )
-    "RRC A" ;
+: $(opcode-13) ( cpu -- str )
+    drop "RRC A" ;
 
 ! DEC A
-: $(opcode-14) ( -- str )
-    "DEC A" ;
+: $(opcode-14) ( cpu -- str )
+    drop "DEC A" ;
 
 ! DEC (DIR)
 ! Decrement Data RAM or SFR
-: $(opcode-15) ( -- str )
-    "DEC " ;
+: $(opcode-15) ( cpu -- str )
+    drop "DEC " ;
 
 ! DEC @R0
 ! Decrement 8-bit internal data RAM location (0-255) addressed
 ! indirectly through register R0.
-: $(opcode-16) ( -- str )
-    "DEC @R0" ;
+: $(opcode-16) ( cpu -- str )
+    drop "DEC @R0" ;
 
 ! DEC @R1
 ! Decrement 8-bit internal data RAM location (0-255) addressed
 ! indirectly through register R1.
-: $(opcode-17) ( -- str )
-    "DEC @R1" ;
+: $(opcode-17) ( cpu -- str )
+    drop "DEC @R1" ;
 
 ! DEC R0
 ! Decrement R0
-: $(opcode-18) ( -- str )
-    "DEC R0" ;
+: $(opcode-18) ( cpu -- str )
+    drop "DEC R0" ;
 
 ! DEC R1
 ! Decrement R1
-: $(opcode-19) ( -- str )
-    "DEC R1" ;
+: $(opcode-19) ( cpu -- str )
+    drop "DEC R1" ;
 
 ! DEC R2
 ! Decrement R2
-: $(opcode-1A) ( -- str )
-    "DEC R2" ;
+: $(opcode-1A) ( cpu -- str )
+    drop "DEC R2" ;
 
 ! DEC R3
 ! Decrement R3
-: $(opcode-1B) ( -- str )
-    "DEC R3" ;
+: $(opcode-1B) ( cpu -- str )
+    drop "DEC R3" ;
 
 ! DEC R4
 ! Decrement R4
-: $(opcode-1C) ( -- str )
-    "DEC R4" ;
+: $(opcode-1C) ( cpu -- str )
+    drop "DEC R4" ;
 
 ! DEC R5
 ! Decrement R5
-: $(opcode-1D) ( -- str )
-    "DEC R5" ;
+: $(opcode-1D) ( cpu -- str )
+    drop "DEC R5" ;
 
 ! DEC R6
 ! Decrement R6
-: $(opcode-1E) ( -- str )
-    "DEC R6" ;
+: $(opcode-1E) ( cpu -- str )
+    drop "DEC R6" ;
 
 ! DEC R7
 ! Decrement R7
-: $(opcode-1F) ( -- str )
-    "DEC R7" ;
+: $(opcode-1F) ( cpu -- str )
+    drop "DEC R7" ;
 
 ! JB bit,rel
 ! Jump relative if bit is set
