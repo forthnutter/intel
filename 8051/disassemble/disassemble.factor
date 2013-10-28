@@ -185,12 +185,12 @@ TUPLE: mnemonic code ;
 
 ! JB bit,rel
 ! Jump relative if bit is set
-: $(opcode-20) ( -- str )
-    "JB" ;
+: $(opcode-20) ( cpu -- str )
+    drop "JB" ;
 
 ! AJMP
 ! Absolute Jump
-: $(opcode-21) ( --  str )
+: $(opcode-21) ( cpu --  str )
   $(opcode-01) ;
 
 ! RET
@@ -257,7 +257,7 @@ TUPLE: mnemonic code ;
     "JNB" ;
 
 ! ACALL
-: $(opcode-31) ( -- str )
+: $(opcode-31) ( cpu -- str )
     $(opcode-11) ;
     
 ! RETI
@@ -323,7 +323,7 @@ TUPLE: mnemonic code ;
 
 ! AJUMP
 ! Absolute Jump
-: $(opcode-41) ( -- str )
+: $(opcode-41) ( cpu -- str )
     $(opcode-21) ;
     
 ! ORL dir,A
@@ -388,7 +388,7 @@ TUPLE: mnemonic code ;
 : $(opcode-50) ( -- str )
     "JNC" ;
 
-: $(opcode-51) ( -- str )
+: $(opcode-51) ( cpu -- str )
     $(opcode-31) ;
     
 ! ANL direct,A
@@ -453,7 +453,7 @@ TUPLE: mnemonic code ;
     "JZ" ;
 
 !
-: $(opcode-61) ( -- str )
+: $(opcode-61) ( cpu -- str )
     $(opcode-41) ;
 
 
@@ -518,7 +518,7 @@ TUPLE: mnemonic code ;
 : $(opcode-70) ( -- str )
     "JNZ" ;
 
-: $(opcode-71) ( -- str )
+: $(opcode-71) ( cpu -- str )
     $(opcode-51) ;
 
 ! ORL C,bit
@@ -534,8 +534,8 @@ TUPLE: mnemonic code ;
     "MOV A," ;
     
 ! MOV direct,#data
-: $(opcode-75) ( -- str )
-    "MOV " ;
+: $(opcode-75) ( cpu -- str )
+    drop "MOV " ;
 
 ! MOV @R0,#data
 : $(opcode-76) ( -- str )
@@ -581,7 +581,7 @@ TUPLE: mnemonic code ;
 : $(opcode-80) ( -- str )
     "SJMP " ;
 
-: $(opcode-81) ( -- str )
+: $(opcode-81) ( cpu -- str )
     $(opcode-61) ;
     
 ! ANL C,bit
@@ -644,7 +644,7 @@ TUPLE: mnemonic code ;
 : $(opcode-90) ( -- str )
     "MOV DPTR," ;
 
-: $(opcode-91) ( -- str )
+: $(opcode-91) ( cpu -- str )
     $(opcode-71) ;
 
 ! MOV bit,C
@@ -707,7 +707,7 @@ TUPLE: mnemonic code ;
 : $(opcode-A0) ( -- str )
     "ORL C,/" ;
 
-: $(opcode-A1) ( -- str )
+: $(opcode-A1) ( cpu -- str )
     $(opcode-81) ;
     
     
@@ -723,7 +723,7 @@ TUPLE: mnemonic code ;
 : $(opcode-A4) ( -- str )
     "MUL AB" ;
     
-: $(opcode-A5) ( -- str )
+: $(opcode-A5) ( cpu -- str )
     $(opcode-00) ;
 
 
@@ -771,7 +771,7 @@ TUPLE: mnemonic code ;
 : $(opcode-B0) ( -- str )
     "ANL C,/" ;
 
-: $(opcode-B1) ( -- str )
+: $(opcode-B1) ( cpu -- str )
     $(opcode-91) ;
 
 ! CPL bit
@@ -837,12 +837,12 @@ TUPLE: mnemonic code ;
 : $(opcode-C0) ( -- str )
     "PUSH " ;
 
-: $(opcode-C1) ( -- str )
+: $(opcode-C1) ( cpu -- str )
     $(opcode-A1) ;
 
 ! CLR bit
-: $(opcode-C2) ( -- str )
-    "CLR " ;
+: $(opcode-C2) ( cpu -- str )
+    drop "CLR " ;
 
 ! CLR C
 : $(opcode-C3) ( -- str )
@@ -897,74 +897,74 @@ TUPLE: mnemonic code ;
     "XCH A,R7" ;
 
 ! POP direct
-: $(opcode-D0) ( -- str )
-    "POP " ;
+: $(opcode-D0) ( cpu -- str )
+    drop "POP " ;
 
-: $(opcode-D1) ( -- str )
+: $(opcode-D1) ( cpu -- str )
     $(opcode-B1) ;
 
 
 ! SETB bit
-: $(opcode-D2) ( -- str )
-    "SETB " ;
+: $(opcode-D2) ( cpu -- str )
+    drop "SETB " ;
 
 ! SETB C
-: $(opcode-D3) ( -- str )
-    "SETB C" ;
+: $(opcode-D3) ( cpu -- str )
+    drop "SETB C" ;
 
 ! DA A
-: $(opcode-D4) ( -- str )
-    "DA A" ;
+: $(opcode-D4) ( cpu -- str )
+    drop "DA A" ;
 
 ! DJNZ direct,rel
-: $(opcode-D5) ( -- str )
-    "DJNZ" ;
+: $(opcode-D5) ( cpu -- str )
+    drop "DJNZ" ;
 
 ! XCHD A,@R0
-: $(opcode-D6) ( -- str )
-    "XCHD A,@R0" ;
+: $(opcode-D6) ( cpu -- str )
+    drop "XCHD A,@R0" ;
 
 ! XCHD A,@R1
-: $(opcode-D7) ( -- str )
-    "XCHD A,@R1" ;
+: $(opcode-D7) ( cpu -- str )
+    drop "XCHD A,@R1" ;
 
 ! DJNZ R0,rel
-: $(opcode-D8) ( -- str )
-    "DJNZ R0," ;
+: $(opcode-D8) ( cpu -- str )
+    drop "DJNZ R0," ;
 
 ! DJNZ R1,rel
-: $(opcode-D9) ( -- str )
-    "DJNZ R1" ;
+: $(opcode-D9) ( cpu -- str )
+    drop "DJNZ R1" ;
 
 ! DJNZ R2,rel
-: $(opcode-DA) ( -- str )
-    "DJNZ R2," ;
+: $(opcode-DA) ( cpu -- str )
+    drop "DJNZ R2," ;
 
 ! DJNZ R3,rel
-: $(opcode-DB) ( -- str )
-    "DJNZ R3," ;
+: $(opcode-DB) ( cpu -- str )
+    drop "DJNZ R3," ;
 
 ! DJNZ R4,rel
-: $(opcode-DC) ( -- str )
-    "DJNZ R4," ;
+: $(opcode-DC) ( cpu -- str )
+    drop "DJNZ R4," ;
 
 ! DJNZ R5,rel
-: $(opcode-DD) ( -- str )
-    "DJNZ R5," ;
+: $(opcode-DD) ( cpu -- str )
+    drop "DJNZ R5," ;
 
 ! DJNZ R6,rel
-: $(opcode-DE) ( -- str )
-    "DJNZ R6," ;
+: $(opcode-DE) ( cpu -- str )
+    drop "DJNZ R6," ;
 
 ! DJNZ R7,rel
-: $(opcode-DF) ( -- str )
-    "DJNZ R7," ;
+: $(opcode-DF) ( cpu -- str )
+    drop "DJNZ R7," ;
 
 ! MOVX A,@DPTR
 : $(opcode-E0) ( -- str )
     "MOVX A,@DPTR" ;
 
-: $(opcode-E1) ( -- str )
+: $(opcode-E1) ( cpu -- str )
     $(opcode-C1) ;
 
 ! MOVX A,@R0
@@ -1028,7 +1028,7 @@ TUPLE: mnemonic code ;
 : $(opcode-F0) ( -- str )
     "MOVX @DPTR,A" ;
 
-: $(opcode-F1) ( -- str )
+: $(opcode-F1) ( cpu -- str )
     $(opcode-D1) ;
 
 ! MOVX @R0,A
