@@ -2265,12 +2265,12 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
 
 
 ! execute one instruction
-: execute-opcode ( cpu -- )
+: execute-pc-opcode ( cpu -- )
     [ rom-pc-read ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
 
 ! get the string and values of current 
-: string-opcode ( cpu -- str )
-    [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap call( -- str ) ;
+: string-pc-opcode ( cpu -- str )
+    [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap call( cpu -- str ) ;
 
 ! generate the opcode array here
 : opcode-build ( cpu -- )
