@@ -75,6 +75,7 @@ IN: intel.8051
 : string-pc-reg ( cpu -- s )
     [ "PC " ] dip
     [ rom-pc-nbytes ] keep [ pc>> ] keep [ hexdump-rom ] keep [ append ] dip
+    [ string-pc-opcode ] keep [ append ] dip
     drop ;
 
 
@@ -156,7 +157,7 @@ IN: intel.8051
 
 ! single step execute one instruction then displays all registers
 : single-step ( cpu -- )
-    [ execute-opcode ] keep
+    [ execute-pc-opcode ] keep
     print-registers ;
 
 
