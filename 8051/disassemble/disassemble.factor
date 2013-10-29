@@ -535,47 +535,49 @@ TUPLE: mnemonic code ;
     
 ! MOV direct,#data
 : $(opcode-75) ( cpu -- str )
+    ! [ pc>> 1 + ] keep
+    ! [ label>> label-lookup ] keep
     drop "MOV " ;
 
 ! MOV @R0,#data
-: $(opcode-76) ( -- str )
-    "MOV @R0," ;
+: $(opcode-76) ( cpu -- str )
+    drop "MOV @R0," ;
  
 ! MOV @R1,#data
-: $(opcode-77) ( -- str )
-    "MOV @R1," ;
+: $(opcode-77) ( cpu -- str )
+    drop "MOV @R1," ;
  
 ! MOV R0,#data
-: $(opcode-78) ( -- str )
-    "MOV R0,#" ;
+: $(opcode-78) ( cpu -- str )
+    drop "MOV R0,#" ;
 
 ! MOV R1,#data
-: $(opcode-79) ( -- str )
-    "MOV R1,#" ;
+: $(opcode-79) ( cpu -- str )
+    drop "MOV R1,#" ;
 
 ! MOV R2,#data
-: $(opcode-7A) ( -- str )
-    "MOV R2,#" ;
+: $(opcode-7A) ( cpu -- str )
+    drop "MOV R2,#" ;
 
 ! MOV R3,#data
-: $(opcode-7B) ( -- str )
-    "MOV R3,#" ;
+: $(opcode-7B) ( cpu -- str )
+    drop "MOV R3,#" ;
 
 ! MOV R4,#data
-: $(opcode-7C) ( -- str )
-    "MOV R4,#" ;
+: $(opcode-7C) ( cpu -- str )
+    drop "MOV R4,#" ;
 
 ! MOV R5,#data
-: $(opcode-7D) ( -- str )
-    "MOV R5,#" ;
+: $(opcode-7D) ( cpu -- str )
+    drop "MOV R5,#" ;
 
 ! MOV R6,#data
-: $(opcode-7E) ( -- str )
-    "MOV R6,#" ;
+: $(opcode-7E) ( cpu -- str )
+    drop "MOV R6,#" ;
 
 ! MOV R7,#data
-: $(opcode-7F) ( -- str )
-    "MOV R7,#" ;
+: $(opcode-7F) ( cpu -- str )
+    drop "MOV R7,#" ;
 
 ! SJMP rel
 : $(opcode-80) ( -- str )
