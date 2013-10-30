@@ -2268,6 +2268,17 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
 : execute-pc-opcode ( cpu -- )
     [ rom-pc-read ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
 
+! Execute to an address
+: execute-address ( addr cpu -- )
+    [ pc>> = ] 2keep rot 
+    [ 2drop ]
+    [
+        [ [ pc>> = ] 2keep rot ]
+        [
+            [ execute-pc-opcode ] keep
+        ] until 
+    ] if ;
+
 ! get the string and values of current 
 : string-pc-opcode ( cpu -- str )
     [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap call( cpu -- str ) ;
