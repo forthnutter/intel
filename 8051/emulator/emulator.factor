@@ -2263,25 +2263,29 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
 : (opcode-FF) ( cpu -- )
     [ A> ] keep [ >R7 ] keep pc+ ;
 
+! execute one instruction
+: execute-pc-opcodes ( cpu -- )
+    [ rom-pc-read ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
 
 ! execute one instruction
 : execute-pc-opcode ( cpu -- )
-    [ rom-pc-read ] keep [ opcodes>> nth [ break ] prepose ] keep swap call( cpu -- ) ;
+    [ rom-pc-read ] keep [ opcodes>> nth ] keep swap call( cpu -- ) ;
 
 ! Execute to an address
 : execute-address ( addr cpu -- )
-    [ pc>> = ] 2keep rot 
-    [ 2drop ]
     [
-        [ [ pc>> = ] 2keep rot ]
-        [
-            [ execute-pc-opcode ] keep
-        ] until 
-    ] if ;
+        [ pc>> = ] 2keep rot ]
+        [ [ execute-pc-opcode ] keep
+    ] until 
+    2drop ;
+
+! get the string and values of current 
+: string-pc-opcodes ( cpu -- str )
+    [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap call( cpu -- str ) ;
 
 ! get the string and values of current 
 : string-pc-opcode ( cpu -- str )
-    [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap call( cpu -- str ) ;
+    [ rom-pc-read ] keep [ mnemo>> nth ] keep swap call( cpu -- str ) ;
 
 ! generate the opcode array here
 : opcode-build ( cpu -- )
