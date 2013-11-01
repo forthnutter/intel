@@ -275,8 +275,13 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
   [ bitor 16 bits ] dip
   pc<< ;
 
+! Get the sp value
+: SP> ( cpu -- sp )
+    sp>> ;
 
-
+! set sp
+: >SP ( n cpu -- )
+    sp<< ;
 
 ! calculate the relative address
 : relative ( n a -- na )
