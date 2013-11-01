@@ -195,126 +195,126 @@ TUPLE: mnemonic code ;
 
 ! RET
 ! Return from subroutine pop PC off the stack
-: $(opcode-22) ( -- str )
-    "RET" ;
+: $(opcode-22) ( cpu -- str )
+    drop "RET" ;
   
 ! RL A
 ! Rotate Accumulator Left
-: $(opcode-23) ( -- str )
-    "RL A" ;
+: $(opcode-23) ( cpu -- str )
+    drop "RL A" ;
 
 ! ADD A,#data
-: $(opcode-24) ( -- str )
-    "ADD A" ;
+: $(opcode-24) ( cpu -- str )
+    drop "ADD A" ;
 
 ! ADD A,dir
-: $(opcode-25) ( -- str )
-    "ADD A" ;
+: $(opcode-25) ( cpu -- str )
+    drop "ADD A" ;
 
 ! ADD A,@R0
-: $(opcode-26) ( -- str )
-    "ADD A,@R0" ;
+: $(opcode-26) ( cpu -- str )
+    drop "ADD A,@R0" ;
   
 ! ADD A,@R1
-: $(opcode-27) ( -- str )
-    "ADD A,@R1" ;
+: $(opcode-27) ( cpu -- str )
+    drop "ADD A,@R1" ;
 
 ! ADD A,R0
-: $(opcode-28) ( -- str )
-    "ADD A,R0" ;
+: $(opcode-28) ( cpu -- str )
+    drop "ADD A,R0" ;
 
 ! ADD A,R1
-: $(opcode-29) ( -- str )
-    "ADD A,R1" ;
+: $(opcode-29) ( cpu -- str )
+    drop "ADD A,R1" ;
 
 ! ADD A,R2
-: $(opcode-2A) ( -- str )
-    "ADD A,R2" ;
+: $(opcode-2A) ( cpu -- str )
+    drop "ADD A,R2" ;
 
 ! ADD A,R3
-: $(opcode-2B) ( -- str )
-    "ADD A,R3" ;
+: $(opcode-2B) ( cpu -- str )
+    drop "ADD A,R3" ;
 
 ! ADD A,R4
-: $(opcode-2C) ( -- str )
-    "ADD A,R4" ;
+: $(opcode-2C) ( cpu -- str )
+    drop "ADD A,R4" ;
 
 ! ADD A,R5
-: $(opcode-2D) ( -- str )
-    "ADD A,R5" ;
+: $(opcode-2D) ( cpu -- str )
+    drop "ADD A,R5" ;
 
 ! ADD A,R6
-: $(opcode-2E) ( -- str )
-    "ADD A,R6" ;
+: $(opcode-2E) ( cpu -- str )
+    drop "ADD A,R6" ;
 
 ! ADD A,R7
-: $(opcode-2F) ( -- str )
-    "ADD A,R7" ;
+: $(opcode-2F) ( cpu -- str )
+    drop "ADD A,R7" ;
 
 ! JNB bit,rel
 ! Jump relative if bit is clear
-: $(opcode-30) ( -- str )
-    "JNB" ;
+: $(opcode-30) ( cpu -- str )
+    drop "JNB" ;
 
 ! ACALL
 : $(opcode-31) ( cpu -- str )
     $(opcode-11) ;
     
 ! RETI
-: $(opcode-32) ( -- str )
-    "RETI" ;
+: $(opcode-32) ( cpu -- str )
+    drop "RETI" ;
 
 ! RLC A
-: $(opcode-33) ( -- str )
-    "RLC A" ;
+: $(opcode-33) ( cpu -- str )
+    drop "RLC A" ;
 
 ! ADDC A,#data  
-: $(opcode-34) ( -- str )
-    "ADDC A" ;
+: $(opcode-34) ( cpu -- str )
+    drop "ADDC A" ;
 
 ! ADDC A,dir
-: $(opcode-35) ( -- str )
-    "ADDC A" ;
+: $(opcode-35) ( cpu -- str )
+    drop "ADDC A" ;
 
 ! ADDC A,@R0
-: $(opcode-36) ( -- str )
-    "ADDC A,@R0" ;
+: $(opcode-36) ( cpu -- str )
+    drop "ADDC A,@R0" ;
 
 ! ADDC A,@R1
-: $(opcode-37) ( -- str )
-    "ADDC A,@R1" ;
+: $(opcode-37) ( cpu -- str )
+    drop "ADDC A,@R1" ;
 
 ! ADDC A,R0
-: $(opcode-38) ( -- str )
-    "ADDC A,R0" ;
+: $(opcode-38) ( cpu -- str )
+    drop "ADDC A,R0" ;
 
 ! ADDC A,R1
-: $(opcode-39) ( -- str )
-    "ADDC A,R1" ;
+: $(opcode-39) ( cpu -- str )
+    drop "ADDC A,R1" ;
 
 ! ADDC A,R2
-: $(opcode-3A) ( -- str )
-    "ADDC A,R2" ;
+: $(opcode-3A) ( cpu -- str )
+    drop "ADDC A,R2" ;
 
 ! ADDC A,R3
-: $(opcode-3B) ( -- str )
-    "ADDC A,R3" ;
+: $(opcode-3B) ( cpu -- str )
+    drop "ADDC A,R3" ;
 
 ! ADDC A,R4
-: $(opcode-3C) ( -- str )
-    "ADDC A,R4" ;
+: $(opcode-3C) ( cpu -- str )
+    drop "ADDC A,R4" ;
 
 ! ADDC A,R5
-: $(opcode-3D) ( -- str )
-    "ADDC A,R5" ;
+: $(opcode-3D) ( cpu -- str )
+    drop "ADDC A,R5" ;
 
 ! ADDC A,R6
-: $(opcode-3E) ( -- str )
-    "ADDC A,R6" ;
+: $(opcode-3E) ( cpu -- str )
+    drop "ADDC A,R6" ;
 
 ! ADDC A,R7
-: $(opcode-3F) ( -- str )
-    "ADDC A,R7" ;
+: $(opcode-3F) ( cpu -- str )
+    drop "ADDC A,R7" ;
 
 ! JC rel
 ! Jump relative if carry is set
@@ -515,23 +515,23 @@ TUPLE: mnemonic code ;
 
 ! JNZ
 ! if A != 0 jump rel
-: $(opcode-70) ( -- str )
-    "JNZ" ;
+: $(opcode-70) ( cpu -- str )
+    drop "JNZ" ;
 
 : $(opcode-71) ( cpu -- str )
     $(opcode-51) ;
 
 ! ORL C,bit
-: $(opcode-72) ( -- str )
-    "ORL C," ;
+: $(opcode-72) ( cpu -- str )
+    drop "ORL C," ;
 
 ! JMP @A+DPTR    
-: $(opcode-73) ( -- str )
-    "JMP @A+DPTR" ;
+: $(opcode-73) ( cpu -- str )
+    drop "JMP @A+DPTR" ;
 
 ! MOV A,#data
-: $(opcode-74) ( -- str )
-    "MOV A," ;
+: $(opcode-74) ( cpu -- str )
+    drop "MOV A," ;
     
 ! MOV direct,#data
 : $(opcode-75) ( cpu -- str )
@@ -587,123 +587,123 @@ TUPLE: mnemonic code ;
     $(opcode-61) ;
     
 ! ANL C,bit
-: $(opcode-82) ( -- str )
-    "ANL C," ;
+: $(opcode-82) ( cpu -- str )
+    drop "ANL C," ;
 
 ! MOVC A,@A+PC
-: $(opcode-83) ( -- str )
-    "MOVC A,@A+PC" ;
+: $(opcode-83) ( cpu -- str )
+    drop "MOVC A,@A+PC" ;
  
 ! DIV AB 
-: $(opcode-84) ( -- str )
-    "DIV AB" ;
+: $(opcode-84) ( cpu -- str )
+    drop "DIV AB" ;
 
 ! MOV direct,direct
-: $(opcode-85) ( -- str )
-    "MOV" ;
+: $(opcode-85) ( cpu -- str )
+    drop "MOV" ;
 
 ! MOV direct,@R0
-: $(opcode-86) ( -- str )
-    "MOV ,@R0" ;
+: $(opcode-86) ( cpu -- str )
+    drop "MOV ,@R0" ;
     
 ! MOV direct,@R1
-: $(opcode-87) ( -- str )
-    "MOV ,@R1" ;
+: $(opcode-87) ( cpu -- str )
+    drop "MOV ,@R1" ;
     
 ! MOV direct,R0
-: $(opcode-88) ( -- str )
-    "MOV ,R0" ;
+: $(opcode-88) ( cpu -- str )
+    drop "MOV ,R0" ;
 
 ! MOV direct,R1
-: $(opcode-89) ( -- str )
-    "MOV ,R1" ;
+: $(opcode-89) ( cpu -- str )
+    drop "MOV ,R1" ;
 
 ! MOV direct,R2
-: $(opcode-8A) ( --  str )
-    "MOV ,R2" ;
+: $(opcode-8A) ( cpu --  str )
+    drop "MOV ,R2" ;
 
 ! MOV direct,R3
-: $(opcode-8B) ( -- str )
-    "MOV ,R3" ;
+: $(opcode-8B) ( cpu -- str )
+    drop "MOV ,R3" ;
 
 ! MOV direct,R4
-: $(opcode-8C) ( -- str )
-    "MOV ,R4" ;
+: $(opcode-8C) ( cpu -- str )
+    drop "MOV ,R4" ;
 
 ! MOV direct,R5
-: $(opcode-8D) ( -- str )
-    "MOV ,R5" ;
+: $(opcode-8D) ( cpu -- str )
+    drop "MOV ,R5" ;
 
 ! MOV direct,R6
-: $(opcode-8E) ( -- str )
-    "MOV ,R6" ;
+: $(opcode-8E) ( cpu -- str )
+    drop "MOV ,R6" ;
 
 ! MOV direct,R7
-: $(opcode-8F) ( -- str )
-    "MOV ,R7" ;
+: $(opcode-8F) ( cpu -- str )
+    drop "MOV ,R7" ;
 
 ! MOV DPTR,#data16
-: $(opcode-90) ( -- str )
-    "MOV DPTR," ;
+: $(opcode-90) ( cpu -- str )
+    drop "MOV DPTR," ;
 
 : $(opcode-91) ( cpu -- str )
     $(opcode-71) ;
 
 ! MOV bit,C
-: $(opcode-92) ( -- str )
-    "MOV ,C" ;
+: $(opcode-92) ( cpu -- str )
+    drop "MOV ,C" ;
 
 ! MOVC A,@A+DPTR    
-: $(opcode-93) ( -- str )
-    "MOVC A,@A+DPTR" ;
+: $(opcode-93) ( cpu -- str )
+    drop "MOVC A,@A+DPTR" ;
 
 ! SUBB A,#data
-: $(opcode-94) ( -- str )
-    "SUBB A,#" ;
+: $(opcode-94) ( cpu -- str )
+    drop "SUBB A,#" ;
  
 ! SUBB A,direct 
-: $(opcode-95) ( -- str )
-    "SUBB A," ;
+: $(opcode-95) ( cpu -- str )
+    drop "SUBB A," ;
     
 ! SUBB A,@R0
-: $(opcode-96) ( -- str )
-    "SUBB A,@R0" ;
+: $(opcode-96) ( cpu -- str )
+    drop "SUBB A,@R0" ;
 
 ! SUBB A,@R1
-: $(opcode-97) ( -- str )
-    "SUBB A,@R1" ;
+: $(opcode-97) ( cpu -- str )
+    drop "SUBB A,@R1" ;
 
 ! SUBB A,R0
-: $(opcode-98) ( -- str )
-    "SUBB A,R0" ;
+: $(opcode-98) ( cpu -- str )
+    drop "SUBB A,R0" ;
 
 ! SUBB A,R1
-: $(opcode-99) ( -- str )
-    "SUBB A,R1" ;
+: $(opcode-99) ( cpu -- str )
+    drop "SUBB A,R1" ;
 
 ! SUBB A,R2
-: $(opcode-9A) ( -- str )
-    "SUBB A,R2" ;
+: $(opcode-9A) ( cpu -- str )
+    drop "SUBB A,R2" ;
 
 ! SUBB A,R3
-: $(opcode-9B) ( -- str )
-    "SUBB A,R3" ;
+: $(opcode-9B) ( cpu -- str )
+    drop "SUBB A,R3" ;
 
 ! SUBB A,R4
-: $(opcode-9C) ( -- str )
-    "SUBB A,R4" ;
+: $(opcode-9C) ( cpu -- str )
+    drop "SUBB A,R4" ;
 
 ! SUBB A,R5
-: $(opcode-9D) ( -- str )
-    "SUBB A,R5" ;
+: $(opcode-9D) ( cpu -- str )
+    drop "SUBB A,R5" ;
 
 ! SUBB A,R6
-: $(opcode-9E) ( -- str )
-    "SUBB A,R6" ;
+: $(opcode-9E) ( cpu -- str )
+    drop "SUBB A,R6" ;
 
 ! SUBB A,R7
-: $(opcode-9F) ( -- str )
-    "SUBB A,R7" ;
+: $(opcode-9F) ( cpu -- str )
+    drop "SUBB A,R7" ;
 
 ! ORL C,/bit
 : $(opcode-A0) ( -- str )
