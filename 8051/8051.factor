@@ -71,6 +71,11 @@ IN: intel.8051
     [ psw>> psw-bank-read number>string 3 32 pad-head append ] keep
     drop ;
 
+! make string R0
+: string-sp-reg ( cpu -- str )
+    [ "SP " ] dip 
+    SP> string-data append ;
+
 ! create a string for PC
 : string-pc-reg ( cpu -- s )
     [ "PC " ] dip
@@ -144,6 +149,7 @@ IN: intel.8051
 : print-registers ( cpu -- )
     [ string-ab-reg print ] keep
     [ string-psw-reg print ] keep
+    [ string-sp-reg print ] keep
     [ string-pc-reg print ] keep
     [ string-r0-all print ] keep
     [ string-r1-all print ] keep
