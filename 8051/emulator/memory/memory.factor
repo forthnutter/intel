@@ -41,7 +41,8 @@ TUPLE: memory ram sfr ext ;
 : ram-cell ( a memory -- cell/? )
     ram>> ?nth ;
 
-
+: sfr-cell ( a memory -- cell/? )
+   sfr>> ?nth ;
 
 ! read value from cell
 : ram-cellvalue ( cell -- value/? )
@@ -50,8 +51,10 @@ TUPLE: memory ram sfr ext ;
 ! return the cell or address of bit
 : ram-bitcell ( ba memory -- cell )
     swap dup 0x7f >
-    [ 7 3 bit-range swap ram-cell ] [ 7 3 bit-range 0x20 + swap ram-cell ] if
+    [ 7 3 bit-range swap sfr-cell ] [ 7 3 bit-range 0x20 + swap ram-cell ] if
 ;
+
+
 
     
 : ram-bitstatus ( ba memory -- ? )
@@ -73,8 +76,7 @@ TUPLE: memory ram sfr ext ;
 : ram-fill ( b memory -- )
     ram>> swap [ swap set-model ] curry each ;
 
-: sfr-cell ( a memory -- cell/? )
-   sfr>> ?nth ;
+
 
 : sfr-write ( b a memory -- )
     sfr-cell dup

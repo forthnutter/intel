@@ -2,7 +2,8 @@
 ! See http://factorcode.org/license.txt for BSD license.
 !
 
-USING: kernel intel.8051.emulator ;
+USING: accessors kernel intel.8051.emulator math math.bitwise math.parser
+       sequences unicode.case tools.continuations ;
 
 
 IN: intel.8051.disassemble
@@ -25,8 +26,8 @@ TUPLE: mnemonic code ;
 ! LJMP
 ! Long Jump
 : $(opcode-02) ( cpu -- str )
-    drop
-    "LJMP" ;
+    [ pc>> 1 + ] keep rom-read-word  >hex 4 CHAR: 0 pad-head >upper
+    "LJMP " swap append ;
 
 ! RR A
 ! Rotate Accumulator Right
@@ -535,9 +536,10 @@ TUPLE: mnemonic code ;
     
 ! MOV direct,#data
 : $(opcode-75) ( cpu -- str )
-    ! [ pc>> 1 + ] keep
-    ! [ label>> label-lookup ] keep
-    drop "MOV " ;
+    [ pc>> 1 + ] keep
+    [ rom-read >hex 2 CHAR: 0 pad-head >upper ",#" append ] keep
+    [ pc>> 2 + ] keep rom-read >hex 2 CHAR: 0 pad-head >upper append
+    "MOV " swap append ;
 
 ! MOV @R0,#data
 : $(opcode-76) ( cpu -- str )
@@ -842,9 +844,19 @@ TUPLE: mnemonic code ;
 : $(opcode-C1) ( cpu -- str )
     $(opcode-A1) ;
 
+! 8051 bit memory returns address of bit memory
+: bit-address ( n -- a )
+    dup 0x7f >
+    [ 6 3 bit-range 3 shift ]
+    [ 6 3 bit-range 0x20 + ] if ;
+
+
 ! CLR bit
 : $(opcode-C2) ( cpu -- str )
-    drop "CLR " ;
+    break [ pc>> 1 + ] keep rom-read
+    [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+    2 0 bit-range number>string append
+    "CLR " swap append ;
 
 ! CLR C
 : $(opcode-C3) ( -- str )
