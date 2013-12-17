@@ -11,6 +11,16 @@ IN: intel.8051.disassemble
 
 TUPLE: mnemonic code ;
 
+! 8051 bit memory returns address of bit memory
+: bit-address ( n -- a )
+    dup 0x7f >
+    [ 6 3 bit-range 3 shift ]
+    [ 6 3 bit-range 0x20 + ] if ;
+
+! 8051 bit number
+: bit-number ( n -- b )
+    2 0 bit-range ;
+
 
 ! NOP Instruction
 : $(opcode-00) ( cpu -- str )
@@ -116,7 +126,9 @@ TUPLE: mnemonic code ;
 ! LCALL
 ! Long Call
 : $(opcode-12) ( cpu -- str )
-    drop "LCALL" ;
+    [ pc>> 1 + ] keep
+    rom-read-word >hex 4 CHAR: 0 pad-head >upper
+    "LCALL " swap append ;
 
 ! RRC A
 ! Rotate Right A through Carry
@@ -187,7 +199,15 @@ TUPLE: mnemonic code ;
 ! JB bit,rel
 ! Jump relative if bit is set
 : $(opcode-20) ( cpu -- str )
-    drop "JB" ;
+    [ "JB " ] dip
+    [ pc>> 1 + ] keep
+    [
+        rom-read
+        [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+        bit-number number>string append "," append append
+    ] keep
+    [ pc>> 2 + ] keep
+    rom-read >hex 2 CHAR: 0 pad-head >upper append ;
 
 ! AJMP
 ! Absolute Jump
@@ -532,7 +552,9 @@ TUPLE: mnemonic code ;
 
 ! MOV A,#data
 : $(opcode-74) ( cpu -- str )
-    drop "MOV A," ;
+    [ pc>> 1 + ] keep
+    rom-read >hex 2 CHAR: 0 pad-head
+    "MOV A,#" swap append ;
     
 ! MOV direct,#data
 : $(opcode-75) ( cpu -- str )
@@ -543,7 +565,9 @@ TUPLE: mnemonic code ;
 
 ! MOV @R0,#data
 : $(opcode-76) ( cpu -- str )
-    drop "MOV @R0," ;
+    [ pc>> 1 + ] keep
+    rom-read >hex 2 CHAR: 0 pad-head >upper ",#" swap append
+    "MOV @R0" swap append ;
  
 ! MOV @R1,#data
 : $(opcode-77) ( cpu -- str )
@@ -551,11 +575,15 @@ TUPLE: mnemonic code ;
  
 ! MOV R0,#data
 : $(opcode-78) ( cpu -- str )
-    drop "MOV R0,#" ;
+    [ pc>> 1 + ] keep
+    rom-read >hex 2 CHAR: 0 pad-head >upper ",#" swap append
+    "MOV R0" swap append ;
 
 ! MOV R1,#data
 : $(opcode-79) ( cpu -- str )
-    drop "MOV R1,#" ;
+    [ pc>> 1 + ] keep
+    rom-read >hex 2 CHAR: 0 pad-head >upper ",#" swap append
+    "MOV R1" swap append ;
 
 ! MOV R2,#data
 : $(opcode-7A) ( cpu -- str )
@@ -602,7 +630,10 @@ TUPLE: mnemonic code ;
 
 ! MOV direct,direct
 : $(opcode-85) ( cpu -- str )
-    drop "MOV" ;
+    [ pc>> 1 + ] keep
+    [ rom-read >hex 2 CHAR: 0 pad-head >upper "," append ] keep
+    [ pc>> 2 + ] keep rom-read >hex 2 CHAR: 0 pad-head >upper append
+    "MOV " swap append ;
 
 ! MOV direct,@R0
 : $(opcode-86) ( cpu -- str )
@@ -651,9 +682,15 @@ TUPLE: mnemonic code ;
 : $(opcode-91) ( cpu -- str )
     $(opcode-71) ;
 
+
+
 ! MOV bit,C
 : $(opcode-92) ( cpu -- str )
-    drop "MOV ,C" ;
+    [ "MOV " ] dip
+    [ pc>> 1 + ] keep
+    rom-read
+    [ bit-address >hex 2 CHAR: 0  pad-head >upper "." append append ] keep
+    bit-number number>string append ",C" append ;
 
 ! MOVC A,@A+DPTR    
 : $(opcode-93) ( cpu -- str )
@@ -844,16 +881,12 @@ TUPLE: mnemonic code ;
 : $(opcode-C1) ( cpu -- str )
     $(opcode-A1) ;
 
-! 8051 bit memory returns address of bit memory
-: bit-address ( n -- a )
-    dup 0x7f >
-    [ 6 3 bit-range 3 shift ]
-    [ 6 3 bit-range 0x20 + ] if ;
+
 
 
 ! CLR bit
 : $(opcode-C2) ( cpu -- str )
-    break [ pc>> 1 + ] keep rom-read
+    [ pc>> 1 + ] keep rom-read
     [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
     2 0 bit-range number>string append
     "CLR " swap append ;
@@ -920,7 +953,11 @@ TUPLE: mnemonic code ;
 
 ! SETB bit
 : $(opcode-D2) ( cpu -- str )
-    drop "SETB " ;
+    [ pc>> 1 + ] keep rom-read
+    [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+    2 0 bit-range number>string append
+    "SETB " swap append ;    
+
 
 ! SETB C
 : $(opcode-D3) ( cpu -- str )
@@ -944,11 +981,15 @@ TUPLE: mnemonic code ;
 
 ! DJNZ R0,rel
 : $(opcode-D8) ( cpu -- str )
-    drop "DJNZ R0," ;
+    [ pc>> 1 + ] keep
+    rom-read >hex 2 CHAR: 0 pad-head >upper "," swap append
+    "DJNZ R0" swap append ;
 
 ! DJNZ R1,rel
 : $(opcode-D9) ( cpu -- str )
-    drop "DJNZ R1" ;
+    [ pc>> 1 + ] keep
+    rom-read >hex 2 CHAR: 0 pad-head >upper "," swap append
+    "DJNZ R1" swap append ;
 
 ! DJNZ R2,rel
 : $(opcode-DA) ( cpu -- str )
@@ -994,8 +1035,10 @@ TUPLE: mnemonic code ;
     "CLR A" ;
 
 ! MOV A,direct
-: $(opcode-E5) ( -- str )
-    "MOV A," ;
+: $(opcode-E5) ( cpu -- str )
+    [ "MOV A," ] dip
+    [ pc>> 1 + ] keep
+    rom-read >hex 2 CHAR: 0 pad-head >upper append ;
 
 ! MOV A,@R0
 : $(opcode-E6) ( -- str )
