@@ -8,5 +8,6 @@ Steps to get the emulator going
 2. Create a byte array of the program
 3. Put byte array into cpu TUPLE
 4. commands:
-	single-step
+	single-step ( cpu -- )	  executes one instruction and prints registers
+	print-register ( cpu -- ) displays registers
 
