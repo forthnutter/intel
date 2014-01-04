@@ -166,6 +166,14 @@ IN: intel.8051
     [ execute-pc-opcode ] keep
     print-registers ;
 
+: run-to ( a cpu -- )
+    [
+        2dup [ pc>> ] keep [ = ] dip drop
+    ]
+    [
+        [ execute-pc-opcode ] keep
+    ] until 2drop ;
+
 
 : start-test ( -- cpu )
     "work/intel/hex/EZSHOT.HEX" <ihex> array>>
