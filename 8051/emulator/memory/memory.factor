@@ -6,10 +6,13 @@ USING: accessors arrays kernel math math.bitwise models sequences tools.continua
 
 IN: intel.8051.emulator.memory
 
-CONSTANT: RAM_B 0xF0
-CONSTANT: RAM_A 0xE0
-CONSTANT: RAM_DPH 0x83
+CONSTANT: RAM_SP 0x81
 CONSTANT: RAM_DPL 0x82
+CONSTANT: RAM_DPH 0x83
+
+CONSTANT: RAM_A 0xE0
+CONSTANT: RAM_B 0xF0
+
 
 TUPLE: cell < model ;
 

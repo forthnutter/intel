@@ -240,18 +240,31 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
 : rom-pc-period ( cpu -- n )
     rom-pc-read period-seq nth ;
 
+! read stack pointer
+: SP> ( cpu -- n )
+  memory>>
+  RAM_SP swap
+  ram-direct-read  ;
+
+! write to stack pointer
+: >SP ( b cpu -- )
+  memory>>
+  RAM_SP swap
+  ram-direct-write ;
+
+
 ! do some stack pointer functions
 ! increment the sp
 : sp+ ( cpu -- )
-  [ sp>> 1 + 8 bits ] keep sp<< ;
+  [ SP> 1 + 8 bits ] keep >SP ;
 
 ! decrement the sp
 : sp- ( cpu -- )
-  [ sp>> 1 - 8 bits ] keep sp<< ;
+  [ SP> 1 - 8 bits ] keep >SP ;
 
 ! write to ram sp has address
 : sp-write ( n cpu -- )
-  [ sp>> ] keep
+  [ SP> ] keep
   memory>> ram-indirect-write ;
 
 ! push a byte onto the stack pointer
@@ -261,7 +274,7 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
   sp-write ;
 
 : sp-pop ( cpu -- b )
-  [ sp>> ] keep [ sp- ] keep
+  [ SP> ] keep [ sp- ] keep
   memory>> ram-indirect-read ;
 
 ! save the contents of pc to sp
@@ -275,13 +288,6 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
   [ bitor 16 bits ] dip
   pc<< ;
 
-! Get the sp value
-: SP> ( cpu -- sp )
-    sp>> ;
-
-! set sp
-: >SP ( n cpu -- )
-    sp<< ;
 
 ! calculate the relative address
 : relative ( n a -- na )
