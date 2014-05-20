@@ -52,7 +52,7 @@ CONSTANT: nbytes-seq {
         1 2 1 1 1 2 1 1 1 1 1 1 1 1 1 1
     }
 
-TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
+TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 
 ! write to PSW
 : >PSW ( b cpu -- )
@@ -2337,7 +2337,6 @@ TUPLE: cpu hp lp b psw dptr sp pc rom memory opcodes bytes cycles mnemo ;
     0 >>b
     0 <psw> >>psw
     0 >>dptr
-    0 >>sp
     <memory> >>memory
     256 [ not-implemented ] <array> >>opcodes
     [ opcode-build ] keep
