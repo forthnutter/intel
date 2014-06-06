@@ -21,6 +21,12 @@ TUPLE: mnemonic code ;
 : bit-number ( n -- b )
     2 0 bit-range ;
 
+! Label hash special function register
+: label-sfr ( -- h )
+    H{
+        { 0x90 "P1.0" }
+        
+    } ;
 
 ! NOP Instruction
 : $(opcode-00) ( cpu -- str )
