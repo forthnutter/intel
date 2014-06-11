@@ -2328,15 +2328,19 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     ] each-index drop ;
 
 
-
-: <cpu> ( -- cpu )
-    cpu new
+! reset the cpu
+: cpu-reset ( cpu -- )
     f >>hp    ! High Priority Interrupt
     f >>lp    ! Low Priority Interrupt
     0 >>pc
     0 >>b
+    0 >>dptr drop ;
+
+: <cpu> ( -- cpu )
+    cpu new
+    [ cpu-reset ] keep
     0 <psw> >>psw
-    0 >>dptr
+
     <memory> >>memory
     256 [ not-implemented ] <array> >>opcodes
     [ opcode-build ] keep
@@ -2344,7 +2348,4 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ mnemonic-build ] keep ;
 
 
-: emu-test ( -- c )
-  break
-  "work/intel/hex/EZSHOT.HEX"
-   <ihex> array>> <cpu> swap >>rom ;
+
