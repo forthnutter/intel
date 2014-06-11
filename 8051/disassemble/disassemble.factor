@@ -23,7 +23,7 @@ TUPLE: mnemonic code ;
     2 0 bit-range ;
 
 ! Label hash special function register
-: label-sfr ( b -- h )
+: label-sfr ( b -- value/f ? )
     H{
         { 0x90 "P1.0" }
         { 0x80 "P0.0" }
@@ -898,12 +898,12 @@ TUPLE: mnemonic code ;
     [ pc>> 1 + ] keep rom-read
     [ label-sfr ] keep swap
     [
-        [ append ] keep 
+        drop 
     ]
     [
         [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+        2 0 bit-range number>string append
     ] if
-    2 0 bit-range number>string append
     "CLR " swap append ;
 
 ! CLR C
