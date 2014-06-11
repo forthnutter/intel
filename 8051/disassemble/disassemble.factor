@@ -2,8 +2,9 @@
 ! See http://factorcode.org/license.txt for BSD license.
 !
 
-USING: accessors kernel intel.8051.emulator math math.bitwise math.parser
-       sequences unicode.case tools.continuations ;
+USING: accessors kernel sequences unicode.case tools.continuations
+       math math.bitwise math.parser assocs
+       intel.8051.emulator ;
 
 
 IN: intel.8051.disassemble
@@ -22,11 +23,12 @@ TUPLE: mnemonic code ;
     2 0 bit-range ;
 
 ! Label hash special function register
-: label-sfr ( -- h )
+: label-sfr ( b -- h )
     H{
         { 0x90 "P1.0" }
-        
-    } ;
+        { 0x80 "P0.0" }
+    }
+    at* ;
 
 ! NOP Instruction
 : $(opcode-00) ( cpu -- str )
@@ -892,8 +894,15 @@ TUPLE: mnemonic code ;
 
 ! CLR bit
 : $(opcode-C2) ( cpu -- str )
+    break
     [ pc>> 1 + ] keep rom-read
-    [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+    [ label-sfr ] keep swap
+    [
+        [ append ] keep 
+    ]
+    [
+        [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+    ] if
     2 0 bit-range number>string append
     "CLR " swap append ;
 
