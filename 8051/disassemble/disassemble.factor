@@ -898,9 +898,10 @@ TUPLE: mnemonic code ;
     [ pc>> 1 + ] keep rom-read
     [ label-sfr ] keep swap
     [
-        drop 
+        drop
     ]
     [
+        [ drop ] dip
         [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
         2 0 bit-range number>string append
     ] if
