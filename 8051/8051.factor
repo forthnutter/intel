@@ -3,7 +3,7 @@
 !
 
 USING:
-    accessors kernel intel.8051.emulator intel.8051.emulator.psw 
+    accessors kernel intel.8051.emulator intel.8051.emulator.psw intel.8051.disassemble
     intel.hex sequences tools.continuations
     math.parser unicode.case words quotations io
     math.bitwise math math.order

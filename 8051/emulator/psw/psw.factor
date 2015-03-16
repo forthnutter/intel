@@ -4,7 +4,7 @@
 
 USING: accessors arrays io io.encodings.binary io.files
        kernel lexer math math.bitwise math.parser models namespaces sequences
-       syntax tools.continuations ;
+       tools.continuations ;
    
 IN: intel.8051.emulator.psw
 
