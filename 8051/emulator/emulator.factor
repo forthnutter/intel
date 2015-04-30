@@ -232,13 +232,19 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
   [ drop 0 ] if
   ;
 
+! read rom at address return number of bytes for instrction
+: rom-nbytes ( a cpu -- n )
+    rom-read period-seq nth ;
+
 ! read data at pc address then return the number byte the data opcode is associated with
 : rom-pc-nbytes ( cpu -- n )
     rom-pc-read nbytes-seq nth ;
 
-! read data at pc address the return the period value for the opcode
+! read d ata at pc address the return the period value for the opcode
 : rom-pc-period ( cpu -- n )
     rom-pc-read period-seq nth ;
+
+
 
 ! read stack pointer
 : SP> ( cpu -- n )

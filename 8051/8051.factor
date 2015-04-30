@@ -177,5 +177,5 @@ IN: intel.8051
 
 
 : start-test ( -- cpu )
-    "work/intel/hex/EZSHOT.HEX" <ihex> array>>
+    "work/intel/8051/EZSHOT.HEX" <ihex> array>>
     <cpu> swap >>rom ;
