@@ -176,6 +176,3 @@ IN: intel.8051
     ] until 2drop ;
 
 
-: start-test ( -- cpu )
-    "work/intel/8051/EZSHOT.HEX" <ihex> array>>
-    <cpu> swap >>rom ;
