@@ -25,8 +25,17 @@ TUPLE: mnemonic code ;
 ! Label hash special function register
 : label-sfr ( b -- value/f ? )
     H{
-        { 0x90 "P1.0" }
         { 0x80 "P0.0" }
+        { 0x88 "TCON" }
+        { 0x90 "P1.0" }
+        { 0x98 "SCON" }
+        { 0xA0 "P2.0" }
+        { 0xA8 "IE" }
+        { 0xB0 "P3.0" }
+        { 0xB8 "IP" }
+        { 0xD0 "PSW" }
+        { 0xE0 "ACC" }
+        { 0xF0 "B" }
     }
     at* ;
 
