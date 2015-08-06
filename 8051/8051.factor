@@ -41,7 +41,7 @@ IN: intel.8051
 ! build string of register A
 ! A HH BBBBBBBB DDD
 : string-a-reg ( cpu -- s )
-    [ "A " ] dip
+    [ "ACC " ] dip
     A> string-data append ; 
 
 ! build string of Register B
