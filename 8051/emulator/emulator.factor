@@ -30,7 +30,7 @@ CONSTANT: period-seq {
         24 24 12 12 12 24 12 12 24 24 24 24 24 24 24 24
         24 24 24 24 12 12 12 12 12 12 12 12 12 12 12 12
         24 24 24 24 12 12 12 12 12 12 12 12 12 12 12 12
-    } 
+    }
 
 ! Table of number of bytes for each opcode
 CONSTANT: nbytes-seq {
@@ -54,6 +54,7 @@ CONSTANT: nbytes-seq {
 
 TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 
+GENERIC: >execute< ( cpu -- )
 ! write to PSW
 : >PSW ( b cpu -- )
     psw>> psw-write ;
@@ -86,7 +87,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
   memory>>
   RAM_B swap
   ram-direct-read  ;
-  
+
 ! write to R0
 : >R0 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
@@ -102,11 +103,11 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
   swap memory>> ram-direct-read ;
 
 : @R0> ( cpu -- b )
-   [ R0> ] keep memory>> ram-indirect-read ;  
+   [ R0> ] keep memory>> ram-indirect-read ;
 
 : >@R0 ( b cpu -- )
    [ R0> ] keep memory>> ram-indirect-write ;
-   
+
 : >R1 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
   -rot
@@ -120,11 +121,11 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
   swap memory>> ram-direct-read ;
 
 : @R1> ( cpu -- b )
-   [ R1> ] keep memory>> ram-indirect-read ;  
+   [ R1> ] keep memory>> ram-indirect-read ;
 
 : >@R1 ( b cpu -- )
-   [ R1> ] keep memory>> ram-indirect-write ;  
-  
+   [ R1> ] keep memory>> ram-indirect-write ;
+
 
 : >R2 ( b cpu -- )
   [ psw>> psw-bank-read ] keep ! get the bank value
@@ -215,7 +216,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 ! increment the pc of cpu
 : pc+ ( cpu -- )
   dup pc>> 1 + 16 0 bit-range swap pc<< ;
-    
+
 ! read the data from rom
 : rom-read ( a cpu -- d )
     rom>> ?nth dup [ ] [ ] if 8 bits ;
@@ -223,7 +224,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 ! read 16 bit data from ROM
 : rom-read-word ( address cpu -- dddd )
   [ rom>> ?nth 8 shift ] 2keep swap 1 + swap rom>> ?nth bitor 16 bits ;
-    
+
 ! read the rom addressed by pc
 : rom-pc-read ( cpu -- dd )
   dup pc>> swap rom>> ?nth
@@ -315,7 +316,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 ! (address 0x0000-0x1FFF).
 : load-rom ( filename cpu -- )
   memory>> swap binary
-  [ 
+  [
     0 swap (load-rom)
   ] with-file-reader ;
 
@@ -343,7 +344,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 ! Rotate Accumulator Right
 : (opcode-03) ( cpu -- )
   [ A> -1 8 bitroll ] keep [ >A ] keep pc+ ;
-  
+
 ! INC A
 ! Increment Accumulator
 : (opcode-04) ( cpu -- )
@@ -354,7 +355,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 : (opcode-05) ( cpu -- )
   [ dup pc+ rom-pc-read ] keep
   [ memory>> ram-direct-read ] keep
-  swap 1 + 8 bits swap [ rom-pc-read ] keep 
+  swap 1 + 8 bits swap [ rom-pc-read ] keep
   [ memory>> ram-direct-write ] keep pc+ ;
 
 ! INC @R0
@@ -470,14 +471,14 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 
 ! DEC A
 : (opcode-14) ( cpu -- )
-  [ A> 1 - 8 bits ] keep [ >A ] keep pc+ ;  
+  [ A> 1 - 8 bits ] keep [ >A ] keep pc+ ;
 
 ! DEC (DIR)
 ! Decrement Data RAM or SFR
 : (opcode-15) ( cpu -- )
   [ dup pc+ rom-pc-read ] keep
   [ memory>> ram-direct-read ] keep
-  swap 1 - 8 bits swap [ rom-pc-read ] keep 
+  swap 1 - 8 bits swap [ rom-pc-read ] keep
   [ memory>> ram-direct-write ] keep pc+ ;
 
 ! DEC @R0
@@ -569,7 +570,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 ! Return from subroutine pop PC off the stack
 : (opcode-22) ( cpu -- )
   (sp)->pc ;
-  
+
 ! RL A
 ! Rotate Accumulator Left
 : (opcode-23) ( cpu -- )
@@ -597,7 +598,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
   0 swap
   [ psw>> psw-add ] keep
   [ >A ] keep pc+ ;
-  
+
 ! ADD A,@R1
 : (opcode-27) ( cpu -- )
   [ A> ] keep
@@ -620,7 +621,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R1> ] keep
     0 swap
     [ psw>> psw-add ] keep
-    [ >A ] keep pc+ ;    
+    [ >A ] keep pc+ ;
 
 ! ADD A,R2
 : (opcode-2A) ( cpu -- )
@@ -684,12 +685,12 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ pc+ ] keep
     [ pc>> relative ] keep pc<<
   ]
-  if ;    
+  if ;
 
 ! ACALL
 : (opcode-31) ( cpu -- )
     (opcode-11) ;
-    
+
 ! RETI
 : (opcode-32) ( cpu -- )
     [ hp>> ] keep [ lp>> ] keep [ or ] dip swap
@@ -699,15 +700,15 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
         [ f >>hp ]
         [ f >>lp ] if
     ]
-    when 
+    when
     (opcode-22) ! to make things simple just call the ret
     ;
-    
+
 ! RLC A
 : (opcode-33) ( cpu -- )
   [ A> ] keep [ psw>> psw-rlc ] keep [ >A ] keep pc+ ;
 
-! ADDC A,#data  
+! ADDC A,#data
 : (opcode-34) ( cpu -- )
     [ A> ] keep [ pc+ ] keep [ rom-pc-read ] keep
     [ psw>> psw-cy ] keep ! carry bit
@@ -729,7 +730,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
   [ psw>> psw-cy ] keep
   [ psw>> psw-add ] keep
   [ >A ] keep pc+ ;
-  
+
 ! ADDC A,@R1
 : (opcode-37) ( cpu -- )
   [ A> ] keep
@@ -752,7 +753,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R1> ] keep
     [ psw>> psw-cy ] keep
     [ psw>> psw-add ] keep
-    [ >A ] keep pc+ ;    
+    [ >A ] keep pc+ ;
 
 ! ADDC A,R2
 : (opcode-3A) ( cpu -- )
@@ -800,7 +801,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R7> ] keep
     [ psw>> psw-cy ] keep
     [ psw>> psw-add ] keep
-    [ >A ] keep pc+ ;    
+    [ >A ] keep pc+ ;
 
 ! JC rel
 ! Jump relative if carry is set
@@ -813,13 +814,13 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ pc+ ] keep
     [ pc>> relative ] keep pc<<
   ]
-  [ [ pc+ ] keep pc+ ] if ;    
+  [ [ pc+ ] keep pc+ ] if ;
 
 ! AJUMP
 ! Absolute Jump
 : (opcode-41) ( cpu -- )
     (opcode-21) ;
-    
+
 ! ORL dir,A
 ! Logical-OR for byte variables
 : (opcode-42) ( cpu -- )
@@ -828,7 +829,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
   [ bitor 8 bits swap ] dip
   [ memory>> ram-direct-write ] keep
   pc+ ;
-  
+
 ! ORL direct,#data
 : (opcode-43) ( cpu -- )
     [ pc+ ] keep [ rom-pc-read dup ] keep [ memory>> ram-direct-read ] keep
@@ -860,7 +861,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ bitor 8 bits ] dip
     [ >A ] keep
     pc+ ;
-    
+
 ! ORL A,@R1
 : (opcode-47) ( cpu -- )
     [ A> ] keep
@@ -868,15 +869,15 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ bitor 8 bits ] dip
     [ >A ] keep
     pc+ ;
-    
-    
+
+
 ! ORL A,R0
 : (opcode-48) ( cpu -- )
     [ A> ] keep
     [ R0> ] keep
     [ bitor 8 bits ] dip
     [ >A ] keep
-    pc+ ;       
+    pc+ ;
 
 ! ORL A,R1
 : (opcode-49) ( cpu -- )
@@ -884,7 +885,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R1> ] keep
     [ bitor 8 bits ] dip
     [ >A ] keep
-    pc+ ;           
+    pc+ ;
 
 ! ORL A,R2
 : (opcode-4A) ( cpu -- )
@@ -900,7 +901,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R3> ] keep
     [ bitor 8 bits ] dip
     [ >A ] keep
-    pc+ ;           
+    pc+ ;
 
 ! ORL A,R4
 : (opcode-4C) ( cpu -- )
@@ -908,7 +909,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R4> ] keep
     [ bitor 8 bits ] dip
     [ >A ] keep
-    pc+ ;       
+    pc+ ;
 
 ! ORL A,R5
 : (opcode-4D) ( cpu -- )
@@ -916,15 +917,15 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R5> ] keep
     [ bitor 8 bits ] dip
     [ >A ] keep
-    pc+ ;    
-    
+    pc+ ;
+
 ! ORL A,R6
 : (opcode-4E) ( cpu -- )
     [ A> ] keep
     [ R6> ] keep
     [ bitor 8 bits ] dip
     [ >A ] keep
-    pc+ ;           
+    pc+ ;
 
 ! ORL A,R7
 : (opcode-4F) ( cpu -- )
@@ -945,11 +946,11 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ rom-pc-read ] keep
     [ pc+ ] keep
     [ pc>> relative ] keep pc<<
-  ] if ;    
+  ] if ;
 
 : (opcode-51) ( cpu -- )
     (opcode-31) ;
-    
+
 ! ANL direct,A
 : (opcode-52) ( cpu -- )
   [ pc+ ] keep [ rom-pc-read dup ] keep [ memory>> ram-direct-read ] keep
@@ -989,7 +990,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ bitand 8 bits ] dip
     [ >A ] keep
     pc+ ;
-    
+
 ! ANL A,@R1
 : (opcode-57) ( cpu -- )
     [ A> ] keep
@@ -997,15 +998,15 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ bitand 8 bits ] dip
     [ >A ] keep
     pc+ ;
-    
-    
+
+
 ! ANL A,R0
 : (opcode-58) ( cpu -- )
     [ A> ] keep
     [ R0> ] keep
     [ bitand 8 bits ] dip
     [ >A ] keep
-    pc+ ;       
+    pc+ ;
 
 ! ANL A,R1
 : (opcode-59) ( cpu -- )
@@ -1013,7 +1014,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R1> ] keep
     [ bitand 8 bits ] dip
     [ >A ] keep
-    pc+ ;           
+    pc+ ;
 
 ! ANL A,R2
 : (opcode-5A) ( cpu -- )
@@ -1029,7 +1030,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R3> ] keep
     [ bitand 8 bits ] dip
     [ >A ] keep
-    pc+ ;           
+    pc+ ;
 
 ! ANL A,R4
 : (opcode-5C) ( cpu -- )
@@ -1037,7 +1038,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R4> ] keep
     [ bitand 8 bits ] dip
     [ >A ] keep
-    pc+ ;       
+    pc+ ;
 
 ! ANL A,R5
 : (opcode-5D) ( cpu -- )
@@ -1045,15 +1046,15 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R5> ] keep
     [ bitand 8 bits ] dip
     [ >A ] keep
-    pc+ ;    
-    
+    pc+ ;
+
 ! ANL A,R6
 : (opcode-5E) ( cpu -- )
     [ A> ] keep
     [ R6> ] keep
     [ bitand 8 bits ] dip
     [ >A ] keep
-    pc+ ;           
+    pc+ ;
 
 ! ANL A,R7
 : (opcode-5F) ( cpu -- )
@@ -1075,7 +1076,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ pc+ ] keep
     [ pc>> relative ] keep pc<<
   ]
-  [ [ pc+ ] keep pc+ ] if ;    
+  [ [ pc+ ] keep pc+ ] if ;
 
 !
 : (opcode-61) ( cpu -- )
@@ -1121,7 +1122,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ bitxor 8 bits ] dip
     [ >A ] keep
     pc+ ;
-    
+
 ! XRL A,@R1
 : (opcode-67) ( cpu -- )
     [ A> ] keep
@@ -1129,15 +1130,15 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ bitxor 8 bits ] dip
     [ >A ] keep
     pc+ ;
-    
-    
+
+
 ! XRL A,R0
 : (opcode-68) ( cpu -- )
     [ A> ] keep
     [ R0> ] keep
     [ bitxor 8 bits ] dip
     [ >A ] keep
-    pc+ ;       
+    pc+ ;
 
 ! XRL A,R1
 : (opcode-69) ( cpu -- )
@@ -1145,7 +1146,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R1> ] keep
     [ bitxor 8 bits ] dip
     [ >A ] keep
-    pc+ ;           
+    pc+ ;
 
 ! XRL A,R2
 : (opcode-6A) ( cpu -- )
@@ -1161,7 +1162,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R3> ] keep
     [ bitxor 8 bits ] dip
     [ >A ] keep
-    pc+ ;           
+    pc+ ;
 
 ! XRL A,R4
 : (opcode-6C) ( cpu -- )
@@ -1169,7 +1170,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R4> ] keep
     [ bitxor 8 bits ] dip
     [ >A ] keep
-    pc+ ;       
+    pc+ ;
 
 ! XRL A,R5
 : (opcode-6D) ( cpu -- )
@@ -1177,15 +1178,15 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R5> ] keep
     [ bitxor 8 bits ] dip
     [ >A ] keep
-    pc+ ;    
-    
+    pc+ ;
+
 ! XRL A,R6
 : (opcode-6E) ( cpu -- )
     [ A> ] keep
     [ R6> ] keep
     [ bitxor 8 bits ] dip
     [ >A ] keep
-    pc+ ;           
+    pc+ ;
 
 ! XRL A,R7
 : (opcode-6F) ( cpu -- )
@@ -1193,7 +1194,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R7> ] keep
     [ bitxor 8 bits ] dip
     [ >A ] keep
-    pc+ ;    
+    pc+ ;
 
 ! JNZ
 ! if A != 0 jump rel
@@ -1206,7 +1207,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ rom-pc-read ] keep
     [ pc+ ] keep
     [ pc>> relative ] keep pc<<
-  ] if ;  
+  ] if ;
 
 : (opcode-71) ( cpu -- )
     (opcode-51) ;
@@ -1220,7 +1221,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ psw>> >psw-cy ] keep
     pc+ ;
 
-! JMP @A+DPTR    
+! JMP @A+DPTR
 : (opcode-73) ( cpu -- )
     [ A> ] keep
     [ DPTR> ] keep
@@ -1229,7 +1230,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 ! MOV A,#data
 : (opcode-74) ( cpu -- )
     [ pc+ ] keep [ rom-pc-read ] keep [ >A ] keep pc+ ;
-    
+
 ! MOV direct,#data
 : (opcode-75) ( cpu -- )
     [ pc+ ] keep [ rom-pc-read ] keep    ! Direct Address
@@ -1237,18 +1238,18 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ swap ] dip
     [ memory>> ram-direct-write ] keep
     pc+ ;
-    
- 
+
+
 ! MOV @R0,#data
 : (opcode-76) ( cpu -- )
     [ pc+ ] keep [ rom-pc-read ] keep
     [ >@R0 ] keep pc+ ;
- 
+
 ! MOV @R1,#data
 : (opcode-77) ( cpu -- )
     [ pc+ ] keep [ rom-pc-read ] keep
     [ >@R1 ] keep pc+ ;
- 
+
 ! MOV R0,#data
 : (opcode-78) ( cpu -- )
     [ pc+ ] keep [ rom-pc-read ] keep
@@ -1257,7 +1258,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 ! MOV R1,#data
 : (opcode-79) ( cpu -- )
     [ pc+ ] keep [ rom-pc-read ] keep
-    [ >R1 ] keep pc+ ;   
+    [ >R1 ] keep pc+ ;
 
 ! MOV R2,#data
 : (opcode-7A) ( cpu -- )
@@ -1296,7 +1297,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 
 : (opcode-81) ( cpu -- )
     (opcode-61) ;
-    
+
 ! ANL C,bit
 : (opcode-82) ( cpu -- )
     [ psw>> psw-cy? ] keep
@@ -1312,8 +1313,8 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ A> ] keep
     [ pc>> ] keep
     [ + 16 bits ] dip [ rom-read ] keep >A ;
- 
-! DIV AB 
+
+! DIV AB
 : (opcode-84) ( cpu -- )
     [ A> ] keep
     [ B> ] keep
@@ -1336,14 +1337,14 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ pc+ ] keep [ rom-pc-read ] keep
     [ memory>> ram-direct-write ] keep
     pc+ ;
-    
+
 ! MOV direct,@R1
 : (opcode-87) ( cpu -- )
     [ @R1> ] keep
     [ pc+ ] keep [ rom-pc-read ] keep
     [ memory>> ram-direct-write ] keep
     pc+ ;
-    
+
 ! MOV direct,R0
 : (opcode-88) ( cpu -- )
     [ R0> ] keep
@@ -1356,14 +1357,14 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R1> ] keep
     [ pc+ ] keep [ rom-pc-read ] keep
     [ memory>> ram-direct-write ] keep
-    pc+ ;    
+    pc+ ;
 
 ! MOV direct,R2
 : (opcode-8A) ( cpu -- )
     [ R2> ] keep
     [ pc+ ] keep [ rom-pc-read ] keep
     [ memory>> ram-direct-write ] keep
-    pc+ ;    
+    pc+ ;
 
 ! MOV direct,R3
 : (opcode-8B) ( cpu -- )
@@ -1418,7 +1419,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ memory>> >ram-bit ] keep
     pc+ ;
 
-! MOVC A,@A+DPTR    
+! MOVC A,@A+DPTR
 : (opcode-93) ( cpu -- )
     [ A> ] keep
     [ DPTR> ] keep
@@ -1433,8 +1434,8 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ psw>> psw-sub ] keep
     [ >A ] keep
     pc+ ;
- 
-! SUBB A,direct 
+
+! SUBB A,direct
 : (opcode-95) ( cpu -- )
     [ A> ] keep
     [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
@@ -1442,7 +1443,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ psw>> psw-sub ] keep
     [ >A ] keep
     pc+ ;
-    
+
 ! SUBB A,@R0
 : (opcode-96) ( cpu -- )
   [ A> ] keep
@@ -1473,7 +1474,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R1> ] keep
     [ psw>> psw-cy ] keep
     [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;    
+    [ >A ] keep pc+ ;
 
 ! SUBB A,R2
 : (opcode-9A) ( cpu -- )
@@ -1521,7 +1522,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ R7> ] keep
     [ psw>> psw-cy ] keep
     [ psw>> psw-sub ] keep
-    [ >A ] keep pc+ ;    
+    [ >A ] keep pc+ ;
 
 ! ORL C,/bit
 : (opcode-A0) ( cpu -- )
@@ -1534,28 +1535,28 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 
 : (opcode-A1) ( cpu -- )
     (opcode-81) ;
-    
-    
+
+
 ! MOV C,bit
 : (opcode-A2) ( cpu -- )
     [ pc+ ] keep [ rom-pc-read ] keep
     [ memory>> ram-bitstatus ] keep
     [ psw>> >psw-cy ] keep
-    pc+ ;    
-    
+    pc+ ;
+
 ! INC DPTR
 : (opcode-A3) ( cpu -- )
     [ DPTR> ] keep
     [ 1 + ] dip
     [ >DPTR ] keep
     pc+ ;
-    
+
 
 ! MUL AB
 : (opcode-A4) ( cpu -- )
     [ A> ] keep [ B> ] keep [ psw>> psw-mul ] keep
     [ >B ] keep [ >A ] keep pc+ ;
-    
+
 : (opcode-A5) ( cpu -- )
     (opcode-00) ;
 
@@ -1568,7 +1569,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 ! MOV @R0,direct
 : (opcode-A7) ( cpu -- )
     [ pc+ ] keep [ rom-pc-read ] keep [ memory>> ram-direct-read ] keep
-    [ >@R1 ] keep pc+ ;   
+    [ >@R1 ] keep pc+ ;
 
 ! MOV A,R0
 : (opcode-A8) ( cpu -- )
@@ -1681,7 +1682,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
         [ pc+ ] keep [ rom-pc-read ] keep
         [ pc+ ] keep
         [ pc>> relative ] keep pc<<
-    ] if ;    
+    ] if ;
 
 ! CJNE @R0,data,rel
 : (opcode-B6) ( cpu -- )
@@ -2014,7 +2015,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc+ ] keep pc+
     ]
-    [ 
+    [
         [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
         [ pc>> relative ] keep pc<<
     ] if ;
@@ -2054,7 +2055,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc+ ] keep pc+
     ]
-    [ 
+    [
         [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
         [ pc>> relative ] keep pc<<
     ] if ;
@@ -2067,7 +2068,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc+ ] keep pc+
     ]
-    [ 
+    [
         [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
         [ pc>> relative ] keep pc<<
     ] if ;
@@ -2080,7 +2081,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc+ ] keep pc+
     ]
-    [ 
+    [
         [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
         [ pc>> relative ] keep pc<<
     ] if ;
@@ -2093,7 +2094,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc+ ] keep pc+
     ]
-    [ 
+    [
         [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
         [ pc>> relative ] keep pc<<
     ] if ;
@@ -2106,7 +2107,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc+ ] keep pc+
     ]
-    [ 
+    [
         [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
         [ pc>> relative ] keep pc<<
     ] if ;
@@ -2119,7 +2120,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc+ ] keep pc+
     ]
-    [ 
+    [
         [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
         [ pc>> relative ] keep pc<<
     ] if ;
@@ -2132,7 +2133,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc+ ] keep pc+
     ]
-    [ 
+    [
         [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
         [ pc>> relative ] keep pc<<
     ] if ;
@@ -2145,7 +2146,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc+ ] keep pc+
     ]
-    [ 
+    [
         [ pc+ ] keep [ rom-pc-read ] keep [ pc+ ] keep
         [ pc>> relative ] keep pc<<
     ] if ;
@@ -2199,7 +2200,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 ! MOV A,R3
 : (opcode-EB) ( cpu -- )
     [ R3> ] keep [ >A ] keep pc+ ;
- 
+
 ! MOV A,R4
 : (opcode-EC) ( cpu -- )
     [ R4> ] keep [ >A ] keep pc+ ;
@@ -2293,14 +2294,14 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [
         [ pc>> = ] 2keep rot ]
         [ [ execute-pc-opcode ] keep
-    ] until 
+    ] until
     2drop ;
 
-! get the string and values of current 
+! get the string and values of current
 : string-pc-opcodes ( cpu -- str )
     [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap call( cpu -- str ) ;
 
-! get the string and values of current 
+! get the string and values of current
 : string-pc-opcode ( cpu -- str )
     [ rom-pc-read ] keep [ mnemo>> nth ] keep swap call( cpu -- str ) ;
 
@@ -2324,7 +2325,7 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
 : mnemonic-build ( cpu -- )
     mnemo>> dup
     [
-        [ drop ] dip 
+        [ drop ] dip
         [
             >hex 2 CHAR: 0 pad-head >upper
             "$(opcode-" swap append ")" append
@@ -2352,6 +2353,3 @@ TUPLE: cpu hp lp b psw dptr pc rom memory opcodes bytes cycles mnemo ;
     [ opcode-build ] keep
     256 [ not-implemented ] <array> >>mnemo
     [ mnemonic-build ] keep ;
-
-
-
