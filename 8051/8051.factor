@@ -12,7 +12,7 @@ IN: intel.8051
 
 
 ! rom dump number of bytes
-: hexdump-rom ( n address cpu -- str )
+: dump-rom ( n address cpu -- str )
     [
         16 bits
         [ dup 16 < ] dip
@@ -27,7 +27,10 @@ IN: intel.8051
 
     ;
 
-
+! do lines of memory dump rom generates an array of strings
+: line-dump-rom ( l address cpu -- sarray )
+  [  ] 2keep
+  ;
 
 ! build string from 8 bit data
 ! HH BBBBBBBB DDD
