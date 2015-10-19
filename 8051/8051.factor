@@ -6,7 +6,7 @@ USING:
     accessors kernel intel.8051.emulator intel.8051.emulator.psw intel.8051.disassemble
     intel.hex sequences tools.continuations
     math.parser unicode.case words quotations io
-    math.bitwise math math.order ;
+    math.bitwise math math.order arrays ;
 
 IN: intel.8051
 
@@ -29,8 +29,12 @@ IN: intel.8051
 
 ! do lines of memory dump rom generates an array of strings
 : line-dump-rom ( l address cpu -- sarray )
-  [  ] 2keep
-  ;
+  rot ! get number of lines
+  f <array>   ! basic array
+  [
+    drop
+    16 2over dump-rom
+  ] map ; ! add string to each element
 
 ! build string from 8 bit data
 ! HH BBBBBBBB DDD
@@ -82,7 +86,7 @@ IN: intel.8051
 ! create a string for PC
 : string-pc-reg ( cpu -- s )
     [ "PC " ] dip
-    [ rom-pc-nbytes ] keep [ pc>> ] keep [ hexdump-rom ] keep [ append ] dip
+    [ rom-pc-nbytes ] keep [ pc>> ] keep [ dump-rom ] keep [ append ] dip
     [ string-pc-opcode ] keep [ append ] dip
     drop ;
 
