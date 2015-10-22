@@ -30,11 +30,11 @@ IN: intel.8051
 ! do lines of memory dump rom generates an array of strings
 : line-dump-rom ( l address cpu -- sarray )
   [
-    dup rot [a,b] [ 16 * ] map
+    swap [a,b) [ 16 * ] map
   ] dip swap ! gen address
   [
     [ dup ] dip 16 swap rot dump-rom
-  ] map ; ! add string to each element
+  ] map [ drop ] dip ; ! add string to each element
 
 ! build string from 8 bit data
 ! HH BBBBBBBB DDD
