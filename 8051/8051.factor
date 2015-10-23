@@ -36,6 +36,22 @@ IN: intel.8051
     [ dup ] dip 16 swap rot dump-rom
   ] map [ drop ] dip ; ! add string to each element
 
+! disassemble from address
+: mnemonic-dump ( address cpu -- str )
+  [ rom-nbytes ] 2keep [ dump-rom ] keep
+  [ string-pc-opcode ] keep [ append ] dip
+      drop ;
+
+! disassemble a number
+: line-mnemonic-dump ( l address cpu -- str )
+  [ f <array> ] 2dip rot
+  [
+    [ rom-nbytes ] 2keep
+    [ swap [a,b) ] dip
+    swap [ swap rom-nbytes ] map
+  ] map ;
+
+
 ! build string from 8 bit data
 ! HH BBBBBBBB DDD
 : string-data ( d -- str )
