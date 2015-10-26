@@ -38,18 +38,20 @@ IN: intel.8051
 
 ! disassemble from address
 : mnemonic-dump ( address cpu -- str )
-  [ rom-nbytes ] 2keep [ dump-rom ] keep
-  [ string-pc-opcode ] keep [ append ] dip
+  [ rom-nbytes ] 2keep [ dump-rom ] 2keep
+  [ string-opcode ] keep [ append ] dip
       drop ;
 
 ! disassemble a number
 : line-mnemonic-dump ( l address cpu -- str )
   [ f <array> ] 2dip rot
   [
+    drop
     [ rom-nbytes ] 2keep
-    [ swap [a,b) ] dip
-    swap [ swap rom-nbytes ] map
-  ] map ;
+    [ dup [ + ] dip ] dip
+    swap
+  ] map [ drop ] 2dip
+  [ over mnemonic-dump ] map ;
 
 
 ! build string from 8 bit data

@@ -220,6 +220,9 @@ GENERIC: >execute< ( cpu -- )
 ! read the data from rom
 : rom-read ( a cpu -- d )
     rom>> ?nth dup [ ] [ ] if 8 bits ;
+! read four bytes from rom at address
+: rom-read4 ( address cpu -- array )
+  rom>> [ dup 4 + ] dip <slice> >array ;
 
 ! read 16 bit data from ROM
 : rom-read-word ( address cpu -- dddd )
@@ -2296,6 +2299,11 @@ GENERIC: >execute< ( cpu -- )
         [ [ execute-pc-opcode ] keep
     ] until
     2drop ;
+
+! disassemble the address
+: string-opcode ( address cpu -- str )
+  [ rom-read ] 2keep
+  [ [ drop ] dip mnemo>> nth ] 2keep drop swap call( cpu -- str ) ;
 
 ! get the string and values of current
 : string-pc-opcodes ( cpu -- str )

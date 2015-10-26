@@ -52,8 +52,8 @@ TUPLE: mnemonic code ;
 
 ! LJMP
 ! Long Jump
-: $(opcode-02) ( cpu -- str )
-    [ pc>> 1 + ] keep rom-read-word  >hex 4 CHAR: 0 pad-head >upper
+: $(opcode-02) ( address -- str )
+    [ 1 + ] keep rom-read-word  >hex 4 CHAR: 0 pad-head >upper
     "LJMP " swap append ;
 
 ! RR A
@@ -235,7 +235,7 @@ TUPLE: mnemonic code ;
 ! Return from subroutine pop PC off the stack
 : $(opcode-22) ( cpu -- str )
     drop "RET" ;
-  
+
 ! RL A
 ! Rotate Accumulator Left
 : $(opcode-23) ( cpu -- str )
@@ -252,7 +252,7 @@ TUPLE: mnemonic code ;
 ! ADD A,@R0
 : $(opcode-26) ( cpu -- str )
     drop "ADD A,@R0" ;
-  
+
 ! ADD A,@R1
 : $(opcode-27) ( cpu -- str )
     drop "ADD A,@R1" ;
@@ -297,7 +297,7 @@ TUPLE: mnemonic code ;
 ! ACALL
 : $(opcode-31) ( cpu -- str )
     $(opcode-11) ;
-    
+
 ! RETI
 : $(opcode-32) ( cpu -- str )
     drop "RETI" ;
@@ -306,7 +306,7 @@ TUPLE: mnemonic code ;
 : $(opcode-33) ( cpu -- str )
     drop "RLC A" ;
 
-! ADDC A,#data  
+! ADDC A,#data
 : $(opcode-34) ( cpu -- str )
     drop "ADDC A" ;
 
@@ -363,7 +363,7 @@ TUPLE: mnemonic code ;
 ! Absolute Jump
 : $(opcode-41) ( cpu -- str )
     $(opcode-21) ;
-    
+
 ! ORL dir,A
 ! Logical-OR for byte variables
 : $(opcode-42) ( -- str )
@@ -388,7 +388,7 @@ TUPLE: mnemonic code ;
 ! ORL A,@R1
 : $(opcode-47) ( -- str )
     "ORL A,@R1" ;
-    
+
 ! ORL A,R0
 : $(opcode-48) ( -- str )
     "ORL A,R0" ;
@@ -428,7 +428,7 @@ TUPLE: mnemonic code ;
 
 : $(opcode-51) ( cpu -- str )
     $(opcode-31) ;
-    
+
 ! ANL direct,A
 : $(opcode-52) ( -- str )
     "ANL ,A" ;
@@ -452,7 +452,7 @@ TUPLE: mnemonic code ;
 ! ANL A,@R1
 : $(opcode-57) ( -- str )
     "ANL A,@R1" ;
-    
+
 ! ANL A,R0
 : $(opcode-58) ( -- str )
     "ANL A,R0" ;
@@ -514,11 +514,11 @@ TUPLE: mnemonic code ;
 ! XRL A,@R0
 : $(opcode-66) ( -- str )
     "XRL A,@R0" ;
-    
+
 ! XRL A,@R1
 : $(opcode-67) ( -- str )
     "XRL A,@R1" ;
- 
+
 ! XRL A,R0
 : $(opcode-68) ( -- str )
     "XRL A,R0" ;
@@ -542,7 +542,7 @@ TUPLE: mnemonic code ;
 ! XRL A,R5
 : $(opcode-6D) ( -- str )
     "XRL A,R5" ;
-    
+
 ! XRL A,R6
 : $(opcode-6E) ( -- str )
     "XRL A,R6" ;
@@ -563,7 +563,7 @@ TUPLE: mnemonic code ;
 : $(opcode-72) ( cpu -- str )
     drop "ORL C," ;
 
-! JMP @A+DPTR    
+! JMP @A+DPTR
 : $(opcode-73) ( cpu -- str )
     drop "JMP @A+DPTR" ;
 
@@ -572,7 +572,7 @@ TUPLE: mnemonic code ;
     [ pc>> 1 + ] keep
     rom-read >hex 2 CHAR: 0 pad-head
     "MOV A,#" swap append ;
-    
+
 ! MOV direct,#data
 : $(opcode-75) ( cpu -- str )
     [ pc>> 1 + ] keep
@@ -585,11 +585,11 @@ TUPLE: mnemonic code ;
     [ pc>> 1 + ] keep
     rom-read >hex 2 CHAR: 0 pad-head >upper ",#" swap append
     "MOV @R0" swap append ;
- 
+
 ! MOV @R1,#data
 : $(opcode-77) ( cpu -- str )
     drop "MOV @R1," ;
- 
+
 ! MOV R0,#data
 : $(opcode-78) ( cpu -- str )
     [ pc>> 1 + ] keep
@@ -632,7 +632,7 @@ TUPLE: mnemonic code ;
 
 : $(opcode-81) ( cpu -- str )
     $(opcode-61) ;
-    
+
 ! ANL C,bit
 : $(opcode-82) ( cpu -- str )
     drop "ANL C," ;
@@ -640,8 +640,8 @@ TUPLE: mnemonic code ;
 ! MOVC A,@A+PC
 : $(opcode-83) ( cpu -- str )
     drop "MOVC A,@A+PC" ;
- 
-! DIV AB 
+
+! DIV AB
 : $(opcode-84) ( cpu -- str )
     drop "DIV AB" ;
 
@@ -655,11 +655,11 @@ TUPLE: mnemonic code ;
 ! MOV direct,@R0
 : $(opcode-86) ( cpu -- str )
     drop "MOV ,@R0" ;
-    
+
 ! MOV direct,@R1
 : $(opcode-87) ( cpu -- str )
     drop "MOV ,@R1" ;
-    
+
 ! MOV direct,R0
 : $(opcode-88) ( cpu -- str )
     drop "MOV ,R0" ;
@@ -709,18 +709,18 @@ TUPLE: mnemonic code ;
     [ bit-address >hex 2 CHAR: 0  pad-head >upper "." append append ] keep
     bit-number number>string append ",C" append ;
 
-! MOVC A,@A+DPTR    
+! MOVC A,@A+DPTR
 : $(opcode-93) ( cpu -- str )
     drop "MOVC A,@A+DPTR" ;
 
 ! SUBB A,#data
 : $(opcode-94) ( cpu -- str )
     drop "SUBB A,#" ;
- 
-! SUBB A,direct 
+
+! SUBB A,direct
 : $(opcode-95) ( cpu -- str )
     drop "SUBB A," ;
-    
+
 ! SUBB A,@R0
 : $(opcode-96) ( cpu -- str )
     drop "SUBB A,@R0" ;
@@ -767,12 +767,12 @@ TUPLE: mnemonic code ;
 
 : $(opcode-A1) ( cpu -- str )
     $(opcode-81) ;
-    
-    
+
+
 ! MOV C,bit
 : $(opcode-A2) ( -- str )
     "MOV C," ;
-    
+
 ! INC DPTR
 : $(opcode-A3) ( -- str )
     "INC DPTR" ;
@@ -780,7 +780,7 @@ TUPLE: mnemonic code ;
 ! MUL AB
 : $(opcode-A4) ( -- str )
     "MUL AB" ;
-    
+
 : $(opcode-A5) ( cpu -- str )
     $(opcode-00) ;
 
@@ -981,7 +981,7 @@ TUPLE: mnemonic code ;
     [ pc>> 1 + ] keep rom-read
     [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
     2 0 bit-range number>string append
-    "SETB " swap append ;    
+    "SETB " swap append ;
 
 
 ! SETB C
@@ -1089,7 +1089,7 @@ TUPLE: mnemonic code ;
 ! MOV A,R3
 : $(opcode-EB) ( -- str )
     "MOV A,R3" ;
- 
+
 ! MOV A,R4
 : $(opcode-EC) ( -- str )
     "MOV A,R4" ;
@@ -1168,5 +1168,3 @@ TUPLE: mnemonic code ;
 ! MOV R7,A
 : $(opcode-FF) ( -- str )
     "MOV R7,A" ;
-
-
