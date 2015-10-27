@@ -2302,12 +2302,13 @@ GENERIC: >execute< ( cpu -- )
 
 ! disassemble the address
 : string-opcode ( address cpu -- str )
-  [ rom-read ] 2keep
-  [ [ drop ] dip mnemo>> nth ] 2keep drop swap call( cpu -- str ) ;
+  [ rom-read4 dup first ] keep
+  mnemo>> nth call( array -- str ) ;
 
 ! get the string and values of current
 : string-pc-opcodes ( cpu -- str )
-    [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap call( cpu -- str ) ;
+    [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap
+    call( cpu -- str ) ;
 
 ! get the string and values of current
 : string-pc-opcode ( cpu -- str )

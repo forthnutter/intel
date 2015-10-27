@@ -4,7 +4,7 @@
 
 USING: accessors kernel sequences unicode.case tools.continuations
        math math.bitwise math.parser assocs
-       intel.8051.emulator ;
+       intel.8051.emulator byte-arrays ;
 
 
 IN: intel.8051.disassemble
@@ -21,6 +21,12 @@ TUPLE: mnemonic code ;
 ! 8051 bit number
 : bit-number ( n -- b )
     2 0 bit-range ;
+
+! turn a two element array into a word
+: >word< ( byte-array -- word )
+  >byte-array ! make sure its abyte array
+  0 swap
+  [ [ 8 shift ] dip bitor ] each ;
 
 ! Label hash special function register
 : label-sfr ( b -- value/f ? )
@@ -52,8 +58,8 @@ TUPLE: mnemonic code ;
 
 ! LJMP
 ! Long Jump
-: $(opcode-02) ( address -- str )
-    [ 1 + ] keep rom-read-word  >hex 4 CHAR: 0 pad-head >upper
+: $(opcode-02) ( array -- str )
+    1 swap 3 swap <slice> >word< >hex 4 CHAR: 0 pad-head >upper
     "LJMP " swap append ;
 
 ! RR A
@@ -299,7 +305,7 @@ TUPLE: mnemonic code ;
     $(opcode-11) ;
 
 ! RETI
-: $(opcode-32) ( cpu -- str )
+: $(opcode-32) ( array -- str )
     drop "RETI" ;
 
 ! RLC A
@@ -1166,5 +1172,5 @@ TUPLE: mnemonic code ;
     "MOV R6,A" ;
 
 ! MOV R7,A
-: $(opcode-FF) ( -- str )
-    "MOV R7,A" ;
+: $(opcode-FF) ( array -- str )
+  drop "MOV R7,A" ;

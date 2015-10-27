@@ -51,7 +51,7 @@ IN: intel.8051
     [ dup [ + ] dip ] dip
     swap
   ] map [ drop ] 2dip
-  [ over mnemonic-dump ] map ;
+  [ over mnemonic-dump ] map [ drop ] dip ;
 
 
 ! build string from 8 bit data
