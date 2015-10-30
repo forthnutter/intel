@@ -580,10 +580,10 @@ TUPLE: mnemonic code ;
     "MOV A,#" swap append ;
 
 ! MOV direct,#data
-: $(opcode-75) ( cpu -- str )
-    [ pc>> 1 + ] keep
-    [ rom-read >hex 2 CHAR: 0 pad-head >upper ",#" append ] keep
-    [ pc>> 2 + ] keep rom-read >hex 2 CHAR: 0 pad-head >upper append
+: $(opcode-75) ( array -- str )
+    [ second ] keep
+    [ >hex 2 CHAR: 0 pad-head >upper ",#" append ] dip
+    third >hex 2 CHAR: 0 pad-head >upper append
     "MOV " swap append ;
 
 ! MOV @R0,#data
