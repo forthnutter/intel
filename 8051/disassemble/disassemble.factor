@@ -297,8 +297,12 @@ TUPLE: mnemonic code ;
 
 ! JNB bit,rel
 ! Jump relative if bit is clear
-: $(opcode-30) ( cpu -- str )
-    drop "JNB" ;
+: $(opcode-30) ( array -- str )
+  [ second ] keep swap
+  [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+  2 0 bit-range number>string append "," append swap
+  third >hex 2 CHAR: 0 pad-head >upper append
+  "JNB " swap append ;
 
 ! ACALL
 : $(opcode-31) ( cpu -- str )
@@ -493,8 +497,9 @@ TUPLE: mnemonic code ;
 
 ! JZ
 ! if A = 0 jump rel
-: $(opcode-60) ( -- str )
-    "JZ" ;
+: $(opcode-60) ( array -- str )
+  second >hex 2 CHAR: 0 pad-head >upper
+  "JZ " swap append ;
 
 !
 : $(opcode-61) ( cpu -- str )
@@ -898,96 +903,93 @@ TUPLE: mnemonic code ;
     "CJNE R7,#," ;
 
 ! PUSH direct
-: $(opcode-C0) ( -- str )
-    "PUSH " ;
+: $(opcode-C0) ( array -- str )
+  second >hex 2 CHAR: 0 pad-head >upper
+  "PUSH " swap append ;
 
-: $(opcode-C1) ( cpu -- str )
+: $(opcode-C1) ( array -- str )
     $(opcode-A1) ;
 
 
-
-
 ! CLR bit
-: $(opcode-C2) ( cpu -- str )
-    break
-    [ pc>> 1 + ] keep rom-read
-    [ label-sfr ] keep swap
-    [
-        drop
-    ]
-    [
-        [ drop ] dip
-        [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
-        2 0 bit-range number>string append
-    ] if
-    "CLR " swap append ;
+: $(opcode-C2) ( array -- str )
+  second
+  [ label-sfr ] keep swap
+  [ drop ]
+  [
+    [ drop ] dip
+    [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+    2 0 bit-range number>string append
+  ] if
+  "CLR " swap append ;
 
 ! CLR C
-: $(opcode-C3) ( -- str )
-    "CLR C" ;
+: $(opcode-C3) ( array -- str )
+  drop "CLR C" ;
 
 ! SWAP A
-: $(opcode-C4) ( -- str )
-    "SWAP A" ;
+: $(opcode-C4) ( array -- str )
+  drop "SWAP A" ;
 
 ! XCH A,direct
-: $(opcode-C5) ( -- str )
-    "XCH A," ;
+: $(opcode-C5) ( array -- str )
+  drop "XCH A," ;
 
 ! XCH A,@R0
-: $(opcode-C6) ( -- str )
-    "XCH A,@R0" ;
+: $(opcode-C6) ( array -- str )
+  drop "XCH A,@R0" ;
 
 ! XCH A,@R1
-: $(opcode-C7) ( -- str )
-    "XCH A,@R1" ;
+: $(opcode-C7) ( array -- str )
+  drop "XCH A,@R1" ;
 
 ! XCH A,R0
-: $(opcode-C8) ( -- str )
-    "XCH A,R0" ;
+: $(opcode-C8) ( array -- str )
+  drop "XCH A,R0" ;
 
 ! XCH A,R1
-: $(opcode-C9) ( -- str )
-    "XCH A,R1" ;
+: $(opcode-C9) ( array -- str )
+  drop "XCH A,R1" ;
 
 ! XCH A,R2
-: $(opcode-CA) ( -- str )
-    "XCH A,R2" ;
+: $(opcode-CA) ( array -- str )
+  drop "XCH A,R2" ;
 
 ! XCH A,R3
-: $(opcode-CB) ( -- str )
-    "XCH A,R3" ;
+: $(opcode-CB) ( array -- str )
+  drop "XCH A,R3" ;
 
 ! XCH A,R4
-: $(opcode-CC) ( -- str )
-    "XCH A,R4" ;
+: $(opcode-CC) ( array -- str )
+  drop "XCH A,R4" ;
 
 ! XCH A,R5
-: $(opcode-CD) ( -- str )
-    "XCH A,R5" ;
+: $(opcode-CD) ( array -- str )
+  drop "XCH A,R5" ;
 
 ! XCH A,R6
-: $(opcode-CE) ( -- str )
-    "XCH A,R6" ;
+: $(opcode-CE) ( array -- str )
+  drop "XCH A,R6" ;
 
 ! XCH A,R7
-: $(opcode-CF) ( -- str )
-    "XCH A,R7" ;
+: $(opcode-CF) ( array -- str )
+  drop "XCH A,R7" ;
 
 ! POP direct
-: $(opcode-D0) ( cpu -- str )
-    drop "POP " ;
+: $(opcode-D0) ( array -- str )
+  second >hex 2 CHAR: 0 pad-head >upper
+  "POP " swap append ;
 
-: $(opcode-D1) ( cpu -- str )
+: $(opcode-D1) ( array -- str )
     $(opcode-B1) ;
 
 
 ! SETB bit
-: $(opcode-D2) ( cpu -- str )
-    [ pc>> 1 + ] keep rom-read
-    [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
-    2 0 bit-range number>string append
-    "SETB " swap append ;
+: $(opcode-D2) ( array -- str )
+  second
+  [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+  2 0 bit-range number>string append
+  "SETB " swap append ;
 
 
 ! SETB C
@@ -999,8 +1001,10 @@ TUPLE: mnemonic code ;
     drop "DA A" ;
 
 ! DJNZ direct,rel
-: $(opcode-D5) ( cpu -- str )
-    drop "DJNZ" ;
+: $(opcode-D5) ( array -- str )
+  [ second >hex 2 CHAR: 0 pad-head >upper "," append ] keep
+  third >hex 2 CHAR: 0 pad-head >upper append
+  "DJNZ " swap append ;
 
 ! XCHD A,@R0
 : $(opcode-D6) ( cpu -- str )
@@ -1066,110 +1070,109 @@ TUPLE: mnemonic code ;
     "CLR A" ;
 
 ! MOV A,direct
-: $(opcode-E5) ( cpu -- str )
-    [ "MOV A," ] dip
-    [ pc>> 1 + ] keep
-    rom-read >hex 2 CHAR: 0 pad-head >upper append ;
+: $(opcode-E5) ( array -- str )
+  second >hex 2 CHAR: 0 pad-head >upper
+  "MOV A," swap append ;
 
 ! MOV A,@R0
-: $(opcode-E6) ( -- str )
-    "MOV A,@R0" ;
+: $(opcode-E6) ( array -- str )
+  drop "MOV A,@R0" ;
 
 
 ! MOV A,@R1
-: $(opcode-E7) ( -- str )
-    "MOV A,@R1" ;
+: $(opcode-E7) ( array -- str )
+  drop "MOV A,@R1" ;
 
 ! MOV A,R0
-: $(opcode-E8) ( -- str )
-    "MOV A,R0" ;
+: $(opcode-E8) ( array -- str )
+  drop "MOV A,R0" ;
 
 ! MOV A,R1
-: $(opcode-E9) ( -- str )
-    "MOV A,R1" ;
+: $(opcode-E9) ( array -- str )
+  drop "MOV A,R1" ;
 
 ! MOV A,R2
-: $(opcode-EA) ( -- str )
-    "MOV A,R2" ;
+: $(opcode-EA) ( array -- str )
+  drop "MOV A,R2" ;
 
 ! MOV A,R3
-: $(opcode-EB) ( -- str )
-    "MOV A,R3" ;
+: $(opcode-EB) ( array -- str )
+  drop "MOV A,R3" ;
 
 ! MOV A,R4
-: $(opcode-EC) ( -- str )
-    "MOV A,R4" ;
+: $(opcode-EC) ( array -- str )
+  drop "MOV A,R4" ;
 
 ! MOV A,R5
-: $(opcode-ED) ( -- str )
-    "MOV A,R5" ;
+: $(opcode-ED) ( array -- str )
+  drop "MOV A,R5" ;
 
 ! MOV A,R6
-: $(opcode-EE) ( -- str )
-    "MOV A,R6" ;
+: $(opcode-EE) ( array -- str )
+  drop "MOV A,R6" ;
 
 ! MOV A,R7
-: $(opcode-EF) ( -- str )
-    "MOV A,R7" ;
+: $(opcode-EF) ( array -- str )
+  drop "MOV A,R7" ;
 
 ! MOVX @DPTR,A
-: $(opcode-F0) ( -- str )
-    "MOVX @DPTR,A" ;
+: $(opcode-F0) ( array -- str )
+  drop "MOVX @DPTR,A" ;
 
-: $(opcode-F1) ( cpu -- str )
+: $(opcode-F1) ( array -- str )
     $(opcode-D1) ;
 
 ! MOVX @R0,A
-: $(opcode-F2) ( -- str )
-    "MOVX @R0,A" ;
+: $(opcode-F2) ( array -- str )
+  drop "MOVX @R0,A" ;
 
 ! MOVX @R1,A
-: $(opcode-F3) ( -- str )
-    "MOVX @R1,A" ;
+: $(opcode-F3) ( array -- str )
+  drop "MOVX @R1,A" ;
 
 ! CPL A
-: $(opcode-F4) ( -- str )
-    "CPL A" ;
+: $(opcode-F4) ( array -- str )
+  drop "CPL A" ;
 
 ! MOV direct,A
-: $(opcode-F5) ( -- str )
-    "MOV ,A" ;
+: $(opcode-F5) ( array -- str )
+  drop "MOV ,A" ;
 
 ! MOV @R0,A
-: $(opcode-F6) ( -- str )
-    "MOV @R0,A" ;
+: $(opcode-F6) ( array -- str )
+  drop "MOV @R0,A" ;
 
 ! MOV @R1,A
-: $(opcode-F7) ( -- str )
-    "MOV @R1,A" ;
+: $(opcode-F7) ( array -- str )
+  drop "MOV @R1,A" ;
 
 ! MOV R0,A
-: $(opcode-F8) ( -- str )
-    "MOV @R0,A" ;
+: $(opcode-F8) ( array -- str )
+  drop "MOV @R0,A" ;
 
 ! MOV R1,A
-: $(opcode-F9) ( -- str )
-    "MOV R1,A" ;
+: $(opcode-F9) ( array -- str )
+  drop "MOV R1,A" ;
 
 ! MOV R2,A
-: $(opcode-FA) ( -- str )
-    "MOV R2,A" ;
+: $(opcode-FA) ( array -- str )
+  drop "MOV R2,A" ;
 
 ! MOV R3,A
-: $(opcode-FB) ( -- str )
-    "MOV R3,A" ;
+: $(opcode-FB) ( array -- str )
+  drop "MOV R3,A" ;
 
 ! MOV R4,A
-: $(opcode-FC) ( -- str )
-    "MOV R4,A" ;
+: $(opcode-FC) ( array -- str )
+  drop "MOV R4,A" ;
 
 ! MOV R5,A
-: $(opcode-FD) ( -- str )
-    "MOV R5,A" ;
+: $(opcode-FD) ( array -- str )
+  drop "MOV R5,A" ;
 
 ! MOV R6,A
-: $(opcode-FE) ( -- str )
-    "MOV R6,A" ;
+: $(opcode-FE) ( array -- str )
+  drop "MOV R6,A" ;
 
 ! MOV R7,A
 : $(opcode-FF) ( array -- str )
