@@ -38,7 +38,7 @@ IN: intel.8051
 
 ! disassemble from address
 : mnemonic-dump ( address cpu -- str )
-  [ rom-nbytes ] 2keep [ dump-rom ] 2keep
+  [ rom-nbytes ] 2keep [ dump-rom 14 0x20 pad-tail ] 2keep
   [ string-opcode ] keep [ append ] dip
       drop ;
 

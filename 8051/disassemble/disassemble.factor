@@ -29,14 +29,34 @@ TUPLE: mnemonic code ;
   [ [ 8 shift ] dip bitor ] each ;
 
 ! Label hash special function register
-: label-sfr ( b -- value/f ? )
+: bit-label-sfr ( b -- value/f ? )
     H{
         { 0x80 "P0.0" }
         { 0x88 "TCON" }
         { 0x90 "P1.0" }
+        { 0x91 "P1.1" }
+        { 0x92 "P1.2" }
+        { 0x93 "P1.3" }
+        { 0x94 "P1.4" }
+        { 0x95 "P1.5" }
+        { 0x96 "P1.6" }
+        { 0x97 "P1.7" }
         { 0x98 "SCON" }
         { 0xA0 "P2.0" }
-        { 0xA8 "IE" }
+        { 0xA1 "P2.1" }
+        { 0xA2 "P2.2" }
+        { 0xA3 "P2.3" }
+        { 0xA4 "P2.4" }
+        { 0xA5 "P2.5" }
+        { 0xA6 "P2.6" }
+        { 0xA7 "P2.7" }
+        { 0xA8 "IE.EX0" }
+        { 0xA9 "IE.ET0" }
+        { 0xAA "IE.EX1" }
+        { 0xAB "IE.ET1" }
+        { 0xAC "IE.ES" }
+        { 0xAD "IE.ET2" }
+        { 0xAF "IE.EA" }
         { 0xB0 "P3.0" }
         { 0xB8 "IP" }
         { 0xD0 "PSW" }
@@ -914,7 +934,7 @@ TUPLE: mnemonic code ;
 ! CLR bit
 : $(opcode-C2) ( array -- str )
   second
-  [ label-sfr ] keep swap
+  [ bit-label-sfr ] keep swap
   [ drop ]
   [
     [ drop ] dip
@@ -987,8 +1007,13 @@ TUPLE: mnemonic code ;
 ! SETB bit
 : $(opcode-D2) ( array -- str )
   second
-  [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
-  2 0 bit-range number>string append
+  [ bit-label-sfr ] keep swap
+  [ drop ]
+  [
+    [ drop ] dip
+    [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+    2 0 bit-range number>string append
+  ] if
   "SETB " swap append ;
 
 
@@ -1148,7 +1173,7 @@ TUPLE: mnemonic code ;
 
 ! MOV R0,A
 : $(opcode-F8) ( array -- str )
-  drop "MOV @R0,A" ;
+  drop "MOV R0,A" ;
 
 ! MOV R1,A
 : $(opcode-F9) ( array -- str )
