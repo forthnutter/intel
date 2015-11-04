@@ -29,52 +29,63 @@ TUPLE: mnemonic code ;
   [ [ 8 shift ] dip bitor ] each ;
 
 ! Label hash special function register
-: bit-label-sfr ( b -- value/f ? )
+: bit-sfr ( b -- value/f ? )
     H{
-        { 0x80 "P0.0" }
-        { 0x88 "TCON" }
-        { 0x90 "P1.0" }
-        { 0x91 "P1.1" }
-        { 0x92 "P1.2" }
-        { 0x93 "P1.3" }
-        { 0x94 "P1.4" }
-        { 0x95 "P1.5" }
-        { 0x96 "P1.6" }
-        { 0x97 "P1.7" }
-        { 0x98 "SCON" }
-        { 0xA0 "P2.0" }
-        { 0xA1 "P2.1" }
-        { 0xA2 "P2.2" }
-        { 0xA3 "P2.3" }
-        { 0xA4 "P2.4" }
-        { 0xA5 "P2.5" }
-        { 0xA6 "P2.6" }
-        { 0xA7 "P2.7" }
-        { 0xA8 "IE.EX0" }
-        { 0xA9 "IE.ET0" }
-        { 0xAA "IE.EX1" }
-        { 0xAB "IE.ET1" }
-        { 0xAC "IE.ES" }
-        { 0xAD "IE.ET2" }
-        { 0xAF "IE.EA" }
-        { 0xB0 "P3.0" }
-        { 0xB8 "IP" }
-        { 0xD0 "PSW" }
-        { 0xE0 "ACC" }
-        { 0xF0 "B" }
-    }
-    at* ;
+        { 0x80 "P0.0" } { 0x81 "P0.1" } { 0x82 "P0.2" } { 0x83 "P0.3" }
+        { 0x84 "P0.4" } { 0x85 "P0.5" } { 0x86 "P0.6" } { 0x87 "P0.7" }
+        { 0x88 "TCON.IT0" } { 0x89 "TCON.IE0" } { 0x8A "TCON.IT1" } { 0x8B "TCON.IE1" }
+        { 0x8C "TCON.TR0" } { 0x8D "TCON.TF0" } { 0x8E "TCON.TR1" } { 0x8F "TCON.TF1" }
+        { 0x90 "P1.0" } { 0x91 "P1.1" } { 0x92 "P1.2" } { 0x93 "P1.3" }
+        { 0x94 "P1.4" } { 0x95 "P1.5" } { 0x96 "P1.6" } { 0x97 "P1.7" }
+        { 0x98 "SCON.RI" } { 0x99 "SCON.TI" } { 0x9A "SCON.RB8" } { 0x9B "SCON.TB8" }
+        { 0x9C "SCON.REN" } { 0x9D "SCON.SM2" } { 0x9E "SCON.SM1" } { 0x9F "SCON.SM0" }
+        { 0xA0 "P2.0" } { 0xA1 "P2.1" } { 0xA2 "P2.2" } { 0xA3 "P2.3" }
+        { 0xA4 "P2.4" } { 0xA5 "P2.5" } { 0xA6 "P2.6" } { 0xA7 "P2.7" }
+        { 0xA8 "IE.EX0" } { 0xA9 "IE.ET0" } { 0xAA "IE.EX1" } { 0xAB "IE.ET1" }
+        { 0xAC "IE.ES" } { 0xAD "IE.ET2" } { 0xAF "IE.EA" }
+        { 0xB0 "P3.0" } { 0xB1 "P3.1" } { 0xB2 "P3.2" } { 0xB3 "P3.3" }
+        { 0xB4 "P3.4" } { 0xB5 "P3.5" } { 0xB6 "P3.6" } { 0xB7 "P3.7" }
+        { 0xB8 "IP.PX0" } { 0xB9 "IP.PT0" } { 0xBA "IP.PX1" } { 0xBB "IP.PT1" }
+        { 0xBC "IP.PS" } { 0xBD "IP.PT2" }
+        { 0xC8 "T2CON.CP" } { 0xC9 "T2CON.C" } { 0xCA "T2CON.TR2" }
+        { 0xCB "T2CON.EXEN2" } { 0xCC "T2CON.TLCK" }
+        { 0xCD "T2CON.RCLK" } { 0xCE "T2CON.EXF2" }
+        { 0xCF "T2CON.TF2" }
+        { 0xD0 "PSW.P" } { 0xD2 "PSW.OV" } { 0xD3 "PSW.RS0" }
+        { 0xD4 "PSW.RS1" } { 0xD5 "PSW.F0" } { 0xD6 "PSW.AC" }
+        { 0xD7 "PSW.CY" } { 0xE0 "ACC" }
+        { 0xE0 "ACC.0" } { 0xE1 "ACC.1" } { 0xE2 "ACC.2" } { 0xE3 "ACC.3" }
+        { 0xE4 "ACC.4" } { 0xE5 "ACC.5" } { 0xE6 "ACC.6" } { 0xE7 "ACC.7" }
+        { 0xF0 "B.0" } { 0xF1 "B.1" } { 0xF2 "B.2" } { 0xF3 "B.3" }
+        { 0xF4 "B.4" } { 0xF5 "B.5" } { 0xF6 "B.6" } { 0xF7 "B.7" }
+    } at* ;
+
+! Label hash special function register via direct instruction
+: direct-sfr ( b -- value/f ? )
+    H{
+      { 0x80 "P0" }
+      { 0x88 "TCON" }
+      { 0x90 "P1" }
+      { 0x98 "SCON" }
+      { 0xA0 "P2" }
+      { 0xA8 "IE" }
+      { 0xB0 "P3" }
+      { 0xB8 "IP" }
+      { 0xC8 "T2CON" }
+      { 0xD0 "PSW" }
+      { 0xE0 "ACC" }
+      { 0xF0 "B" }
+    } at* ;
 
 ! NOP Instruction
-: $(opcode-00) ( cpu -- str )
-    drop
-    "NOP" ;
+: $(opcode-00) ( array -- str )
+    drop "NOP" ;
 
 ! AJMP
 ! Absolute Jump
-: $(opcode-01) ( cpu -- str )
-    drop
-    "AJMP" ;
+: $(opcode-01) ( array -- str )
+  
+    drop "AJMP" ;
 
 ! LJMP
 ! Long Jump
@@ -84,7 +95,7 @@ TUPLE: mnemonic code ;
 
 ! RR A
 ! Rotate Accumulator Right
-: $(opcode-03) ( cpu -- str )
+: $(opcode-03) ( array -- str )
     drop
     "RR A" ;
 
@@ -472,8 +483,8 @@ TUPLE: mnemonic code ;
     "ANL A," ;
 
 ! ANL A,direct
-: $(opcode-55) ( -- str )
-    "ANL A," ;
+: $(opcode-55) ( array -- str )
+  drop "ANL A," ;
 
 ! ANL A,@R0
 : $(opcode-56) ( -- str )
