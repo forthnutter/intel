@@ -84,8 +84,9 @@ TUPLE: mnemonic code ;
 ! AJMP
 ! Absolute Jump
 : $(opcode-01) ( array -- str )
-  
-    drop "AJMP" ;
+  [ first 7 5 bit-range 8 shift ] keep
+  second bitor >hex 4 CHAR: 0 pad-head >upper
+  "AJMP" swap append ;
 
 ! LJMP
 ! Long Jump
@@ -945,7 +946,7 @@ TUPLE: mnemonic code ;
 ! CLR bit
 : $(opcode-C2) ( array -- str )
   second
-  [ bit-label-sfr ] keep swap
+  [ bit-sfr ] keep swap
   [ drop ]
   [
     [ drop ] dip
@@ -1018,7 +1019,7 @@ TUPLE: mnemonic code ;
 ! SETB bit
 : $(opcode-D2) ( array -- str )
   second
-  [ bit-label-sfr ] keep swap
+  [ bit-sfr ] keep swap
   [ drop ]
   [
     [ drop ] dip
