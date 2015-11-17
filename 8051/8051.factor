@@ -43,7 +43,7 @@ IN: intel.8051
       drop ;
 
 ! disassemble a number
-: line-mnemonic-dump ( l address cpu -- str )
+: list-mnemonic-dump ( l address cpu -- str )
   [ f <array> ] 2dip rot
   [
     drop

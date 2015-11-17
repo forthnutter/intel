@@ -180,11 +180,10 @@ TUPLE: mnemonic code ;
 
 ! LCALL
 ! Long Call
-: $(opcode-12) ( cpu -- str )
-    [ pc>> 1 + ] keep
-    rom-read-word >hex 4 CHAR: 0 pad-head >upper
-    "LCALL " swap append ;
-
+: $(opcode-12) ( array -- str )
+  1 swap 3 swap <slice> >word< >hex 4 CHAR: 0 pad-head >upper
+  "LCALL " swap append ;
+  
 ! RRC A
 ! Rotate Right A through Carry
 : $(opcode-13) ( cpu -- str )
@@ -624,9 +623,8 @@ TUPLE: mnemonic code ;
     "MOV " swap append ;
 
 ! MOV @R0,#data
-: $(opcode-76) ( cpu -- str )
-    [ pc>> 1 + ] keep
-    rom-read >hex 2 CHAR: 0 pad-head >upper ",#" swap append
+: $(opcode-76) ( array -- str )
+    second >hex 2 CHAR: 0 pad-head >upper ",#" swap append
     "MOV @R0" swap append ;
 
 ! MOV @R1,#data
@@ -634,15 +632,13 @@ TUPLE: mnemonic code ;
     drop "MOV @R1," ;
 
 ! MOV R0,#data
-: $(opcode-78) ( cpu -- str )
-    [ pc>> 1 + ] keep
-    rom-read >hex 2 CHAR: 0 pad-head >upper ",#" swap append
+: $(opcode-78) ( array -- str )
+    second >hex 2 CHAR: 0 pad-head >upper ",#" swap append
     "MOV R0" swap append ;
 
 ! MOV R1,#data
-: $(opcode-79) ( cpu -- str )
-    [ pc>> 1 + ] keep
-    rom-read >hex 2 CHAR: 0 pad-head >upper ",#" swap append
+: $(opcode-79) ( array -- str )
+    second >hex 2 CHAR: 0 pad-head >upper ",#" swap append
     "MOV R1" swap append ;
 
 ! MOV R2,#data
@@ -1058,9 +1054,8 @@ TUPLE: mnemonic code ;
     "DJNZ R0" swap append ;
 
 ! DJNZ R1,rel
-: $(opcode-D9) ( cpu -- str )
-    [ pc>> 1 + ] keep
-    rom-read >hex 2 CHAR: 0 pad-head >upper "," swap append
+: $(opcode-D9) ( array -- str )
+    second >hex 2 CHAR: 0 pad-head >upper "," swap append
     "DJNZ R1" swap append ;
 
 ! DJNZ R2,rel
