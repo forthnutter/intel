@@ -63,15 +63,18 @@ TUPLE: mnemonic code ;
 ! Label hash special function register via direct instruction
 : direct-sfr ( b -- value/f ? )
     H{
-      { 0x80 "P0" }
-      { 0x88 "TCON" }
+      { 0x80 "P0" } { 0x81 "SP" } { 0x82 "DPL" } { 0x83 "DPH" }
+      { 0x87 "PCON" }
+      { 0x88 "TCON" } { 0x89 "TMOD" } { 0x8A "TL0" } { 0x8B "TL1" }
+      { 0x8C "TH0" } { 0x8D "TH1" }
       { 0x90 "P1" }
-      { 0x98 "SCON" }
+      { 0x98 "SCON" } { 0x99 "SBUF" }
       { 0xA0 "P2" }
       { 0xA8 "IE" }
       { 0xB0 "P3" }
       { 0xB8 "IP" }
-      { 0xC8 "T2CON" }
+      { 0xC8 "T2CON" } { 0xCA "RCAP2L" }  { 0xCB "RCAP2H" }
+      { 0xCC "TL2" } { 0xCD "TH2" }
       { 0xD0 "PSW" }
       { 0xE0 "ACC" }
       { 0xF0 "B" }
@@ -183,7 +186,7 @@ TUPLE: mnemonic code ;
 : $(opcode-12) ( array -- str )
   1 swap 3 swap <slice> >word< >hex 4 CHAR: 0 pad-head >upper
   "LCALL " swap append ;
-  
+
 ! RRC A
 ! Rotate Right A through Carry
 : $(opcode-13) ( cpu -- str )
