@@ -42,7 +42,7 @@ TUPLE: mnemonic code ;
         { 0xA0 "P2.0" } { 0xA1 "P2.1" } { 0xA2 "P2.2" } { 0xA3 "P2.3" }
         { 0xA4 "P2.4" } { 0xA5 "P2.5" } { 0xA6 "P2.6" } { 0xA7 "P2.7" }
         { 0xA8 "IE.EX0" } { 0xA9 "IE.ET0" } { 0xAA "IE.EX1" } { 0xAB "IE.ET1" }
-        { 0xAC "IE.ES" } { 0xAD "IE.ET2" } { 0xAF "IE.EA" }
+        { 0xAC "IE.ES" } { 0xAD "IE.ET2" } { 0xAE "IE.EC" }{ 0xAF "IE.EA" }
         { 0xB0 "P3.0" } { 0xB1 "P3.1" } { 0xB2 "P3.2" } { 0xB3 "P3.3" }
         { 0xB4 "P3.4" } { 0xB5 "P3.5" } { 0xB6 "P3.6" } { 0xB7 "P3.7" }
         { 0xB8 "IP.PX0" } { 0xB9 "IP.PT0" } { 0xBA "IP.PX1" } { 0xBB "IP.PT1" }
@@ -67,15 +67,25 @@ TUPLE: mnemonic code ;
       { 0x87 "PCON" }
       { 0x88 "TCON" } { 0x89 "TMOD" } { 0x8A "TL0" } { 0x8B "TL1" }
       { 0x8C "TH0" } { 0x8D "TH1" }
+      { 0x8E "AUXR" }
       { 0x90 "P1" }
       { 0x98 "SCON" } { 0x99 "SBUF" }
       { 0xA0 "P2" }
+      { 0xA2 "AUXR1" }
       { 0xA8 "IE" }
       { 0xB0 "P3" }
+      { 0xB7 "IPH" }
       { 0xB8 "IP" }
       { 0xC8 "T2CON" } { 0xCA "RCAP2L" }  { 0xCB "RCAP2H" }
       { 0xCC "TL2" } { 0xCD "TH2" }
       { 0xD0 "PSW" }
+      { 0xD8 "CCON" }
+      { 0xD9 "CMOD" }
+      { 0xDA "CCAPM0" }
+      { 0xDB "CCAPM1" }
+      { 0xDC "CCAPM2" }
+      { 0xDD "CCAPM3" }
+      { 0xDE "CCAPM4" }
       { 0xE0 "ACC" }
       { 0xF0 "B" }
     } at* ;
@@ -620,10 +630,14 @@ TUPLE: mnemonic code ;
 
 ! MOV direct,#data
 : $(opcode-75) ( array -- str )
-    [ second ] keep
-    [ >hex 2 CHAR: 0 pad-head >upper ",#" append ] dip
-    third >hex 2 CHAR: 0 pad-head >upper append
+    [ second ] keep swap direct-sfr
+    [ ]
+    [ drop dup second >hex 2 CHAR: 0 pad-head >upper ]
+    if
+    ",#" append
+    [ third ] dip swap >hex 2 CHAR: 0 pad-head >upper append
     "MOV " swap append ;
+
 
 ! MOV @R0,#data
 : $(opcode-76) ( array -- str )
