@@ -42,7 +42,7 @@ TUPLE: mnemonic code ;
         { 0xA0 "P2.0" } { 0xA1 "P2.1" } { 0xA2 "P2.2" } { 0xA3 "P2.3" }
         { 0xA4 "P2.4" } { 0xA5 "P2.5" } { 0xA6 "P2.6" } { 0xA7 "P2.7" }
         { 0xA8 "IE.EX0" } { 0xA9 "IE.ET0" } { 0xAA "IE.EX1" } { 0xAB "IE.ET1" }
-        { 0xAC "IE.ES" } { 0xAD "IE.ET2" } { 0xAE "IE.EC" }{ 0xAF "IE.EA" }
+        { 0xAC "IE.ES" } { 0xAD "IE.ET2" } { 0xAE "IE.EC" } { 0xAF "IE.EA" }
         { 0xB0 "P3.0" } { 0xB1 "P3.1" } { 0xB2 "P3.2" } { 0xB3 "P3.3" }
         { 0xB4 "P3.4" } { 0xB5 "P3.5" } { 0xB6 "P3.6" } { 0xB7 "P3.7" }
         { 0xB8 "IP.PX0" } { 0xB9 "IP.PT0" } { 0xBA "IP.PX1" } { 0xBB "IP.PT1" }
@@ -265,16 +265,13 @@ TUPLE: mnemonic code ;
 
 ! JB bit,rel
 ! Jump relative if bit is set
-: $(opcode-20) ( cpu -- str )
-    [ "JB " ] dip
-    [ pc>> 1 + ] keep
-    [
-        rom-read
-        [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
-        bit-number number>string append "," append append
-    ] keep
-    [ pc>> 2 + ] keep
-    rom-read >hex 2 CHAR: 0 pad-head >upper append ;
+: $(opcode-20) ( array -- str )
+  [ second ] keep swap
+  [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+  2 0 bit-range number>string append "," append swap
+  third >hex 2 CHAR: 0 pad-head >upper append
+  "JB " swap append ;
+
 
 ! AJMP
 ! Absolute Jump
@@ -683,8 +680,8 @@ TUPLE: mnemonic code ;
     drop "MOV R7,#" ;
 
 ! SJMP rel
-: $(opcode-80) ( -- str )
-    "SJMP " ;
+: $(opcode-80) ( array -- str )
+    drop "SJMP " ;
 
 : $(opcode-81) ( cpu -- str )
     $(opcode-61) ;
@@ -900,8 +897,8 @@ TUPLE: mnemonic code ;
 ! (PC) ← (PC) + 3
 ! IF (A) < > data THEN (PC) ← (PC) + relative offset
 ! IF (A) < data THEN (C) ← 1 ELSE(C) ← 0
-: $(opcode-B4) ( -- str )
-    "CJNE A,#," ;
+: $(opcode-B4) ( array -- str )
+    drop "CJNE A,#," ;
 
 ! CJNE A,direct,rel
 : $(opcode-B5) ( -- str )
