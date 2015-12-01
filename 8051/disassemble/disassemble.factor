@@ -620,10 +620,9 @@ TUPLE: mnemonic code ;
     drop "JMP @A+DPTR" ;
 
 ! MOV A,#data
-: $(opcode-74) ( cpu -- str )
-    [ pc>> 1 + ] keep
-    rom-read >hex 2 CHAR: 0 pad-head
-    "MOV A,#" swap append ;
+: $(opcode-74) ( array -- str )
+  second >hex 2 CHAR: 0 pad-head >upper
+  "MOV A,#" swap append ;
 
 ! MOV direct,#data
 : $(opcode-75) ( array -- str )
@@ -681,7 +680,9 @@ TUPLE: mnemonic code ;
 
 ! SJMP rel
 : $(opcode-80) ( array -- str )
-    drop "SJMP " ;
+  second >hex 2 CHAR: 0 pad-head >upper
+  "SJUMP " swap append ;
+
 
 : $(opcode-81) ( cpu -- str )
     $(opcode-61) ;
@@ -699,11 +700,9 @@ TUPLE: mnemonic code ;
     drop "DIV AB" ;
 
 ! MOV direct,direct
-: $(opcode-85) ( cpu -- str )
-    [ pc>> 1 + ] keep
-    [ rom-read >hex 2 CHAR: 0 pad-head >upper "," append ] keep
-    [ pc>> 2 + ] keep rom-read >hex 2 CHAR: 0 pad-head >upper append
-    "MOV " swap append ;
+: $(opcode-85) ( array -- str )
+  [ second >hex 2 CHAR: 0 pad-head >upper "," append "MOV " swap append ] keep
+  third >hex 2 CHAR: 0 pad-head >upper append ;
 
 ! MOV direct,@R0
 : $(opcode-86) ( cpu -- str )
@@ -827,8 +826,8 @@ TUPLE: mnemonic code ;
     "MOV C," ;
 
 ! INC DPTR
-: $(opcode-A3) ( -- str )
-    "INC DPTR" ;
+: $(opcode-A3) ( array -- str )
+  drop "INC DPTR" ;
 
 ! MUL AB
 : $(opcode-A4) ( -- str )
@@ -898,11 +897,13 @@ TUPLE: mnemonic code ;
 ! IF (A) < > data THEN (PC) ← (PC) + relative offset
 ! IF (A) < data THEN (C) ← 1 ELSE(C) ← 0
 : $(opcode-B4) ( array -- str )
-    drop "CJNE A,#," ;
+  [ second >hex 2 CHAR: 0 pad-head >upper "CJNE A,#" swap append ] keep
+  third >hex 2 CHAR: 0 pad-head >upper "," swap append append ;
 
 ! CJNE A,direct,rel
-: $(opcode-B5) ( -- str )
-    "CJNE A,," ;
+: $(opcode-B5) ( array -- str )
+  [ second >hex 2 CHAR: 0 pad-head >upper "CJNE A," swap append ] keep
+  third >hex 2 CHAR: 0 pad-head >upper "," swap append append ;
 
 ! CJNE @R0,data,rel
 : $(opcode-B6) ( -- str )
@@ -1182,7 +1183,8 @@ TUPLE: mnemonic code ;
 
 ! MOV direct,A
 : $(opcode-F5) ( array -- str )
-  drop "MOV ,A" ;
+  second >hex 2 CHAR: 0 pad-head >upper
+  "MOV " swap append ",A" append ;
 
 ! MOV @R0,A
 : $(opcode-F6) ( array -- str )
