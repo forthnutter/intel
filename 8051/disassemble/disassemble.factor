@@ -90,6 +90,27 @@ TUPLE: mnemonic code ;
       { 0xF0 "B" }
     } at* ;
 
+! binary data to hex byte string
+: byte>hex-string ( byte -- string )
+  8 bits >hex 2 CHAR: 0 pad-head >upper ;
+
+: word>hex-string ( word -- string )
+  16 bits >hex 4 CHAR: 0 pad-head >upper ;
+
+
+! look up direct tables to get labels string
+: direct-string ( byte -- string )
+  [ direct-sfr ] keep swap
+  [ drop ]
+  [ [ drop ] dip byte>hex-string ] if ;
+
+: bit-string ( byte -- string )
+  [ bit-sfr ] keep swap
+  [ drop ]
+  [ [ drop ] dip [ bit-address byte>hex-string "." append ] keep
+    2 0 bit-range number>string append
+  ] if ;  
+
 ! NOP Instruction
 : $(opcode-00) ( array -- str )
     drop "NOP" ;
@@ -98,21 +119,19 @@ TUPLE: mnemonic code ;
 ! Absolute Jump
 : $(opcode-01) ( array -- str )
   [ first 7 5 bit-range 8 shift ] keep
-  second bitor >hex 4 CHAR: 0 pad-head >upper
+  second bitor word>hex-string
   "AJMP" swap append ;
 
 ! LJMP
 ! Long Jump
 : $(opcode-02) ( array -- str )
-    1 swap 3 swap <slice> >word< >hex 4 CHAR: 0 pad-head >upper
+    1 swap 3 swap <slice> >word< word>hex-string
     "LJMP " swap append ;
 
 ! RR A
 ! Rotate Accumulator Right
 : $(opcode-03) ( array -- str )
-    drop
-    "RR A" ;
-
+    drop "RR A" ;
 
 ! INC A
 ! Increment Accumulator
@@ -194,7 +213,7 @@ TUPLE: mnemonic code ;
 ! LCALL
 ! Long Call
 : $(opcode-12) ( array -- str )
-  1 swap 3 swap <slice> >word< >hex 4 CHAR: 0 pad-head >upper
+  1 swap 3 swap <slice> >word< word>hex-string
   "LCALL " swap append ;
 
 ! RRC A
@@ -267,9 +286,9 @@ TUPLE: mnemonic code ;
 ! Jump relative if bit is set
 : $(opcode-20) ( array -- str )
   [ second ] keep swap
-  [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+  [ bit-address byte>hex-string "." append ] keep
   2 0 bit-range number>string append "," append swap
-  third >hex 2 CHAR: 0 pad-head >upper append
+  third byte>hex-string append
   "JB " swap append ;
 
 
@@ -340,9 +359,9 @@ TUPLE: mnemonic code ;
 ! Jump relative if bit is clear
 : $(opcode-30) ( array -- str )
   [ second ] keep swap
-  [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+  [ bit-address byte>hex-string "." append ] keep
   2 0 bit-range number>string append "," append swap
-  third >hex 2 CHAR: 0 pad-head >upper append
+  third byte>hex-string append
   "JNB " swap append ;
 
 ! ACALL
@@ -539,8 +558,7 @@ TUPLE: mnemonic code ;
 ! JZ
 ! if A = 0 jump rel
 : $(opcode-60) ( array -- str )
-  second >hex 2 CHAR: 0 pad-head >upper
-  "JZ " swap append ;
+  second byte>hex-string "JZ " swap append ;
 
 !
 : $(opcode-61) ( cpu -- str )
@@ -621,23 +639,19 @@ TUPLE: mnemonic code ;
 
 ! MOV A,#data
 : $(opcode-74) ( array -- str )
-  second >hex 2 CHAR: 0 pad-head >upper
+  second byte>hex-string
   "MOV A,#" swap append ;
 
 ! MOV direct,#data
 : $(opcode-75) ( array -- str )
-    [ second ] keep swap direct-sfr
-    [ ]
-    [ drop dup second >hex 2 CHAR: 0 pad-head >upper ]
-    if
-    ",#" append
-    [ third ] dip swap >hex 2 CHAR: 0 pad-head >upper append
-    "MOV " swap append ;
+  [ second direct-string ] keep swap ",#" append
+  [ third ] dip swap byte>hex-string append
+  "MOV " swap append ;
 
 
 ! MOV @R0,#data
 : $(opcode-76) ( array -- str )
-    second >hex 2 CHAR: 0 pad-head >upper ",#" swap append
+    second byte>hex-string ",#" swap append
     "MOV @R0" swap append ;
 
 ! MOV @R1,#data
@@ -646,12 +660,12 @@ TUPLE: mnemonic code ;
 
 ! MOV R0,#data
 : $(opcode-78) ( array -- str )
-    second >hex 2 CHAR: 0 pad-head >upper ",#" swap append
+    second byte>hex-string ",#" swap append
     "MOV R0" swap append ;
 
 ! MOV R1,#data
 : $(opcode-79) ( array -- str )
-    second >hex 2 CHAR: 0 pad-head >upper ",#" swap append
+    second byte>hex-string ",#" swap append
     "MOV R1" swap append ;
 
 ! MOV R2,#data
@@ -680,8 +694,7 @@ TUPLE: mnemonic code ;
 
 ! SJMP rel
 : $(opcode-80) ( array -- str )
-  second >hex 2 CHAR: 0 pad-head >upper
-  "SJUMP " swap append ;
+  second byte>hex-string "SJUMP " swap append ;
 
 
 : $(opcode-81) ( cpu -- str )
@@ -701,8 +714,8 @@ TUPLE: mnemonic code ;
 
 ! MOV direct,direct
 : $(opcode-85) ( array -- str )
-  [ second >hex 2 CHAR: 0 pad-head >upper "," append "MOV " swap append ] keep
-  third >hex 2 CHAR: 0 pad-head >upper append ;
+  [ second byte>hex-string "," append "MOV " swap append ] keep
+  third byte>hex-string append ;
 
 ! MOV direct,@R0
 : $(opcode-86) ( cpu -- str )
@@ -750,8 +763,6 @@ TUPLE: mnemonic code ;
 
 : $(opcode-91) ( cpu -- str )
     $(opcode-71) ;
-
-
 
 ! MOV bit,C
 : $(opcode-92) ( cpu -- str )
@@ -897,13 +908,13 @@ TUPLE: mnemonic code ;
 ! IF (A) < > data THEN (PC) ← (PC) + relative offset
 ! IF (A) < data THEN (C) ← 1 ELSE(C) ← 0
 : $(opcode-B4) ( array -- str )
-  [ second >hex 2 CHAR: 0 pad-head >upper "CJNE A,#" swap append ] keep
-  third >hex 2 CHAR: 0 pad-head >upper "," swap append append ;
+  [ second byte>hex-string "CJNE A,#" swap append ] keep
+  third byte>hex-string "," swap append append ;
 
 ! CJNE A,direct,rel
 : $(opcode-B5) ( array -- str )
-  [ second >hex 2 CHAR: 0 pad-head >upper "CJNE A," swap append ] keep
-  third >hex 2 CHAR: 0 pad-head >upper "," swap append append ;
+  [ second byte>hex-string "CJNE A," swap append ] keep
+  third byte>hex-string "," swap append append ;
 
 ! CJNE @R0,data,rel
 : $(opcode-B6) ( -- str )
@@ -947,8 +958,7 @@ TUPLE: mnemonic code ;
 
 ! PUSH direct
 : $(opcode-C0) ( array -- str )
-  second >hex 2 CHAR: 0 pad-head >upper
-  "PUSH " swap append ;
+  second byte>hex-string "PUSH " swap append ;
 
 : $(opcode-C1) ( array -- str )
     $(opcode-A1) ;
@@ -961,7 +971,7 @@ TUPLE: mnemonic code ;
   [ drop ]
   [
     [ drop ] dip
-    [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+    [ bit-address byte>hex-string "." append ] keep
     2 0 bit-range number>string append
   ] if
   "CLR " swap append ;
@@ -1020,8 +1030,7 @@ TUPLE: mnemonic code ;
 
 ! POP direct
 : $(opcode-D0) ( array -- str )
-  second >hex 2 CHAR: 0 pad-head >upper
-  "POP " swap append ;
+  second byte>hex-string "POP " swap append ;
 
 : $(opcode-D1) ( array -- str )
     $(opcode-B1) ;
@@ -1034,7 +1043,7 @@ TUPLE: mnemonic code ;
   [ drop ]
   [
     [ drop ] dip
-    [ bit-address >hex 2 CHAR: 0 pad-head >upper "." append ] keep
+    [ bit-address byte>hex-string "." append ] keep
     2 0 bit-range number>string append
   ] if
   "SETB " swap append ;
@@ -1050,8 +1059,8 @@ TUPLE: mnemonic code ;
 
 ! DJNZ direct,rel
 : $(opcode-D5) ( array -- str )
-  [ second >hex 2 CHAR: 0 pad-head >upper "," append ] keep
-  third >hex 2 CHAR: 0 pad-head >upper append
+  [ second byte>hex-string "," append ] keep
+  third byte>hex-string append
   "DJNZ " swap append ;
 
 ! XCHD A,@R0
@@ -1070,7 +1079,7 @@ TUPLE: mnemonic code ;
 
 ! DJNZ R1,rel
 : $(opcode-D9) ( array -- str )
-    second >hex 2 CHAR: 0 pad-head >upper "," swap append
+    second byte>hex-string "," swap append
     "DJNZ R1" swap append ;
 
 ! DJNZ R2,rel
@@ -1118,8 +1127,7 @@ TUPLE: mnemonic code ;
 
 ! MOV A,direct
 : $(opcode-E5) ( array -- str )
-  second >hex 2 CHAR: 0 pad-head >upper
-  "MOV A," swap append ;
+  second byte>hex-string "MOV A," swap append ;
 
 ! MOV A,@R0
 : $(opcode-E6) ( array -- str )
@@ -1183,8 +1191,7 @@ TUPLE: mnemonic code ;
 
 ! MOV direct,A
 : $(opcode-F5) ( array -- str )
-  second >hex 2 CHAR: 0 pad-head >upper
-  "MOV " swap append ",A" append ;
+  second byte>hex-string "MOV " swap append ",A" append ;
 
 ! MOV @R0,A
 : $(opcode-F6) ( array -- str )
