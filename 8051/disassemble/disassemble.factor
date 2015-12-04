@@ -109,7 +109,7 @@ TUPLE: mnemonic code ;
   [ drop ]
   [ [ drop ] dip [ bit-address byte>hex-string "." append ] keep
     2 0 bit-range number>string append
-  ] if ;  
+  ] if ;
 
 ! NOP Instruction
 : $(opcode-00) ( array -- str )
@@ -285,9 +285,7 @@ TUPLE: mnemonic code ;
 ! JB bit,rel
 ! Jump relative if bit is set
 : $(opcode-20) ( array -- str )
-  [ second ] keep swap
-  [ bit-address byte>hex-string "." append ] keep
-  2 0 bit-range number>string append "," append swap
+  [ second ] keep swap bit-string "," append swap
   third byte>hex-string append
   "JB " swap append ;
 
@@ -758,8 +756,9 @@ TUPLE: mnemonic code ;
     drop "MOV ,R7" ;
 
 ! MOV DPTR,#data16
-: $(opcode-90) ( cpu -- str )
-    drop "MOV DPTR," ;
+: $(opcode-90) ( array -- str )
+  1 swap 3 swap <slice> >word< word>hex-string
+  "MOV DPTR," swap append ;
 
 : $(opcode-91) ( cpu -- str )
     $(opcode-71) ;
@@ -966,15 +965,7 @@ TUPLE: mnemonic code ;
 
 ! CLR bit
 : $(opcode-C2) ( array -- str )
-  second
-  [ bit-sfr ] keep swap
-  [ drop ]
-  [
-    [ drop ] dip
-    [ bit-address byte>hex-string "." append ] keep
-    2 0 bit-range number>string append
-  ] if
-  "CLR " swap append ;
+  second bit-string "CLR " swap append ;
 
 ! CLR C
 : $(opcode-C3) ( array -- str )
@@ -1035,19 +1026,9 @@ TUPLE: mnemonic code ;
 : $(opcode-D1) ( array -- str )
     $(opcode-B1) ;
 
-
 ! SETB bit
 : $(opcode-D2) ( array -- str )
-  second
-  [ bit-sfr ] keep swap
-  [ drop ]
-  [
-    [ drop ] dip
-    [ bit-address byte>hex-string "." append ] keep
-    2 0 bit-range number>string append
-  ] if
-  "SETB " swap append ;
-
+  second bit-string "SETB " swap append ;
 
 ! SETB C
 : $(opcode-D3) ( cpu -- str )
