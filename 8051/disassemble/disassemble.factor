@@ -955,14 +955,14 @@ TUPLE: mnemonic code ;
   third byte>hex-string "," swap append append ;
 
 ! CJNE R7,#data,rel
-: $(opcode-BF) ( -- str )
+: $(opcode-BF) ( array -- str )
   [ second byte>hex-string "CJNE R7,#" swap append ] keep
   third byte>hex-string "," swap append append ;
 
 
 ! PUSH direct
 : $(opcode-C0) ( array -- str )
-  second byte>hex-string "PUSH " swap append ;
+  second direct-string "PUSH " swap append ;
 
 : $(opcode-C1) ( array -- str )
     $(opcode-A1) ;
