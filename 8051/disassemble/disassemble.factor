@@ -90,6 +90,11 @@ TUPLE: mnemonic code ;
       { 0xF0 "B" }
     } at* ;
 
+
+! turn 8 bit number in 8 signed number
+: byte>sign-string ( byte -- string )
+  8 >signed number>string ;
+
 ! binary data to hex byte string
 : byte>hex-string ( byte -- string )
   8 bits >hex 2 CHAR: 0 pad-head >upper ;
@@ -97,6 +102,9 @@ TUPLE: mnemonic code ;
 : word>hex-string ( word -- string )
   16 bits >hex 4 CHAR: 0 pad-head >upper ;
 
+: relative-string ( byte -- string )
+  [ byte>hex-string ] keep
+  [ " (" append ] dip byte>sign-string append ")" append ;
 
 ! look up direct tables to get labels string
 : direct-string ( byte -- string )
@@ -1063,7 +1071,8 @@ TUPLE: mnemonic code ;
 
 ! DJNZ R1,rel
 : $(opcode-D9) ( array -- str )
-  second byte>hex-string "DJNZ R1," swap append ;
+!  second byte>hex-string "DJNZ R1," swap append ;
+  second relative-string "DJNZ R1," swap append ;
 
 ! DJNZ R2,rel
 : $(opcode-DA) ( array -- str )
