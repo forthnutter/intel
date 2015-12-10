@@ -294,7 +294,7 @@ TUPLE: mnemonic code ;
 ! Jump relative if bit is set
 : $(opcode-20) ( array -- str )
   [ second ] keep swap bit-string "," append swap
-  third byte>hex-string append
+  third relative-string append
   "JB " swap append ;
 
 
@@ -367,7 +367,7 @@ TUPLE: mnemonic code ;
   [ second ] keep swap
   [ bit-address byte>hex-string "." append ] keep
   2 0 bit-range number>string append "," append swap
-  third byte>hex-string append
+  third relative-string append
   "JNB " swap append ;
 
 ! ACALL
@@ -564,7 +564,7 @@ TUPLE: mnemonic code ;
 ! JZ
 ! if A = 0 jump rel
 : $(opcode-60) ( array -- str )
-  second byte>hex-string "JZ " swap append ;
+  second relative-string "JZ " swap append ;
 
 !
 : $(opcode-61) ( cpu -- str )
@@ -700,7 +700,7 @@ TUPLE: mnemonic code ;
 
 ! SJMP rel
 : $(opcode-80) ( array -- str )
-  second byte>hex-string "SJUMP " swap append ;
+  second relative-string "SJUMP " swap append ;
 
 
 : $(opcode-81) ( cpu -- str )
@@ -912,12 +912,12 @@ TUPLE: mnemonic code ;
 ! IF (A) < data THEN (C) ← 1 ELSE(C) ← 0
 : $(opcode-B4) ( array -- str )
   [ second byte>hex-string "CJNE A,#" swap append ] keep
-  third byte>hex-string "," swap append append ;
+  third relative-string "," swap append append ;
 
 ! CJNE A,direct,rel
 : $(opcode-B5) ( array -- str )
   [ second byte>hex-string "CJNE A," swap append ] keep
-  third byte>hex-string "," swap append append ;
+  third relative-string "," swap append append ;
 
 ! CJNE @R0,data,rel
 : $(opcode-B6) ( -- str )
@@ -1034,7 +1034,7 @@ TUPLE: mnemonic code ;
 
 ! POP direct
 : $(opcode-D0) ( array -- str )
-  second byte>hex-string "POP " swap append ;
+  second direct-string "POP " swap append ;
 
 : $(opcode-D1) ( array -- str )
     $(opcode-B1) ;
@@ -1067,7 +1067,7 @@ TUPLE: mnemonic code ;
 
 ! DJNZ R0,rel
 : $(opcode-D8) ( array -- str )
-  second byte>hex-string "DJNZ R0," swap append ;
+  second relative-string "DJNZ R0," swap append ;
 
 ! DJNZ R1,rel
 : $(opcode-D9) ( array -- str )
@@ -1076,27 +1076,27 @@ TUPLE: mnemonic code ;
 
 ! DJNZ R2,rel
 : $(opcode-DA) ( array -- str )
-  second byte>hex-string "DJNZ R2," swap append ;
+  second relative-string "DJNZ R2," swap append ;
 
 ! DJNZ R3,rel
 : $(opcode-DB) ( array -- str )
-  second byte>hex-string "DJNZ R3," swap append ;
+  second relative-string "DJNZ R3," swap append ;
 
 ! DJNZ R4,rel
 : $(opcode-DC) ( array -- str )
-  second byte>hex-string "DJNZ R4," swap append ;
+  second relative-string "DJNZ R4," swap append ;
 
 ! DJNZ R5,rel
 : $(opcode-DD) ( array -- str )
-  second byte>hex-string "DJNZ R5," swap append ;
+  second relative-string "DJNZ R5," swap append ;
 
 ! DJNZ R6,rel
 : $(opcode-DE) ( array -- str )
-  second byte>hex-string "DJNZ R6," swap append ;
+  second relative-string "DJNZ R6," swap append ;
 
 ! DJNZ R7,rel
 : $(opcode-DF) ( array -- str )
-  second byte>hex-string "DJNZ R7," swap append ;
+  second relative-string "DJNZ R7," swap append ;
 
 ! MOVX A,@DPTR
 : $(opcode-E0) ( -- str )
