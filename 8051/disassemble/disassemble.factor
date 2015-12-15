@@ -12,6 +12,9 @@ IN: intel.8051.disassemble
 
 TUPLE: mnemonic code ;
 
+! Use this symbol to hold address labels
+SYMBOL: hash-labels
+
 ! 8051 bit memory returns address of bit memory
 : bit-address ( n -- a )
     dup 0x7f >
@@ -90,7 +93,10 @@ TUPLE: mnemonic code ;
       { 0xF0 "B" }
     } at* ;
 
-
+! look up label with address to if we got something
+: address-lookup ( address -- string/f )
+  hash-labels get at* ;
+  
 ! turn 8 bit number in 8 signed number
 : byte>sign-string ( byte -- string )
   8 >signed number>string ;
