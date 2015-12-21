@@ -3,7 +3,7 @@
 !
 
 USING: accessors kernel sequences unicode.case tools.continuations
-       math math.bitwise math.parser assocs
+       math math.bitwise math.parser assocs namespaces hashtables
        intel.8051.emulator byte-arrays ;
 
 
@@ -94,9 +94,14 @@ SYMBOL: hash-labels
     } at* ;
 
 ! look up label with address to if we got something
-: address-lookup ( address -- string/f )
+: address-lookup ( address -- string ? )
   hash-labels get at* ;
-  
+
+: address-set ( value address -- )
+  hash-labels get dup
+  [ ?set-at drop ]
+  [ ?set-at hash-labels set ] if ;
+
 ! turn 8 bit number in 8 signed number
 : byte>sign-string ( byte -- string )
   8 >signed number>string ;
@@ -125,6 +130,12 @@ SYMBOL: hash-labels
     2 0 bit-range number>string append
   ] if ;
 
+: address-get ( address -- string )
+  [ word>hex-string ] keep
+  address-lookup
+  [ " (" swap append ")" append append ] [ drop ] if ;
+
+
 ! NOP Instruction
 : $(opcode-00) ( array -- str )
     drop "NOP" ;
@@ -139,7 +150,7 @@ SYMBOL: hash-labels
 ! LJMP
 ! Long Jump
 : $(opcode-02) ( array -- str )
-    1 swap 3 swap <slice> >word< word>hex-string
+    1 swap 3 swap <slice> >word< address-get ! word>hex-string
     "LJMP " swap append ;
 
 ! RR A
