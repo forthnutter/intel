@@ -12,8 +12,10 @@ IN: intel.8051.disassemble
 
 TUPLE: mnemonic code ;
 
-! Use this symbol to hold address labels
-SYMBOL: hash-labels
+! symbols to hold names 
+SYMBOL: address-names
+SYMBOL: port-names
+SYMBOL: port-bit-names
 
 ! 8051 bit memory returns address of bit memory
 : bit-address ( n -- a )
@@ -95,12 +97,12 @@ SYMBOL: hash-labels
 
 ! look up label with address to if we got something
 : address-lookup ( address -- string ? )
-  hash-labels get at* ;
+  address-names get at* ;
 
 : address-set ( value address -- )
-  hash-labels get dup
+  address-names get dup
   [ ?set-at drop ]
-  [ ?set-at hash-labels set ] if ;
+  [ ?set-at address-names set ] if ;
 
 ! turn 8 bit number in 8 signed number
 : byte>sign-string ( byte -- string )
@@ -238,7 +240,7 @@ SYMBOL: hash-labels
 ! LCALL
 ! Long Call
 : $(opcode-12) ( array -- str )
-  1 swap 3 swap <slice> >word< word>hex-string
+  1 swap 3 swap <slice> >word< address-get
   "LCALL " swap append ;
 
 ! RRC A
@@ -516,8 +518,12 @@ SYMBOL: hash-labels
 
 ! JNC Rel
 ! Jump relative if carry is clear
-: $(opcode-50) ( -- str )
-    "JNC" ;
+: $(opcode-50) ( array -- str )
+  [ second ] keep swap
+  [ bit-address byte>hex-string "." append ] keep
+  2 0 bit-range number>string append "," append swap
+  third relative-string append
+  "JNC " swap append ;
 
 : $(opcode-51) ( cpu -- str )
     $(opcode-31) ;
