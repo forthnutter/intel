@@ -2310,9 +2310,6 @@ GENERIC: >execute< ( cpu -- )
     [ rom-pc-read ] keep [ mnemo>> nth [ break ] prepose ] keep swap
     call( cpu -- str ) ;
 
-! get the string and values of current
-: string-pc-opcode ( cpu -- str )
-    [ rom-pc-read ] keep [ mnemo>> nth ] keep swap call( cpu -- str ) ;
 
 ! generate the opcode array here
 : opcode-build ( cpu -- )

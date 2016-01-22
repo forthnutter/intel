@@ -104,9 +104,7 @@ IN: intel.8051
 ! create a string for PC
 : string-pc-reg ( cpu -- s )
     [ "PC " ] dip
-    [ rom-pc-nbytes ] keep [ pc>> ] keep [ dump-rom ] keep [ append ] dip
-    [ string-pc-opcode ] keep [ append ] dip
-    drop ;
+    [ pc>> ] [ mnemonic-dump ] bi append ;
 
 
 
@@ -186,10 +184,27 @@ IN: intel.8051
     [ string-r7-reg print ] keep
     drop ;
 
+! make an array of strings to be displayed
+: string-registers ( cpu -- s )
+  V{ } clone swap
+  [ string-ab-reg suffix ] keep
+  [ string-psw-reg suffix ] keep
+  [ string-sp-reg suffix ] keep
+  [ string-pc-reg suffix ] keep
+  [ string-r0-all suffix ] keep
+  [ string-r1-all suffix ] keep
+  [ string-r2-reg suffix ] keep
+  [ string-r3-reg suffix ] keep
+  [ string-r4-reg suffix ] keep
+  [ string-r5-reg suffix ] keep
+  [ string-r6-reg suffix ] keep
+  [ string-r7-reg suffix ] keep
+  drop ;
+
+
 ! single step execute one instruction then displays all registers
 : single-step ( cpu -- )
-    [ execute-pc-opcode ] keep
-    print-registers ;
+    execute-pc-opcode ;
 
 : run-to ( a cpu -- )
     [
