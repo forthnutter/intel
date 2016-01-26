@@ -168,21 +168,6 @@ IN: intel.8051
     [ "R7 " ] dip
     R7> string-data append ;
 
-! print registers
-: print-registers ( cpu -- )
-    [ string-ab-reg print ] keep
-    [ string-psw-reg print ] keep
-    [ string-sp-reg print ] keep
-    [ string-pc-reg print ] keep
-    [ string-r0-all print ] keep
-    [ string-r1-all print ] keep
-    [ string-r2-reg print ] keep
-    [ string-r3-reg print ] keep
-    [ string-r4-reg print ] keep
-    [ string-r5-reg print ] keep
-    [ string-r6-reg print ] keep
-    [ string-r7-reg print ] keep
-    drop ;
 
 ! make an array of strings to be displayed
 : string-registers ( cpu -- s )
@@ -207,9 +192,5 @@ IN: intel.8051
     execute-pc-opcode ;
 
 : run-to ( a cpu -- )
-    [
-        2dup [ pc>> ] keep [ = ] dip drop
-    ]
-    [
-        [ execute-pc-opcode ] keep
-    ] until 2drop ;
+  [ 2dup [ pc>> ] keep [ = ] dip drop ]
+  [ [ execute-pc-opcode ] keep ] until 2drop ;
