@@ -12,7 +12,7 @@ IN: intel.8051.disassemble
 
 TUPLE: mnemonic code ;
 
-! symbols to hold names 
+! symbols to hold names
 SYMBOL: address-names
 SYMBOL: port-names
 SYMBOL: port-bit-names
@@ -104,6 +104,17 @@ SYMBOL: port-bit-names
   [ ?set-at drop ]
   [ ?set-at address-names set ] if ;
 
+! look up label for por bit map
+: bit-port-lookup ( port -- string ? )
+  port-bit-names get at* ;
+
+! Build a bit port names
+: bit-port-set ( value port -- )
+  port-bit-names get dup
+  [ ?set-at drop ]
+  [ ?set-at port-bit-names set ] if ;
+
+
 ! turn 8 bit number in 8 signed number
 : byte>sign-string ( byte -- string )
   8 >signed number>string ;
@@ -135,6 +146,11 @@ SYMBOL: port-bit-names
 : address-get ( address -- string )
   [ word>hex-string ] keep
   address-lookup
+  [ " (" swap append ")" append append ] [ drop ] if ;
+
+: bit-port-get ( port -- string )
+  [ bit-string ] keep
+  bit-port-lookup
   [ " (" swap append ")" append append ] [ drop ] if ;
 
 
@@ -1064,7 +1080,7 @@ SYMBOL: port-bit-names
 
 ! SETB bit
 : $(opcode-D2) ( array -- str )
-  second bit-string "SETB " swap append ;
+  second bit-port-get "SETB " swap append ;
 
 ! SETB C
 : $(opcode-D3) ( cpu -- str )
