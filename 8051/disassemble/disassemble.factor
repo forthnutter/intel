@@ -148,10 +148,9 @@ SYMBOL: port-bit-names
   address-lookup
   [ " (" swap append ")" append append ] [ drop ] if ;
 
-: bit-port-get ( port -- string )
-  [ bit-string ] keep
+: bit-port-comment ( port -- string )
   bit-port-lookup
-  [ " (" swap append ")" append append ] [ drop ] if ;
+  [ " ; " swap append ] [ drop " ; " ] if ;
 
 
 ! NOP Instruction
@@ -812,7 +811,7 @@ SYMBOL: port-bit-names
 
 ! MOV bit,C
 : $(opcode-92) ( array -- str )
-  second bit-string ",C" append "MOV " swap append ;
+  second [ bit-string ",C" append "MOV " swap append ] keep bit-port-comment append ;
 
 ! MOVC A,@A+DPTR
 : $(opcode-93) ( cpu -- str )
@@ -876,7 +875,7 @@ SYMBOL: port-bit-names
 
 ! MOV C,bit
 : $(opcode-A2) ( array -- str )
-  second bit-string "MOV C," swap append ;
+  second [ bit-string "MOV C," swap append ] keep bit-port-comment append ;
 
 ! INC DPTR
 : $(opcode-A3) ( array -- str )
@@ -1017,7 +1016,7 @@ SYMBOL: port-bit-names
 
 ! CLR bit
 : $(opcode-C2) ( array -- str )
-  second bit-string "CLR " swap append ;
+  second [ bit-string "CLR " swap append ] keep bit-port-comment append ;
 
 ! CLR C
 : $(opcode-C3) ( array -- str )
@@ -1080,7 +1079,7 @@ SYMBOL: port-bit-names
 
 ! SETB bit
 : $(opcode-D2) ( array -- str )
-  second bit-port-get "SETB " swap append ;
+  second [ bit-string "SETB " swap append ] keep bit-port-comment append ;
 
 ! SETB C
 : $(opcode-D3) ( cpu -- str )
