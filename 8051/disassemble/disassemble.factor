@@ -1157,7 +1157,7 @@ SYMBOL: port-bit-names
 
 ! MOV A,direct
 : $(opcode-E5) ( array -- str )
-  second byte>hex-string "MOV A," swap append ;
+  second direct-string "MOV A," swap append ;
 
 ! MOV A,@R0
 : $(opcode-E6) ( array -- str )
