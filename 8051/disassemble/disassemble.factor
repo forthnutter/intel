@@ -128,7 +128,7 @@ SYMBOL: port-bit-names
 
 : relative-string ( byte -- string )
   [ byte>hex-string ] keep
-  [ " (" append ] dip byte>sign-string append ")" append ;
+  [ "; " append ] dip byte>sign-string append ;
 
 ! look up direct tables to get labels string
 : direct-string ( byte -- string )
@@ -146,7 +146,7 @@ SYMBOL: port-bit-names
 : address-get ( address -- string )
   [ word>hex-string ] keep
   address-lookup
-  [ " (" swap append ")" append append ] [ drop ] if ;
+  [ " ; " swap append append ] [ drop ] if ;
 
 : bit-port-comment ( port -- string )
   bit-port-lookup
