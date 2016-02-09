@@ -128,7 +128,7 @@ SYMBOL: port-bit-names
 
 : relative-string ( byte -- string )
   [ byte>hex-string ] keep
-  [ "; " append ] dip byte>sign-string append ;
+  [ " ; " append ] dip byte>sign-string append ;
 
 ! look up direct tables to get labels string
 : direct-string ( byte -- string )
@@ -534,11 +534,10 @@ SYMBOL: port-bit-names
 ! JNC Rel
 ! Jump relative if carry is clear
 : $(opcode-50) ( array -- str )
-  [ second ] keep swap
-  [ bit-address byte>hex-string "." append ] keep
-  2 0 bit-range number>string append "," append swap
-  third relative-string append
-  "JNC " swap append ;
+!  [ second ] keep swap
+!  [ bit-address byte>hex-string "." append ] keep
+!  2 0 bit-range number>string append "," append swap
+  second relative-string "JNC " swap append ;
 
 : $(opcode-51) ( cpu -- str )
     $(opcode-31) ;
