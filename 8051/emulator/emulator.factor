@@ -7,7 +7,7 @@ USING: accessors arrays io io.encodings.binary io.files
        kernel lexer intel.8051.emulator.psw intel.8051.emulator.register
        intel.8051.emulator.memory
        math math.bitwise math.parser namespaces quotations sequences
-       tools.continuations unicode.case words ;
+       tools.continuations unicode.case words ascii ;
 
 
 IN: intel.8051.emulator
