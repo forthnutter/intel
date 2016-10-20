@@ -4,7 +4,7 @@
 
 USING: accessors kernel sequences unicode.case tools.continuations
        math math.bitwise math.parser assocs namespaces hashtables
-       intel.8051.emulator byte-arrays ;
+       intel.8051.emulator byte-arrays ascii ;
 
 
 IN: intel.8051.disassemble
