@@ -62,7 +62,7 @@ TUPLE: ihex-line error len offset type data extend checksum ;
                 { 0 [ ihex-offset-len max ] } ! cal end address
                 { 2 [ drop ] }
                 { 3 [ drop ] }
-                { 4 [ drop ] }
+                { 4 [ break drop ] }
                 { 5 [ drop ] }
                 [ drop drop ]
             } case
@@ -79,10 +79,11 @@ TUPLE: ihex-line error len offset type data extend checksum ;
 : ihex-length? ( ihex-line -- ? )
   ihex-length 0 = not ;
 
+: bytes>number ( seq -- number )
+    0 [ [ 8 shift ] dip bitor ] reduce ;
 
 
-
-TUPLE: ihex start path vector array ;
+TUPLE: ihex start path flines lba sba vector array ;
 
 ! Now turn the array ihex tuples into a binary array
 : ihex-array ( ihex -- ihex )
@@ -103,7 +104,12 @@ TUPLE: ihex start path vector array ;
                   { 1 [ drop ] }
                   { 2 [ drop ] }
                   { 3 [ drop ] }
-                  { 4 [ drop ] }
+                  { 4 [
+                        break
+                        [ data>> ] keep swap bytes>number
+                        drop drop
+                    ]
+                  }
                   { 5 [ drop ] }
               } case
           ] [ drop ] if
@@ -113,18 +119,17 @@ TUPLE: ihex start path vector array ;
     ;
 
 
-
-! hex line make an array ihex tuples
-: ihex-read ( ihex -- ihex )
+! prase each line of file
+: ihex-flines ( ihex -- ihex' )
     V{ } clone >>vector
-    [ path>> utf8 file-lines ] keep swap
+    [ flines>> ] keep swap
     [
         dup length 0 >
         [
             [ CHAR: : = ] trim-head
             dup length 0 >
             [
-                <ihex-line> ! create one tuple
+                <ihex-line> ! one tuple
                 [ 2 cut swap hex> ] dip swap >>len
                 [ 4 cut swap hex> ] dip swap >>offset
                 [ 2 cut swap hex> ] dip swap >>type
@@ -132,20 +137,24 @@ TUPLE: ihex start path vector array ;
                 [ ihex-data ] dip swap >>data
             ] when
         ] when
-        [ ihex-line? ] keep swap   ! make sure have the correct tupple
+        [ ihex-line? ] keep swap
         [
-          dup ihex-line-checksum? not >>error
-          [ ihex-length? ] keep swap
-          [ swap [ vector>> ] keep swap rot suffix >>vector ]
-          [ drop ] if
+            dup ihex-line-checksum? not >>error 
+            [ ihex-length? ] keep swap
+            [ swap [ vector>> ] keep swap rot suffix >>vector ]
+            [ drop ] if    
         ]
         [ drop ] if
-    ] each
-    ;
+    ] each ;
 
+! hex line make an array ihex tuples
+: ihex-read ( ihex -- ihex' )
+    dup path>> utf8 file-lines >>flines ;
 
 ! make structure to store the lines of data
 : <ihex> ( path -- ihex )
     ihex new swap >>path 0 >>start
-    ihex-read ihex-array
+    ihex-read
+    ihex-flines
+    ihex-array
     ;
