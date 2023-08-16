@@ -614,7 +614,7 @@ SYMBOL: port-bit-names
 
 ! XRL direct,#data
 : $(opcode-63) ( -- str )
-    "XRL ";
+    "XRL " ;
 
 ! XRL A,#data
 : $(opcode-64) ( -- str )
