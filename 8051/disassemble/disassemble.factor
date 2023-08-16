@@ -334,65 +334,65 @@ SYMBOL: port-bit-names
 
 ! AJMP
 ! Absolute Jump
-: $(opcode-21) ( cpu --  str )
+: $(opcode-21) ( array --  str )
   $(opcode-01) ;
 
 ! RET
 ! Return from subroutine pop PC off the stack
-: $(opcode-22) ( cpu -- str )
+: $(opcode-22) ( array -- str )
     drop "RET" ;
 
 ! RL A
 ! Rotate Accumulator Left
-: $(opcode-23) ( cpu -- str )
+: $(opcode-23) ( array -- str )
     drop "RL A" ;
 
 ! ADD A,#data
-: $(opcode-24) ( cpu -- str )
+: $(opcode-24) ( array -- str )
     drop "ADD A" ;
 
 ! ADD A,dir
-: $(opcode-25) ( cpu -- str )
+: $(opcode-25) ( array -- str )
     drop "ADD A" ;
 
 ! ADD A,@R0
-: $(opcode-26) ( cpu -- str )
+: $(opcode-26) ( array -- str )
     drop "ADD A,@R0" ;
 
 ! ADD A,@R1
-: $(opcode-27) ( cpu -- str )
+: $(opcode-27) ( array -- str )
     drop "ADD A,@R1" ;
 
 ! ADD A,R0
-: $(opcode-28) ( cpu -- str )
+: $(opcode-28) ( array -- str )
     drop "ADD A,R0" ;
 
 ! ADD A,R1
-: $(opcode-29) ( cpu -- str )
+: $(opcode-29) ( array -- str )
     drop "ADD A,R1" ;
 
 ! ADD A,R2
-: $(opcode-2A) ( cpu -- str )
+: $(opcode-2A) ( array -- str )
     drop "ADD A,R2" ;
 
 ! ADD A,R3
-: $(opcode-2B) ( cpu -- str )
+: $(opcode-2B) ( array -- str )
     drop "ADD A,R3" ;
 
 ! ADD A,R4
-: $(opcode-2C) ( cpu -- str )
+: $(opcode-2C) ( array -- str )
     drop "ADD A,R4" ;
 
 ! ADD A,R5
-: $(opcode-2D) ( cpu -- str )
+: $(opcode-2D) ( array -- str )
     drop "ADD A,R5" ;
 
 ! ADD A,R6
-: $(opcode-2E) ( cpu -- str )
+: $(opcode-2E) ( array -- str )
     drop "ADD A,R6" ;
 
 ! ADD A,R7
-: $(opcode-2F) ( cpu -- str )
+: $(opcode-2F) ( array -- str )
     drop "ADD A,R7" ;
 
 ! JNB bit,rel
@@ -405,7 +405,7 @@ SYMBOL: port-bit-names
   "JNB " swap append ;
 
 ! ACALL
-: $(opcode-31) ( cpu -- str )
+: $(opcode-31) ( array -- str )
     $(opcode-11) ;
 
 ! RETI
@@ -413,35 +413,35 @@ SYMBOL: port-bit-names
     drop "RETI" ;
 
 ! RLC A
-: $(opcode-33) ( cpu -- str )
+: $(opcode-33) ( array -- str )
     drop "RLC A" ;
 
 ! ADDC A,#data
-: $(opcode-34) ( cpu -- str )
+: $(opcode-34) ( array -- str )
     drop "ADDC A" ;
 
 ! ADDC A,dir
-: $(opcode-35) ( cpu -- str )
+: $(opcode-35) ( array -- str )
     drop "ADDC A" ;
 
 ! ADDC A,@R0
-: $(opcode-36) ( cpu -- str )
+: $(opcode-36) ( array -- str )
     drop "ADDC A,@R0" ;
 
 ! ADDC A,@R1
-: $(opcode-37) ( cpu -- str )
+: $(opcode-37) ( array -- str )
     drop "ADDC A,@R1" ;
 
 ! ADDC A,R0
-: $(opcode-38) ( cpu -- str )
+: $(opcode-38) ( array -- str )
     drop "ADDC A,R0" ;
 
 ! ADDC A,R1
-: $(opcode-39) ( cpu -- str )
+: $(opcode-39) ( array -- str )
     drop "ADDC A,R1" ;
 
 ! ADDC A,R2
-: $(opcode-3A) ( cpu -- str )
+: $(opcode-3A) ( array -- str )
     drop "ADDC A,R2" ;
 
 ! ADDC A,R3
@@ -466,30 +466,30 @@ SYMBOL: port-bit-names
 
 ! JC rel
 ! Jump relative if carry is set
-: $(opcode-40) ( -- str )
-    "JC" ;
+: $(opcode-40) ( array -- str )
+  drop "JC" ;
 
 ! AJUMP
 ! Absolute Jump
-: $(opcode-41) ( cpu -- str )
+: $(opcode-41) ( array -- str )
     $(opcode-21) ;
 
 ! ORL dir,A
 ! Logical-OR for byte variables
-: $(opcode-42) ( -- str )
-    "ORL ,A" ;
+: $(opcode-42) ( array -- str )
+  drop "ORL ,A" ;
 
 ! ORL direct,#data
-: $(opcode-43) ( -- str )
-    "ORL " ;
+: $(opcode-43) ( array -- str )
+  drop "ORL " ;
 
 ! ORL A,#data
-: $(opcode-44) ( -- str )
-    "ORL A" ;
+: $(opcode-44) ( array -- str )
+  drop "ORL A" ;
 
 ! ORL A,direct
-: $(opcode-45) ( -- str )
-    "ORL A" ;
+: $(opcode-45) ( array -- str )
+  drop "ORL A" ;
 
 ! ORL A,@R0
 : $(opcode-46) ( -- str )
@@ -539,7 +539,7 @@ SYMBOL: port-bit-names
 !  2 0 bit-range number>string append "," append swap
   second relative-string "JNC " swap append ;
 
-: $(opcode-51) ( cpu -- str )
+: $(opcode-51) ( array -- str )
     $(opcode-31) ;
 
 ! ANL direct,A
@@ -551,8 +551,9 @@ SYMBOL: port-bit-names
     "ANL " ;
 
 ! ANL A,#data
-: $(opcode-54) ( -- str )
-    "ANL A," ;
+: $(opcode-54) ( array -- str )
+  second byte>hex-string
+  "ANL A,#" swap append ;
 
 ! ANL A,direct
 : $(opcode-55) ( array -- str )
@@ -604,13 +605,13 @@ SYMBOL: port-bit-names
   second relative-string "JZ " swap append ;
 
 !
-: $(opcode-61) ( cpu -- str )
+: $(opcode-61) ( array -- str )
     $(opcode-41) ;
 
 
 ! XRL direct,A
-: $(opcode-62) ( -- str )
-    "XRL ,A" ;
+: $(opcode-62) ( array -- str )
+  drop "XRL ,A" ;
 
 ! XRL direct,#data
 : $(opcode-63) ( -- str )
@@ -664,20 +665,21 @@ SYMBOL: port-bit-names
 : $(opcode-6F) ( -- str )
     "XRL A,R7" ;
 
-! JNZ
+! JNZ <address>
 ! if A != 0 jump rel
-: $(opcode-70) ( cpu -- str )
+: $(opcode-70) ( array -- str )
     drop "JNZ" ;
 
-: $(opcode-71) ( cpu -- str )
+! ACALL <address>
+: $(opcode-71) ( array -- str )
     $(opcode-51) ;
 
 ! ORL C,bit
-: $(opcode-72) ( cpu -- str )
+: $(opcode-72) ( array -- str )
     drop "ORL C," ;
 
 ! JMP @A+DPTR
-: $(opcode-73) ( cpu -- str )
+: $(opcode-73) ( array -- str )
     drop "JMP @A+DPTR" ;
 
 ! MOV A,#data
@@ -739,7 +741,7 @@ SYMBOL: port-bit-names
 : $(opcode-80) ( array -- str )
   second relative-string "SJUMP " swap append ;
 
-
+! AJUMP <address>
 : $(opcode-81) ( cpu -- str )
     $(opcode-61) ;
 
@@ -936,8 +938,8 @@ SYMBOL: port-bit-names
     $(opcode-91) ;
 
 ! CPL bit
-: $(opcode-B2) ( -- str )
-    "CPL " ;
+: $(opcode-B2) ( array -- str )
+  second [ bit-string "CPL " swap append ] keep bit-port-comment append ;
 
 ! CPL C
 : $(opcode-B3) ( -- str )
