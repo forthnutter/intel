@@ -16,6 +16,7 @@ TUPLE: mnemonic code ;
 SYMBOL: address-names
 SYMBOL: port-names
 SYMBOL: port-bit-names
+SYMBOL: port-bit-comments
 
 ! 8051 bit memory returns address of bit memory
 : bit-address ( n -- a )
@@ -34,7 +35,7 @@ SYMBOL: port-bit-names
   [ [ 8 shift ] dip bitor ] each ;
 
 ! Label hash special function register
-: bit-sfr ( b -- value/f ? )
+: bit-port-hash (  -- )
     H{
         { 0x80 "P0.0" } { 0x81 "P0.1" } { 0x82 "P0.2" } { 0x83 "P0.3" }
         { 0x84 "P0.4" } { 0x85 "P0.5" } { 0x86 "P0.6" } { 0x87 "P0.7" }
@@ -63,37 +64,62 @@ SYMBOL: port-bit-names
         { 0xE4 "ACC.4" } { 0xE5 "ACC.5" } { 0xE6 "ACC.6" } { 0xE7 "ACC.7" }
         { 0xF0 "B.0" } { 0xF1 "B.1" } { 0xF2 "B.2" } { 0xF3 "B.3" }
         { 0xF4 "B.4" } { 0xF5 "B.5" } { 0xF6 "B.6" } { 0xF7 "B.7" }
-    } at* ;
+    } port-bit-names set ;
+
+: bit-comment-hash (  -- )
+    H{
+        { 0x88 "TCON.IT0" } { 0x89 "TCON.IE0" } { 0x8A "TCON.IT1" } { 0x8B "TCON.IE1" }
+        { 0x8C "Run Control 0" } { 0x8D "TCON.TF0" } { 0x8E "Run Control 1" } { 0x8F "TCON.TF1" }
+        { 0x98 "SCON.RI" } { 0x99 "SCON.TI" } { 0x9A "SCON.RB8" } { 0x9B "SCON.TB8" }
+        { 0x9C "SCON.REN" } { 0x9D "SCON.SM2" } { 0x9E "SCON.SM1" } { 0x9F "SCON.SM0" }
+        { 0xA8 "External 0" } { 0xA9 "Overflow 0" } { 0xAA "External 1" } { 0xAB "Overflow 1" }
+        { 0xAC "IE.ES" } { 0xAD "IE.ET2" } { 0xAE "IE.EC" } { 0xAF "IE.EA" }
+        { 0xB8 "IP.PX0" } { 0xB9 "IP.PT0" } { 0xBA "IP.PX1" } { 0xBB "IP.PT1" }
+        { 0xBC "IP.PS" } { 0xBD "IP.PT2" }
+        { 0xC8 "T2CON.CP" } { 0xC9 "T2CON.C" } { 0xCA "T2CON.TR2" }
+        { 0xCB "T2CON.EXEN2" } { 0xCC "T2CON.TLCK" }
+        { 0xCD "T2CON.RCLK" } { 0xCE "T2CON.EXF2" }
+        { 0xCF "T2CON.TF2" }
+        { 0xD0 "PSW.P" } { 0xD2 "PSW.OV" } { 0xD3 "PSW.RS0" }
+        { 0xD4 "PSW.RS1" } { 0xD5 "PSW.F0" } { 0xD6 "PSW.AC" }
+        { 0xD7 "PSW.CY" } { 0xE0 "ACC" }
+        { 0xE0 "ACC.0" } { 0xE1 "ACC.1" } { 0xE2 "ACC.2" } { 0xE3 "ACC.3" }
+        { 0xE4 "ACC.4" } { 0xE5 "ACC.5" } { 0xE6 "ACC.6" } { 0xE7 "ACC.7" }
+        { 0xF0 "B.0" } { 0xF1 "B.1" } { 0xF2 "B.2" } { 0xF3 "B.3" }
+        { 0xF4 "B.4" } { 0xF5 "B.5" } { 0xF6 "B.6" } { 0xF7 "B.7" }
+    } port-bit-comments set ;
+
 
 ! Label hash special function register via direct instruction
-: direct-sfr ( b -- value/f ? )
-    H{
-      { 0x80 "P0" } { 0x81 "SP" } { 0x82 "DPL" } { 0x83 "DPH" }
-      { 0x87 "PCON" }
-      { 0x88 "TCON" } { 0x89 "TMOD" } { 0x8A "TL0" } { 0x8B "TL1" }
-      { 0x8C "TH0" } { 0x8D "TH1" }
-      { 0x8E "AUXR" }
-      { 0x90 "P1" }
-      { 0x98 "SCON" } { 0x99 "SBUF" }
-      { 0xA0 "P2" }
-      { 0xA2 "AUXR1" }
-      { 0xA8 "IE" }
-      { 0xB0 "P3" }
-      { 0xB7 "IPH" }
-      { 0xB8 "IP" }
-      { 0xC8 "T2CON" } { 0xCA "RCAP2L" }  { 0xCB "RCAP2H" }
-      { 0xCC "TL2" } { 0xCD "TH2" }
-      { 0xD0 "PSW" }
-      { 0xD8 "CCON" }
-      { 0xD9 "CMOD" }
-      { 0xDA "CCAPM0" }
-      { 0xDB "CCAPM1" }
-      { 0xDC "CCAPM2" }
-      { 0xDD "CCAPM3" }
-      { 0xDE "CCAPM4" }
-      { 0xE0 "ACC" }
-      { 0xF0 "B" }
-    } at* ;
+: port-hash ( -- )
+  H{
+    { 0x80 "P0" } { 0x81 "SP" } { 0x82 "DPL" } { 0x83 "DPH" }
+    { 0x87 "PCON" }
+    { 0x88 "TCON" } { 0x89 "TMOD" } { 0x8A "TL0" } { 0x8B "TL1" }
+    { 0x8C "TH0" } { 0x8D "TH1" }
+    { 0x8E "AUXR" }
+    { 0x90 "P1" }
+    { 0x98 "SCON" } { 0x99 "SBUF" }
+    { 0xA0 "P2" }
+    { 0xA2 "AUXR1" }
+    { 0xA8 "IE" }
+    { 0xB0 "P3" }
+    { 0xB7 "IPH" }
+    { 0xB8 "IP" }
+    { 0xC8 "T2CON" } { 0xCA "RCAP2L" }  { 0xCB "RCAP2H" }
+    { 0xCC "TL2" } { 0xCD "TH2" }
+    { 0xD0 "PSW" }
+    { 0xD8 "CCON" }
+    { 0xD9 "CMOD" }
+    { 0xDA "CCAPM0" }
+    { 0xDB "CCAPM1" }
+    { 0xDC "CCAPM2" }
+    { 0xDD "CCAPM3" }
+    { 0xDE "CCAPM4" }
+    { 0xE0 "ACC" }
+    { 0xF0 "B" }
+  } port-names set ;
+
 
 ! look up label with address to if we got something
 : address-lookup ( address -- string ? )
@@ -106,7 +132,13 @@ SYMBOL: port-bit-names
 
 ! look up label for por bit map
 : bit-port-lookup ( port -- string ? )
-  port-bit-names get at* ;
+  port-bit-comments get at* ;
+
+! Build a bit port names
+: bit-port-set-comments ( value port -- )
+  port-bit-comments get dup
+  [ ?set-at drop ]
+  [ ?set-at port-bit-comments set ] if ;
 
 ! Build a bit port names
 : bit-port-set ( value port -- )
@@ -114,6 +146,11 @@ SYMBOL: port-bit-names
   [ ?set-at drop ]
   [ ?set-at port-bit-names set ] if ;
 
+! direct port set
+: port-set ( value address -- )
+  port-names get dup
+  [ ?set-at drop ]
+  [ ?set-at port-names set ] if ;
 
 ! turn 8 bit number in 8 signed number
 : byte>sign-string ( byte -- string )
@@ -132,12 +169,12 @@ SYMBOL: port-bit-names
 
 ! look up direct tables to get labels string
 : direct-string ( byte -- string )
-  [ direct-sfr ] keep swap
+  [ port-names get at* ] keep swap
   [ drop ]
   [ [ drop ] dip byte>hex-string ] if ;
 
 : bit-string ( byte -- string )
-  [ bit-sfr ] keep swap
+  [ port-bit-names get at* ] keep swap
   [ drop ]
   [ [ drop ] dip [ bit-address byte>hex-string "." append ] keep
     2 0 bit-range number>string append
