@@ -14,7 +14,9 @@ TUPLE: mnemonic code ;
 
 ! symbols to hold names
 SYMBOL: address-names
+SYMBOL: address-names-comments
 SYMBOL: port-names
+SYMBOL: port-names-comments
 SYMBOL: port-bit-names
 SYMBOL: port-bit-comments
 
@@ -129,6 +131,15 @@ SYMBOL: port-bit-comments
   address-names get dup
   [ ?set-at drop ]
   [ ?set-at address-names set ] if ;
+
+: address-com-lookup ( address -- string )
+  break
+  address-names-comments get at* ;
+  
+: address-set-comments ( value address -- )
+  address-names-comments get dup
+  [ ?set-at drop ]
+  [ ?set-at address-names-comments set ] if ;
 
 ! look up label for por bit map
 : bit-port-lookup ( port -- string ? )
