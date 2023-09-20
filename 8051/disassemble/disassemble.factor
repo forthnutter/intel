@@ -122,6 +122,12 @@ SYMBOL: port-bit-comments
     { 0xF0 "B" }
   } port-names set ;
 
+! ROM Address comments Initlised here
+: address-comments-hash ( -- )
+  H{
+    { 0x0000 "RESET VECTOR" }
+  } address-names-comments set ;
+
 
 ! look up label with address to if we got something
 : address-lookup ( address -- string ? )
@@ -132,8 +138,7 @@ SYMBOL: port-bit-comments
   [ ?set-at drop ]
   [ ?set-at address-names set ] if ;
 
-: address-com-lookup ( address -- string )
-  break
+: address-com-lookup ( address -- string ? )
   address-names-comments get at* ;
   
 : address-set-comments ( value address -- )
@@ -192,9 +197,10 @@ SYMBOL: port-bit-comments
   ] if ;
 
 : address-get ( address -- string )
-  [ word>hex-string ] keep
-  address-lookup
-  [ " ; " swap append append ] [ drop ] if ;
+  break
+  [ address-lookup ] keep swap 
+  [ drop ] [ [ drop ] dip word>hex-string ] if ;
+
 
 : bit-port-comment ( port -- string )
   bit-port-lookup

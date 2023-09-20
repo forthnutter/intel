@@ -103,8 +103,14 @@ IN: intel.8051
 
 ! create a string for PC
 : string-pc-reg ( cpu -- s )
-    [ "PC " ] dip
-    [ pc>> ] [ mnemonic-dump ] bi append ;
+    break
+    [
+        [ "PC " ] dip
+        [ pc>> ] [ mnemonic-dump ] bi append 
+    ] keep
+    [ pc>> ] [ drop address-com-lookup ] bi
+    [ " ; " prepend append ] [ drop ] if
+    ;
 
 
 
