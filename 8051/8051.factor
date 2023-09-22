@@ -11,6 +11,21 @@ USING:
 IN: intel.8051
 
 
+! dump-ram with number of bytes
+: dump-ram ( n address cpu -- str )
+    [
+        9 bits
+        [ dup 16 < ] dip
+        [ swap [ + ] [ swap drop 16 + ] if ] keep
+        [ 9 bits ] dip
+        [ min ] [ max ] 2bi
+        2dup
+    ] dip
+    ram>> subseq [ drop ] dip
+    [ >hex 3 CHAR: 0 pad-head >upper " " append ] dip
+    [ >hex 2 CHAR: 0 pad-head >upper " " append ] { } map-as concat append ;
+
+
 ! rom dump number of bytes
 : dump-rom ( n address cpu -- str )
     [

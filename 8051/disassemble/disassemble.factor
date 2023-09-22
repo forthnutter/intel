@@ -186,12 +186,12 @@ SYMBOL: port-bit-labels
 
 ! look up direct tables to get labels string
 : direct-string ( byte -- string )
-  [ port-names get at* ] keep swap
+  [ port-labels get at* ] keep swap
   [ drop ]
   [ [ drop ] dip byte>hex-string ] if ;
 
 : bit-string ( byte -- string )
-  [ port-bit-names get at* ] keep swap
+  [ port-bit-labels get at* ] keep swap
   [ drop ]
   [ [ drop ] dip [ bit-address byte>hex-string "." append ] keep
     2 0 bit-range number>string append
