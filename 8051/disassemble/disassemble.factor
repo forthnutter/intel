@@ -13,12 +13,11 @@ IN: intel.8051.disassemble
 TUPLE: mnemonic code ;
 
 ! symbols to hold names
-SYMBOL: address-names
-SYMBOL: address-names-comments
-SYMBOL: port-names
-SYMBOL: port-names-comments
-SYMBOL: port-bit-names
-SYMBOL: port-bit-comments
+SYMBOL: rom-labels
+SYMBOL: ram-labels
+SYMBOL: address-comments
+SYMBOL: port-labels
+SYMBOL: port-bit-labels
 
 ! 8051 bit memory returns address of bit memory
 : bit-address ( n -- a )
@@ -66,31 +65,7 @@ SYMBOL: port-bit-comments
         { 0xE4 "ACC.4" } { 0xE5 "ACC.5" } { 0xE6 "ACC.6" } { 0xE7 "ACC.7" }
         { 0xF0 "B.0" } { 0xF1 "B.1" } { 0xF2 "B.2" } { 0xF3 "B.3" }
         { 0xF4 "B.4" } { 0xF5 "B.5" } { 0xF6 "B.6" } { 0xF7 "B.7" }
-    } port-bit-names set ;
-
-: bit-comment-hash (  -- )
-    H{
-        { 0x88 "TCON.IT0" } { 0x89 "TCON.IE0" } { 0x8A "TCON.IT1" } { 0x8B "TCON.IE1" }
-        { 0x8C "Run Control 0" } { 0x8D "TCON.TF0" } { 0x8E "Run Control 1" } { 0x8F "TCON.TF1" }
-        { 0x98 "SCON.RI" } { 0x99 "SCON.TI" } { 0x9A "SCON.RB8" } { 0x9B "SCON.TB8" }
-        { 0x9C "SCON.REN" } { 0x9D "SCON.SM2" } { 0x9E "SCON.SM1" } { 0x9F "SCON.SM0" }
-        { 0xA8 "External 0" } { 0xA9 "Overflow 0" } { 0xAA "External 1" } { 0xAB "Overflow 1" }
-        { 0xAC "IE.ES" } { 0xAD "IE.ET2" } { 0xAE "IE.EC" } { 0xAF "IE.EA" }
-        { 0xB8 "IP.PX0" } { 0xB9 "IP.PT0" } { 0xBA "IP.PX1" } { 0xBB "IP.PT1" }
-        { 0xBC "IP.PS" } { 0xBD "IP.PT2" }
-        { 0xC8 "T2CON.CP" } { 0xC9 "T2CON.C" } { 0xCA "T2CON.TR2" }
-        { 0xCB "T2CON.EXEN2" } { 0xCC "T2CON.TLCK" }
-        { 0xCD "T2CON.RCLK" } { 0xCE "T2CON.EXF2" }
-        { 0xCF "T2CON.TF2" }
-        { 0xD0 "PSW.P" } { 0xD2 "PSW.OV" } { 0xD3 "PSW.RS0" }
-        { 0xD4 "PSW.RS1" } { 0xD5 "PSW.F0" } { 0xD6 "PSW.AC" }
-        { 0xD7 "PSW.CY" } { 0xE0 "ACC" }
-        { 0xE0 "ACC.0" } { 0xE1 "ACC.1" } { 0xE2 "ACC.2" } { 0xE3 "ACC.3" }
-        { 0xE4 "ACC.4" } { 0xE5 "ACC.5" } { 0xE6 "ACC.6" } { 0xE7 "ACC.7" }
-        { 0xF0 "B.0" } { 0xF1 "B.1" } { 0xF2 "B.2" } { 0xF3 "B.3" }
-        { 0xF4 "B.4" } { 0xF5 "B.5" } { 0xF6 "B.6" } { 0xF7 "B.7" }
-    } port-bit-comments set ;
-
+    } port-bit-labels set ;
 
 ! Label hash special function register via direct instruction
 : port-hash ( -- )
@@ -120,53 +95,80 @@ SYMBOL: port-bit-comments
     { 0xDE "CCAPM4" }
     { 0xE0 "ACC" }
     { 0xF0 "B" }
-  } port-names set ;
+  } port-labels set ;
 
-! ROM Address comments Initlised here
+
+
+: word>hex-string ( word -- string )
+  16 bits >hex 4 CHAR: 0 pad-head >upper ;
+
+! ********************************************************
+! ROM label functions go here
+! *********************************************************
+
+! look up label with address to if we got something
+! ROM Label lookup
+: rom-label-lookup ( address -- string ? )
+  rom-labels get at* ;
+
+! asociate a label to an address
+: rom-label-set ( value address -- )
+  rom-labels get dup
+  [ ?set-at drop ]
+  [ ?set-at rom-labels set ] if ;
+
+! ROM Address label
+: romal-get ( address -- string )
+  break
+  [ rom-label-lookup ] keep swap
+  [ drop ] [ [ drop ] dip word>hex-string ] if ;
+
+! **********************************************************
+! Address comments functions here
+! **********************************************************
+
+! Address comments Initlised here only for ROM
 : address-comments-hash ( -- )
   H{
     { 0x0000 "RESET VECTOR" }
-  } address-names-comments set ;
+  } address-comments set ;
 
 
-! look up label with address to if we got something
+! look up address to see if we have any comments
 : address-lookup ( address -- string ? )
-  address-names get at* ;
+  address-comments get at* ;
 
-: address-set ( value address -- )
-  address-names get dup
+! asociate an address with a comment
+: address-comment-set ( value address -- )
+  address-comments get dup
   [ ?set-at drop ]
-  [ ?set-at address-names set ] if ;
+  [ ?set-at address-comments set ] if ;
 
-: address-com-lookup ( address -- string ? )
-  address-names-comments get at* ;
-  
-: address-set-comments ( value address -- )
-  address-names-comments get dup
-  [ ?set-at drop ]
-  [ ?set-at address-names-comments set ] if ;
+! create a string for PC
+: address-comment-get ( address -- string/f )
+  address-lookup
+  [ " ; " prepend ] [ drop f ] if ;
 
-! look up label for por bit map
-: bit-port-lookup ( port -- string ? )
-  port-bit-comments get at* ;
 
-! Build a bit port names
-: bit-port-set-comments ( value port -- )
-  port-bit-comments get dup
-  [ ?set-at drop ]
-  [ ?set-at port-bit-comments set ] if ;
-
-! Build a bit port names
-: bit-port-set ( value port -- )
-  port-bit-names get dup
-  [ ?set-at drop ]
-  [ ?set-at port-bit-names set ] if ;
+! *******************************************************
+! Port label section
+! *******************************************************
 
 ! direct port set
 : port-set ( value address -- )
-  port-names get dup
+  port-labels get dup
   [ ?set-at drop ]
-  [ ?set-at port-names set ] if ;
+  [ ?set-at port-labels set ] if ;
+
+
+
+! Build a bit port names
+: bit-port-set ( value port -- )
+  port-bit-labels get dup
+  [ ?set-at drop ]
+  [ ?set-at port-bit-labels set ] if ;
+
+
 
 ! turn 8 bit number in 8 signed number
 : byte>sign-string ( byte -- string )
@@ -176,8 +178,7 @@ SYMBOL: port-bit-comments
 : byte>hex-string ( byte -- string )
   8 bits >hex 2 CHAR: 0 pad-head >upper ;
 
-: word>hex-string ( word -- string )
-  16 bits >hex 4 CHAR: 0 pad-head >upper ;
+
 
 : relative-string ( byte -- string )
   [ byte>hex-string ] keep
@@ -196,15 +197,18 @@ SYMBOL: port-bit-comments
     2 0 bit-range number>string append
   ] if ;
 
-: address-get ( address -- string )
+! RAM Address label
+: ramal-get ( address -- string )
   break
-  [ address-lookup ] keep swap 
+  [ rom-label-lookup ] keep swap 
   [ drop ] [ [ drop ] dip word>hex-string ] if ;
 
 
-: bit-port-comment ( port -- string )
-  bit-port-lookup
-  [ " ; " swap append ] [ drop " ; " ] if ;
+
+
+! : bit-port-comment ( port -- string )
+!  bit-port-lookup
+!  [ " ; " swap append ] [ drop " ; " ] if ;
 
 
 ! NOP Instruction
@@ -221,7 +225,7 @@ SYMBOL: port-bit-comments
 ! LJMP
 ! Long Jump
 : $(opcode-02) ( array -- str )
-    1 swap 3 swap <slice> >word< address-get ! word>hex-string
+    1 swap 3 swap <slice> >word< romal-get ! word>hex-string
     "LJMP " swap append ;
 
 ! RR A
@@ -309,7 +313,7 @@ SYMBOL: port-bit-comments
 ! LCALL
 ! Long Call
 : $(opcode-12) ( array -- str )
-  1 swap 3 swap <slice> >word< address-get
+  1 swap 3 swap <slice> >word< romal-get
   "LCALL " swap append ;
 
 ! RRC A
@@ -866,7 +870,7 @@ SYMBOL: port-bit-comments
 
 ! MOV bit,C
 : $(opcode-92) ( array -- str )
-  second [ bit-string ",C" append "MOV " swap append ] keep bit-port-comment append ;
+  second bit-string ",C" append "MOV " swap append ;
 
 ! MOVC A,@A+DPTR
 : $(opcode-93) ( cpu -- str )
@@ -930,7 +934,7 @@ SYMBOL: port-bit-comments
 
 ! MOV C,bit
 : $(opcode-A2) ( array -- str )
-  second [ bit-string "MOV C," swap append ] keep bit-port-comment append ;
+  second bit-string "MOV C," swap append ;
 
 ! INC DPTR
 : $(opcode-A3) ( array -- str )
@@ -993,7 +997,7 @@ SYMBOL: port-bit-comments
 
 ! CPL bit
 : $(opcode-B2) ( array -- str )
-  second [ bit-string "CPL " swap append ] keep bit-port-comment append ;
+  second bit-string "CPL " swap append ;
 
 ! CPL C
 : $(opcode-B3) ( -- str )
@@ -1071,7 +1075,7 @@ SYMBOL: port-bit-comments
 
 ! CLR bit
 : $(opcode-C2) ( array -- str )
-  second [ bit-string "CLR " swap append ] keep bit-port-comment append ;
+  second bit-string "CLR " swap append ;
 
 ! CLR C
 : $(opcode-C3) ( array -- str )
@@ -1134,7 +1138,7 @@ SYMBOL: port-bit-comments
 
 ! SETB bit
 : $(opcode-D2) ( array -- str )
-  second [ bit-string "SETB " swap append ] keep bit-port-comment append ;
+  second bit-string "SETB " swap append ;
 
 ! SETB C
 : $(opcode-D3) ( cpu -- str )

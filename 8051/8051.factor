@@ -108,9 +108,8 @@ IN: intel.8051
         [ "PC " ] dip
         [ pc>> ] [ mnemonic-dump ] bi append 
     ] keep
-    [ pc>> ] [ drop address-com-lookup ] bi
-    [ " ; " prepend append ] [ drop ] if
-    ;
+    [ pc>> ] [ drop address-comment-get ] bi dup
+    [ append ] [ drop ] if ;
 
 
 
